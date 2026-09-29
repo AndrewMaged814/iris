@@ -16,7 +16,7 @@ Time needed: about 1.5 hours the first time.
    python3 tools/validate_repo.py
    python3 -m unittest discover -s tests
    ```
-   **Expect:** `ok`, then `Ran 28 tests … OK`.
+   **Expect:** `ok`, then `Ran 39 tests … OK`.
 
 ---
 

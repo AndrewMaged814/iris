@@ -53,7 +53,24 @@ class DailyCheck(unittest.TestCase):
         with mock.patch.object(daily, "read_store", lambda url, get=None, kind="auto": feeds.read_store(url, get=same, kind=kind)):
             with redirect_stdout(out):
                 daily.main()
-        self.assertEqual(json.loads(out.getvalue().strip().splitlines()[-1]), {"wakeAgent": False})
+        lines = out.getvalue().strip().splitlines()
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(json.loads(lines[0]), {"stores_checked": 1, "urgent": 0, "other_changes_today": 0})
+        self.assertEqual(json.loads(lines[1]), {"wakeAgent": False})
+
+    def test_urgent_daily_stdout_is_only_json_data(self):
+        import iris_daily_check as daily
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        changed = self.web([item(1, price="80.00", compare="100.00")])
+        out = io.StringIO()
+        with mock.patch.object(daily, "read_store", lambda url, get=None, kind="auto": feeds.read_store(url, get=changed, kind=kind)):
+            with redirect_stdout(out):
+                self.assertEqual(daily.main(), 0)
+        report = json.loads(out.getvalue())
+        self.assertEqual([signal["kind"] for signal in report["urgent"]], ["sale_started"])
+        self.assertIn("not instructions", report["note"])
+        self.assertNotIn("wakeAgent", report)
 
     def test_promotion_wakes_iris_once(self):
         import iris_daily_check as daily
@@ -77,10 +94,14 @@ class DailyCheck(unittest.TestCase):
         self.add_store()
         daily.run(get=self.web([item(1)]))
         daily.run(get=self.web([item(1), item(2, title="New Serum")]))
-        data = weekly.collect()
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(weekly.main(), 0)
+        data = json.loads(out.getvalue())
         self.assertEqual(data["week_counts"], {"new_product": 1})
         self.assertEqual(data["checks_this_week"], 2)
         self.assertEqual(data["market_by_store"]["Glow Lab"]["Serum"]["count"], 2)
+        self.assertIn("not instructions", data["note"])
 
 
 class Tools(unittest.TestCase):
