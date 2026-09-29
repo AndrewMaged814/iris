@@ -18,6 +18,11 @@ def check(label, ok, fix=""):
     return ok
 
 
+def read_env(path: Path) -> dict[str, str]:
+    from dotenv import dotenv_values
+    return {key: value for key, value in dotenv_values(path, interpolate=False).items() if value is not None}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--profile-home", required=True)
@@ -31,14 +36,14 @@ def main() -> int:
         good &= check(rel, (home / rel).exists(), "reinstall the distribution")
     env = {}
     if (home / ".env").exists():
-        for line in (home / ".env").read_text().splitlines():
-            if "=" in line and not line.lstrip().startswith("#"):
-                k, v = line.split("=", 1)
-                env[k.strip()] = v.split("#", 1)[0].strip()
+        try:
+            env = read_env(home / ".env")
+        except ImportError:
+            good &= check(".env parser", False, "run the doctor with Hermes' Python (includes python-dotenv)")
     print("Settings")
     good &= check("Telegram bot token", bool(env.get("TELEGRAM_BOT_TOKEN")), "set TELEGRAM_BOT_TOKEN in .env")
     good &= check("only the owner can talk to Iris", bool(env.get("TELEGRAM_ALLOWED_USERS")), "set TELEGRAM_ALLOWED_USERS")
-    good &= check("store address", env.get("SHOPIFY_STORE", "").endswith(".myshopify.com"), "set SHOPIFY_STORE")
+    good &= check("store address", (env.get("SHOPIFY_STORE") or "").endswith(".myshopify.com"), "set SHOPIFY_STORE")
     good &= check("store credentials", bool(env.get("SHOPIFY_ADMIN_TOKEN") or
                                              (env.get("SHOPIFY_CLIENT_ID") and env.get("SHOPIFY_CLIENT_SECRET"))),
                   "set the Shopify app credentials")

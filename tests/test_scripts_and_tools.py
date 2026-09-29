@@ -245,5 +245,58 @@ class ProfileIsolation(unittest.TestCase):
             self.assertEqual(self.iris_store._token("standalone.myshopify.com"), "standalone-token")
 
 
+class Doctor(unittest.TestCase):
+    def setUp(self):
+        from helpers import ROOT
+        spec = importlib.util.spec_from_file_location("iris_doctor", ROOT / "tools" / "iris_doctor.py")
+        self.doctor = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.doctor)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.home = Path(self.tmp.name)
+        for rel in ("SOUL.md", "config.yaml", "plugins/iris/__init__.py", "scripts/iris_daily_check.py",
+                    "scripts/iris_weekly_data.py", "skills/market-watch/SKILL.md"):
+            path = self.home / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.touch()
+
+    def run_doctor(self, env_text):
+        (self.home / ".env").write_text(env_text, encoding="utf-8")
+        output = io.StringIO()
+        with mock.patch.object(sys, "argv", ["iris_doctor", "--profile-home", str(self.home)]), redirect_stdout(output):
+            result = self.doctor.main()
+        return result, output.getvalue()
+
+    @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
+    def test_dotenv_quoted_profile_values_are_ready(self):
+        result, output = self.run_doctor("TELEGRAM_BOT_TOKEN='bot-token'\nTELEGRAM_ALLOWED_USERS='123'\n"
+                                         "SHOPIFY_STORE='active.myshopify.com' # owner store\n"
+                                         "SHOPIFY_CLIENT_ID='app-id'\nSHOPIFY_CLIENT_SECRET='app-secret'\n")
+        self.assertEqual(result, 0, output)
+        self.assertIn("Ready.", output)
+
+    @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
+    def test_dotenv_empty_quotes_and_bare_keys_are_missing(self):
+        result, output = self.run_doctor("TELEGRAM_BOT_TOKEN=''\nTELEGRAM_ALLOWED_USERS=\"\"\n"
+                                         "SHOPIFY_STORE\nSHOPIFY_ADMIN_TOKEN=''\n"
+                                         "SHOPIFY_CLIENT_ID='app-id'\nSHOPIFY_CLIENT_SECRET=''\n")
+        self.assertEqual(result, 1)
+        for label in ("Telegram bot token", "only the owner can talk to Iris", "store address", "store credentials"):
+            self.assertIn("MISSING " + label, output)
+
+    @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
+    def test_dotenv_keeps_quoted_hash_characters(self):
+        path = self.home / ".env"
+        path.write_text("SHOPIFY_CLIENT_SECRET='secret#value' # comment\n", encoding="utf-8")
+        self.assertEqual(self.doctor.read_env(path)["SHOPIFY_CLIENT_SECRET"], "secret#value")
+
+    def test_missing_dotenv_reports_dependency_without_false_readiness(self):
+        with mock.patch.dict(sys.modules, {"dotenv": None}):
+            result, output = self.run_doctor("TELEGRAM_BOT_TOKEN='bot-token'\n")
+        self.assertEqual(result, 1)
+        self.assertIn("run the doctor with Hermes' Python", output)
+        self.assertIn("Not ready yet", output)
+
+
 if __name__ == "__main__":
     unittest.main()

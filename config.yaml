@@ -36,6 +36,7 @@ agent:
     - messaging
     - cronjob
     - code_execution
+    - connections
 
 tools:
   tool_search:

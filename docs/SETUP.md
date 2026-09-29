@@ -9,10 +9,20 @@ The host already runs Hermes (pinned commit `c1488ac`). Background notes from th
    talk to Iris), the store's `myshopify.com` address and the Shopify app credentials (`read_products` only).
 3. **Check it:** `python3 tools/iris_doctor.py --profile-home ~/.hermes/profiles/iris --live`, using
    Hermes' Python so the safe web client is found.
-4. **Restart the gateway** so the plugin loads (the known plugin-cache issue): restart the systemd service.
+4. **Check the gateway mode.** This host's default gateway serves every profile and notices profile changes
+   automatically. Do not install a separate Iris gateway. After connecting Telegram, check
+   `hermes -p iris gateway status`; restart the shared gateway only if the plugin has not loaded.
 5. **First chat:** the owner taps Start. Iris reads the store, suggests competitors, the owner approves.
 6. **Create the scheduled jobs** once: `OWNER_CHAT_ID=<id> scripts/setup_jobs.sh`
    For the demo, use a short schedule: `DAILY_SCHEDULE="every 10m" OWNER_CHAT_ID=<id> scripts/setup_jobs.sh`.
 7. `hermes -p iris cron list` should show `iris-daily-check` and `iris-weekly-brief`.
+
+When replacing a deleted profile on this Hermes revision, create its empty home first:
+`hermes profile create iris --no-skills --no-alias`, then install with `--force` before configuring
+credentials or the model. Direct distribution installation does not clear the deleted-profile marker.
+Never force-install the blank template over a configured profile.
+
+The doctor needs Hermes' Python, including its `python-dotenv` dependency, to read quoted `.env` values
+correctly. Store credentials and data paths use Hermes' native profile scope in the shared gateway.
 
 Iris's data lives in `<profile>/iris/iris.db`. Delete that file to start the watchlist over.
