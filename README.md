@@ -25,7 +25,7 @@ Built on [Hermes](https://github.com/NousResearch/hermes-agent). One Iris per st
 
 ## Install
 
-See [`docs/SETUP.md`](docs/SETUP.md). Tests: `python3 -m unittest discover -s tests` (no network needed).
+See [`docs/SETUP.md`](docs/SETUP.md). Tests: `python3 -m unittest discover -s tests` (no network needed). Step-by-step host testing: [`docs/TESTING.md`](docs/TESTING.md).
 
 ## Status
 

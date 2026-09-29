@@ -10,7 +10,8 @@
 
 ## To verify on the host (not yet done)
 
-- The distribution installs `scripts/` into the profile, and `hermes cron create --script` finds them there.
+- `hermes cron create --script` finds the scripts in the profile's `scripts/` folder. (Confirmed in the Hermes
+  source: the installer copies every folder listed in `distribution_owned`, and `scripts` isn't a reserved name.)
 - `tools.url_safety` is importable in the plugin and in cron script runs (otherwise the basic guard is used).
 - Shopify client credentials work for the Mira Nile dev store app.
 - The `search` toolset and `display.platforms.telegram.tool_progress: "off"` behave as expected.
