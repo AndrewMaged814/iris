@@ -1,6 +1,9 @@
 # Iris — one Hermes profile per store. The operator picks the model with `hermes -p iris setup`.
 model: ""
 
+# Scheduled jobs use this time zone ("0 8 * * *" = 8:00 in Cairo).
+timezone: "Africa/Cairo"
+
 # Tools Iris may use in chat and in scheduled runs. Terminal, files, browser, messaging and
 # cron scheduling stay off: Iris reads outside pages, so she only gets fixed read-only tools.
 platform_toolsets:
@@ -8,9 +11,10 @@ platform_toolsets:
     - iris
     - search          # web_search only, for suggesting competitor stores at setup
     - vision          # reading screenshots
+    - memory          # Hermes' built-in memory: USER.md (the owner) and MEMORY.md (Iris's notes)
     - iris-skill-read
     - no_mcp
-  cron:
+  cron:              # no memory here: scheduled runs read other websites, so they can't write memory
     - iris
     - iris-skill-read
     - no_mcp

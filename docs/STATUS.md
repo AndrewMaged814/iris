@@ -17,6 +17,9 @@
 - The `search` toolset and `display.platforms.telegram.tool_progress: "off"` behave as expected.
 - Hermes' own system messages (errors, restarts) are English and technical; plugins can't change them.
 
+- Memory: the owner's name and preferences are saved and come back in a new chat (`/new`).
+  Hermes also runs a periodic background memory review; check it never saves text that came from a website.
+
 ## Not built (by choice)
 
 Multiple stores per Iris, Meta/Instagram APIs, ad libraries, automatic actions.
