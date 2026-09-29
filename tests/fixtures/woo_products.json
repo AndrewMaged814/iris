@@ -1,0 +1,8 @@
+[
+ {"id": 7, "name": "Nile Rose Serum", "permalink": "https://nile.example/product/rose-serum/",
+  "prices": {"price": "39900", "regular_price": "49900", "sale_price": "39900", "currency_code": "EGP", "currency_minor_unit": 2},
+  "on_sale": true, "is_in_stock": true, "categories": [{"name": "Serum"}], "tags": [{"name": "rose"}], "images": []},
+ {"id": 8, "name": "Nile Night Cream", "permalink": "https://nile.example/product/night-cream/",
+  "prices": {"price": "61000", "regular_price": "61000", "sale_price": "", "currency_code": "EGP", "currency_minor_unit": 2},
+  "on_sale": false, "is_in_stock": false, "categories": [{"name": "Cream"}], "tags": [], "images": []}
+]

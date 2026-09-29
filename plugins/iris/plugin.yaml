@@ -1,0 +1,10 @@
+name: iris
+version: 1.0.0
+description: "Read-only market tools for one store owner: own store, other stores, watchlist, changes"
+author: Andrew Maged
+requires_hermes: ">=0.21.3"
+provides_tools:
+  - my_store
+  - read_store
+  - watchlist
+  - market_changes

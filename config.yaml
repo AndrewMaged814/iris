@@ -1,0 +1,44 @@
+# Iris — one Hermes profile per store. The operator picks the model with `hermes -p iris setup`.
+model: ""
+
+# Tools Iris may use in chat and in scheduled runs. Terminal, files, browser, messaging and
+# cron scheduling stay off: Iris reads outside pages, so she only gets fixed read-only tools.
+platform_toolsets:
+  telegram:
+    - iris
+    - search          # web_search only, for suggesting competitor stores at setup
+    - vision          # reading screenshots
+    - iris-skill-read
+    - no_mcp
+  cron:
+    - iris
+    - iris-skill-read
+    - no_mcp
+known_plugin_toolsets:
+  telegram: [iris]
+  cron: [iris]
+
+plugins:
+  enabled:
+    - iris
+
+agent:
+  max_turns: 20
+  disabled_toolsets:
+    - terminal
+    - file
+    - browser
+    - delegation
+    - messaging
+    - cronjob
+    - code_execution
+
+tools:
+  tool_search:
+    enabled: false
+
+display:
+  interim_assistant_messages: true
+  platforms:
+    telegram:
+      tool_progress: "off"   # owners never see tool names; Iris writes her own progress lines

@@ -1,0 +1,16 @@
+name: iris
+version: 1.0.0
+description: "Iris — a market scout for one small business, on Telegram"
+author: "Andrew Maged"
+hermes_requires: ">=0.21.3"
+repository: "https://github.com/AndrewMaged814/iris"
+distribution_owned:
+  - distribution.yaml
+  - SOUL.md
+  - config.yaml
+  - skills
+  - plugins
+  - scripts
+notes:
+  - "One profile per store. Store credentials, the owner's Telegram ID and Iris's data stay on the host."
+  - "Run scripts/setup_jobs.sh once after install to create the daily check and the weekly message."

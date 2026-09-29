@@ -1,0 +1,30 @@
+---
+name: setup
+description: Use when a new owner starts Iris, the store is not readable yet, or the owner wants to choose which competitor stores to watch.
+version: 1.0.0
+---
+
+# Setup
+
+## Steps
+
+1. Call `my_store` with `summary`. If it returns an error, tell the owner in one sentence that the
+   store connection isn't working yet and that the operator needs to finish it. Stop there.
+2. Greet the owner by the shop name. In two or three short lines, say what you found: how many
+   products, the main product types, their price range.
+3. Suggest competitor stores. Use `web_search` with the main product types and the owner's market
+   (for example "vitamin c serum Egypt online store"). Prefer real online stores (their own website,
+   Jumia, Noon, Amazon.eg) over articles. Check the best 3–5 with `read_store`; keep only the ones that
+   return products. See `references/finding-competitors.md`.
+4. Show the owner the short list: store name, what they sell in the owner's product types, and why it
+   is worth watching. Ask which ones to watch. The owner can also send their own links.
+5. For each store the owner approves, call `watchlist` `add` with a short name and `focus` set to
+   the owner's product types that store also sells. Confirm in plain words what you'll watch.
+6. Tell the owner how Iris works from now on, in three lines: a message only when something urgent
+   happens (a promotion starts, a watched item runs out, a new product appears), "This week in your
+   market" every Sunday, and screenshots of Instagram or Facebook posts are welcome any time.
+
+## Notes
+
+- If a store blocks you or has no readable products, say so and suggest a screenshot instead.
+- Do not add a store the owner didn't approve.
