@@ -1,9 +1,13 @@
 import io
+import importlib.util
 import json
 import os
+import sys
 import tempfile
+import types
 import unittest
 from contextlib import redirect_stdout
+from pathlib import Path
 from unittest import mock
 
 from helpers import FakeWeb, fixture
@@ -160,6 +164,85 @@ class OwnStore(unittest.TestCase):
         with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "evil.example.com"}):
             with self.assertRaises(store.StoreError):
                 store.search("serum", post=lambda q, v: {})
+
+
+class ProfileIsolation(unittest.TestCase):
+    def setUp(self):
+        from helpers import ROOT
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.scope = {}
+        self.secret = mock.Mock(side_effect=lambda name, default=None: self.scope.get(name, default))
+        secret_module = types.ModuleType("agent.secret_scope")
+        secret_module.get_secret = self.secret
+        self.home = Path(self.tmp.name) / "active-profile"
+        home_module = types.ModuleType("hermes_constants")
+        home_module.get_hermes_home = lambda: self.home
+        modules = {"agent": types.ModuleType("agent"), "agent.secret_scope": secret_module,
+                   "hermes_constants": home_module}
+        patcher = mock.patch.dict(sys.modules, modules)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        for name in ("iris_store", "iris_watchlist"):
+            spec = importlib.util.spec_from_file_location(f"scoped_{name}", ROOT / "plugins" / "iris" / f"{name}.py")
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            setattr(self, name, module)
+
+    def test_missing_scoped_credentials_cannot_borrow_process_values(self):
+        other_profile = {"SHOPIFY_STORE": "other.myshopify.com", "SHOPIFY_ADMIN_TOKEN": "other-token",
+                         "SHOPIFY_CLIENT_ID": "other-id", "SHOPIFY_CLIENT_SECRET": "other-secret"}
+        with mock.patch.dict(os.environ, other_profile):
+            with self.assertRaises(self.iris_store.StoreError):
+                self.iris_store._store()
+            with self.assertRaises(self.iris_store.StoreError):
+                self.iris_store._token("active.myshopify.com")
+            self.scope.update({name: "" for name in other_profile})
+            with self.assertRaises(self.iris_store.StoreError):
+                self.iris_store._store()
+            with self.assertRaises(self.iris_store.StoreError):
+                self.iris_store._token("active.myshopify.com")
+
+    def test_store_token_and_api_version_follow_each_request_scope(self):
+        response = mock.MagicMock()
+        response.__enter__.return_value.read.return_value = b'{"data": {"shop": {"name": "Scoped"}}}'
+        with mock.patch.object(self.iris_store.urllib.request, "urlopen", return_value=response) as fetch:
+            for name, version in (("first", "2026-07"), ("second", "2026-10")):
+                self.scope.update({"SHOPIFY_STORE": f"{name}.myshopify.com", "SHOPIFY_ADMIN_TOKEN": name,
+                                   "SHOPIFY_API_VERSION": version})
+                self.iris_store._graphql("query { shop { name } }", {})
+                request = fetch.call_args.args[0]
+                self.assertEqual(request.full_url, f"https://{name}.myshopify.com/admin/api/{version}/graphql.json")
+                self.assertEqual(request.get_header("X-shopify-access-token"), name)
+
+    def test_data_and_token_cache_use_context_home_over_process_home(self):
+        with mock.patch.dict(os.environ, {"HERMES_HOME": "other-profile", "IRIS_DATA_DIR": "other-data"}):
+            self.assertEqual(self.iris_watchlist.default_path(), self.home / "iris" / "iris.db")
+            self.assertEqual(self.iris_store._cache_path("active.myshopify.com"),
+                             self.home / "iris" / ".shopify-token-active.myshopify.com.json")
+
+    def test_data_override_is_profile_scoped(self):
+        scoped_data = Path(self.tmp.name) / "custom-data"
+        self.scope["IRIS_DATA_DIR"] = str(scoped_data)
+        with mock.patch.dict(os.environ, {"IRIS_DATA_DIR": "other-data"}):
+            self.assertEqual(self.iris_watchlist.default_path(), scoped_data / "iris.db")
+            self.assertEqual(self.iris_store._cache_path("active.myshopify.com"),
+                             scoped_data / ".shopify-token-active.myshopify.com.json")
+
+    def test_unscoped_gateway_error_is_not_replaced_with_process_values(self):
+        self.secret.side_effect = RuntimeError("No profile scope installed")
+        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "other.myshopify.com", "IRIS_DATA_DIR": "other-data"}):
+            with self.assertRaisesRegex(RuntimeError, "No profile scope"):
+                self.iris_store._store()
+            with self.assertRaisesRegex(RuntimeError, "No profile scope"):
+                self.iris_watchlist.default_path()
+
+    def test_standalone_native_resolver_can_read_process_environment(self):
+        self.secret.side_effect = os.environ.get
+        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "standalone.myshopify.com",
+                                          "SHOPIFY_ADMIN_TOKEN": "standalone-token"}):
+            self.assertEqual(self.iris_store._store(), "standalone.myshopify.com")
+            self.assertEqual(self.iris_store._token("standalone.myshopify.com"), "standalone-token")
 
 
 if __name__ == "__main__":

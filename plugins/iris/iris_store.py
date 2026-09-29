@@ -15,7 +15,12 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-API_VERSION = os.environ.get("SHOPIFY_API_VERSION", "2026-07")
+try:
+    from agent.secret_scope import get_secret as _profile_value
+except ImportError:  # standalone scripts/tests, or Hermes before profile scopes
+    _profile_value = os.environ.get
+
+API_VERSION = "2026-07"
 STORE_RE = re.compile(r"^[a-z0-9][a-z0-9-]*\.myshopify\.com$")
 
 CATALOG_QUERY = """
@@ -50,7 +55,7 @@ class StoreError(Exception):
 
 
 def _store() -> str:
-    store = os.environ.get("SHOPIFY_STORE", "").strip().lower()
+    store = _profile_value("SHOPIFY_STORE", "").strip().lower()
     store = re.sub(r"^https?://", "", store).split("/")[0]
     if not STORE_RE.match(store):
         raise StoreError("The store is not set up yet (SHOPIFY_STORE must be the store's myshopify.com address).")
@@ -58,7 +63,7 @@ def _store() -> str:
 
 
 def _cache_path(store: str) -> Path:
-    base = os.environ.get("IRIS_DATA_DIR")
+    base = _profile_value("IRIS_DATA_DIR")
     if not base:
         try:
             from hermes_constants import get_hermes_home
@@ -71,11 +76,11 @@ def _cache_path(store: str) -> Path:
 
 
 def _token(store: str) -> str:
-    static = os.environ.get("SHOPIFY_ADMIN_TOKEN", "").strip()
+    static = _profile_value("SHOPIFY_ADMIN_TOKEN", "").strip()
     if static:
         return static
-    client_id = os.environ.get("SHOPIFY_CLIENT_ID", "").strip()
-    secret = os.environ.get("SHOPIFY_CLIENT_SECRET", "").strip()
+    client_id = _profile_value("SHOPIFY_CLIENT_ID", "").strip()
+    secret = _profile_value("SHOPIFY_CLIENT_SECRET", "").strip()
     if not (client_id and secret):
         raise StoreError("The store connection is missing its app credentials.")
     cache = _cache_path(store)
@@ -106,8 +111,9 @@ def _graphql(query: str, variables: dict, post=None) -> dict:
     store = _store()
     if post is not None:
         return post(query, variables)
+    api_version = _profile_value("SHOPIFY_API_VERSION", API_VERSION)
     req = urllib.request.Request(
-        f"https://{store}/admin/api/{API_VERSION}/graphql.json",
+        f"https://{store}/admin/api/{api_version}/graphql.json",
         data=json.dumps({"query": query, "variables": variables}).encode(),
         headers={"Content-Type": "application/json", "X-Shopify-Access-Token": _token(store)})
     try:

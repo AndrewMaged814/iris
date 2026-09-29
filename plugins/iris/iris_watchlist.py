@@ -11,6 +11,11 @@ import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+try:
+    from agent.secret_scope import get_secret as _profile_value
+except ImportError:  # standalone scripts/tests, or Hermes before profile scopes
+    _profile_value = os.environ.get
+
 KEEP_SNAPSHOTS = 30
 MAX_STORES = 20
 
@@ -36,15 +41,14 @@ def now() -> str:
 
 
 def default_path() -> Path:
-    if os.environ.get("IRIS_DATA_DIR"):
-        return Path(os.environ["IRIS_DATA_DIR"]) / "iris.db"
-    home = os.environ.get("HERMES_HOME")
-    if not home:
-        try:
-            from hermes_constants import get_hermes_home
-            home = str(get_hermes_home())
-        except ImportError:
-            home = str(Path.home() / ".hermes")
+    base = _profile_value("IRIS_DATA_DIR")
+    if base:
+        return Path(base) / "iris.db"
+    try:
+        from hermes_constants import get_hermes_home
+        home = get_hermes_home()
+    except ImportError:
+        home = os.environ.get("HERMES_HOME") or str(Path.home() / ".hermes")
     return Path(home) / "iris" / "iris.db"
 
 
