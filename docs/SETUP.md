@@ -25,8 +25,8 @@ Never force-install the blank template over a configured profile.
 The doctor needs Hermes' Python, including its `python-dotenv` dependency, to read quoted `.env` values
 correctly. Store credentials and data paths use Hermes' native profile scope in the shared gateway.
 
-The final host already has the daily and weekly jobs prepared in a paused state. After configuring
-Telegram and tapping Start, use `hermes -p iris cron list --all` and resume those two jobs with
-`hermes -p iris cron resume <job-id>`. Do not run `setup_jobs.sh` again, which would create duplicates.
+The final host's Telegram connection is verified and its daily and weekly jobs are already active.
+Check them with `hermes -p iris cron list --all`. Do not run `setup_jobs.sh` again, which would create
+duplicates. If a job is paused for maintenance, resume it with `hermes -p iris cron resume <job-id>`.
 
 Iris's data lives in `<profile>/iris/iris.db`. Delete that file to start the watchlist over.

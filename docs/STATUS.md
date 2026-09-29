@@ -17,8 +17,9 @@
 - The own-store reader returned Mira Nile's catalog (15 active products).
 - Telegram resolves exactly the four Iris tools, web search, vision, memory and skill reads.
   Scheduled runs resolve only the four Iris tools and skill reads; no terminal or store-write tools.
-- Hermes' safe web client is importable. Telegram connection and owner chat tests remain pending.
-- Daily (08:00 Cairo) and Sunday (10:00 Cairo) jobs are prepared and paused until Telegram is connected.
+- Hermes' safe web client is importable. Telegram is connected to IrisMarketWatcherBot; an owner message
+  and Luna reply are recorded. Full chat tests remain pending.
+- Daily (08:00 Cairo) and Sunday (10:00 Cairo) jobs are active. The watchlist is empty until onboarding.
 
 ## Remaining live checks
 
