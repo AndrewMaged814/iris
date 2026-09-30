@@ -1,32 +1,85 @@
-# Setting up Iris (operator)
+# Connect your store to Iris
 
-The host already runs Hermes (pinned commit `c1488ac`). Background notes from the first prototype:
-`docs/research/OPERATOR_SETUP.md` and `docs/research/SHOPIFY_DEV_APP.md`.
+Set up one Hermes profile for one store owner, then talk to Iris in Telegram.
 
-1. **Create the profile** `iris` and install this repo as its distribution (SOUL, config, skills, plugins,
-   scripts). Choose the model: `hermes -p iris setup`. Set a fallback provider too.
-2. **Fill the profile's `.env`** from `.env.EXAMPLE`: bot token, the owner's Telegram ID (only this ID may
-   talk to Iris), the store's `myshopify.com` address and the Shopify app credentials (`read_products` only).
-3. **Check it:** `python3 tools/iris_doctor.py --profile-home ~/.hermes/profiles/iris --live`, using
-   Hermes' Python so the safe web client is found.
-4. **Check the gateway mode.** This host's default gateway serves every profile and notices profile changes
-   automatically. Do not install a separate Iris gateway. After connecting Telegram, check
-   `hermes -p iris gateway status`; restart the shared gateway only if the plugin has not loaded.
-5. **First chat:** the owner taps Start. Iris reads the store, suggests competitors, the owner approves.
-6. **Create the scheduled jobs** once: `OWNER_CHAT_ID=<id> scripts/setup_jobs.sh`
-   For the demo, use a short schedule: `DAILY_SCHEDULE="every 10m" OWNER_CHAT_ID=<id> scripts/setup_jobs.sh`.
-7. `hermes -p iris cron list` should show `iris-daily-check` and `iris-weekly-brief`.
+## What you need
 
-When replacing a deleted profile on this Hermes revision, create its empty home first:
-`hermes profile create iris --no-skills --no-alias`, then install with `--force` before configuring
-credentials or the model. Direct distribution installation does not clear the deleted-profile marker.
-Never force-install the blank template over a configured profile.
+- [Hermes](https://github.com/NousResearch/hermes-agent) with profile distributions and a model provider.
+- A Telegram bot token and the owner's numeric Telegram ID.
+- A Shopify app installed on the store, with **`read_products`** access.
+- Access to this repository. Iris is currently private.
 
-The doctor needs Hermes' Python, including its `python-dotenv` dependency, to read quoted `.env` values
-correctly. Store credentials and data paths use Hermes' native profile scope in the shared gateway.
+The tested installation uses Hermes commit `c1488ac` and Luna through Azure Foundry.
+The distribution lets you select your own provider; model settings and credentials belong on the host.
 
-The final host's Telegram connection is verified and its daily and weekly jobs are already active.
-Check them with `hermes -p iris cron list --all`. Do not run `setup_jobs.sh` again, which would create
-duplicates. If a job is paused for maintenance, resume it with `hermes -p iris cron resume <job-id>`.
+## 1. Install a fresh profile
 
-Iris's data lives in `<profile>/iris/iris.db`. Delete that file to start the watchlist over.
+```sh
+git clone https://github.com/AndrewMaged814/iris.git
+cd iris
+hermes profile install . --name iris
+hermes -p iris setup
+```
+
+Choose your model and configure Telegram through Hermes. Keep the bot token private.
+If Iris is already installed, use the verification steps below rather than reinstalling.
+
+## 2. Connect Shopify and authorize the owner
+
+Use [`.env.EXAMPLE`](../.env.EXAMPLE) as the checklist for the profile's `.env`:
+
+| Setting | Value |
+| --- | --- |
+| `TELEGRAM_BOT_TOKEN` | The bot token from BotFather |
+| `TELEGRAM_ALLOWED_USERS` | The owner's numeric Telegram ID |
+| `SHOPIFY_STORE` | The store's `your-store.myshopify.com` address |
+| `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` | Installed Shopify app credentials |
+| `SHOPIFY_ADMIN_TOKEN` | Alternative to the client-credential pair |
+
+Never commit real credentials. This version uses operator-configured product access;
+a merchant OAuth onboarding service is not included. [Shopify background](research/SHOPIFY_DEV_APP.md).
+
+## 3. Verify the connection
+
+From the repository, use Hermes's Python environment:
+
+```sh
+python tools/iris_doctor.py --profile-home ~/.hermes/profiles/iris --live
+hermes -p iris gateway status
+```
+
+The doctor needs Hermes's `python-dotenv` and safe web client. Verify the chosen model with an
+actual Iris reply. Open the bot, tap **Start**, then ask: **“What products do I sell?”**
+Iris should read the connected catalog. Ask her to suggest competitors and approve the ones to watch.
+
+Gateway ownership depends on your Hermes setup. The tested host uses one shared gateway for
+all profiles; it does not need a separate Iris service. Use Hermes's native gateway management.
+
+## 4. Enable daily checks and the weekly brief
+
+Run this **once**, replacing the example number with the authorized owner's Telegram ID:
+
+```sh
+OWNER_CHAT_ID=123456789 bash scripts/setup_jobs.sh
+hermes -p iris cron list --all
+```
+
+Expect `iris-daily-check` at **08:00** and `iris-weekly-brief` on **Sunday at 10:00**, Cairo time.
+The setup enables native delivery mirroring so the owner's reply can refer to the report.
+Daily catalog checks do not automatically detect every page-only promotion.
+
+## Updating an existing Iris
+
+- Preserve its model/provider configuration, `.env`, `memories/`, `state.db` and `iris/iris.db`.
+- Apply reviewed changes to distribution-owned runtime files. Do not force-install the blank
+  template over a configured profile: it can replace `config.yaml`.
+- Verify the doctor, model reply and tool inventory; gracefully reload the gateway when needed.
+- Existing conversations can retain frozen instructions and earlier response patterns. If a
+  fresh session is needed, use Hermes's native session reset; retain the earlier transcript and memory.
+- Check the existing jobs. Rerunning `setup_jobs.sh` creates duplicates.
+
+When reusing a previously deleted profile name on the tested Hermes revision, create its empty
+home first with `hermes profile create iris --no-skills --no-alias`. Installation with `--force`
+is only for that empty profile, before configuring credentials or the model.
+
+[Try the demo cases →](DEMO.md) · [Current deployment](STATUS.md) · [Testing](TESTING.md)

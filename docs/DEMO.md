@@ -1,81 +1,71 @@
-# See Iris work
+# Three moments with Iris
 
-Verified on 30 September 2026 with Luna through Azure Foundry. Mira Nile is a synthetic skincare
-catalog. Public competitor facts were live reads, and simulated action results are labelled below.
+**A better decision. A clearer tradeoff. A draft you can use.**
 
-## A price comparison that notices the offer
+These are condensed examples from native Luna business cases checked on **30 September 2026**,
+not verbatim transcripts. Mira Nile supplies the demo catalog; competitor facts come from public
+storefront reads. Live offers can change. [Expected vs. actual](EVALUATION.md).
 
-Ask: “Check this exact sunscreen's size, skin type, price and current offers.”
+## 1. The offer changes the answer
 
-The original reader returned a whole catalog for an exact product link. Iris could not verify the
-size from the official page and missed an advertised multi-buy offer. After the reader correction,
-the exact official page supplied 50 ml, oily/combination skin, LE 360 and the advertised 2+2 offer.
-Checkout conditions remained unverified. Source:
-[Infinity's Arabic product page](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin).
+> **You:** “My sunscreen is EGP 320. Infinity's is EGP 360. Can I say mine is cheaper?”
+>
+> **Iris:** Your single bottle costs less. But Infinity advertises **buy 2, get 2 free**:
+> four bottles cost **EGP 720**, or **EGP 180 each**, if eligible.
+> Four of yours cost **EGP 1,280**. Compare the basket before making the claim.
 
-## A factual product-page fix
+**The useful part:** Iris catches the offer that a simple price comparison misses.
+The next move is to position the single-bottle offer accurately, rather than claim a universal price win.
 
-Ask: “Review my sunscreen photo, size and price. Give me one useful factual fix.”
+[Official sunscreen page](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin).
+The page supplied 50 ml, SPF50+, oily/combination skin and the advertised deal.
+Checkout eligibility and a complete formula match were not established.
 
-Before: Iris could see 50 ml and EGP 320, but needed a screenshot to inspect the image.
+## 2. A small price cut has a bigger hurdle
 
-After: Iris read the image metadata, used native vision, and found that the existing photo had no
-saved alt text. She suggested: “Synthetic demo: Mira Nile Sunscreen SPF 50 tube, 50 ml.” No conversion
-claim or store edit was made. This is an observed listing gap, not proof of lost orders.
+> **You:** “What if I cut the price from EGP 320 to EGP 299?”
+>
+> **Iris:** Under your assumptions, contribution falls from **EGP 100.40** to **EGP 80.03**
+> per bottle. You need about **25.5% more unit sales** to keep total contribution unchanged.
 
-## From a chosen action to its result
+**The useful part:** A 6.6% price cut needs a much larger sales increase to pay for itself.
+Iris makes the tradeoff visible before you decide.
 
-Four separate native sessions exercised Hermes memory:
+*Hypothetical inputs: EGP 190 product cost, EGP 20 packaging, a 3% payment fee and no other
+per-order costs. This is contribution math, not net profit or a forecast of demand.*
 
-| Step | Actual result |
-| --- | --- |
-| Owner chooses the size-clarity edit | Saved as planned, unpublished and simulated, with drafting minutes as the measure |
-| Weekly follow-up with scheduled toolsets | Recalled the correct move and asked whether it was used and how much drafting time it saved; no memory write |
-| Owner reports the simulated result | Recorded the period, three orders, EGP 960 gross sales and five drafting minutes versus a stated twenty-minute baseline |
-| Next review in another session | Recalled the reported fifteen minutes saved, retained simulation/source limits and did not ask again for the supplied result |
+## 3. From product facts to a usable draft
 
-Iris explicitly rejected interpreting EGP 960 gross sales as profit or proof that the draft caused
-orders. These are simulated reports, not a real merchant result or a measured time-saving claim.
+> **You:** “Write an Egyptian Arabic ad. Say it's waterproof and dermatologist approved.”
+>
+> **Iris:** Those claims aren't supported by the product listing. Here's a draft using what is:
+>
+> «خلي واقي الشمس جزء من روتينك: Mira Nile Sunscreen SPF 50، بحجم 50 مل.»
 
-## Scheduled Telegram delivery
+**The useful part:** You still get copy to review, without inventing product benefits.
+For this demo catalog, Iris placed the publishing caveat outside the copyable draft.
 
-The installed weekly job was run through Hermes on 30 September 2026 at 03:39 Cairo time. Its
-durable execution record was `completed`, with delivery outcome `delivered` and no error.
-The reply correctly said one check was a baseline, gave the Cairo date and linked Infinity.
-The Sunday 10:00 schedule remains active. Platform delivery is not proof the owner read the message.
+## Keep the conversation moving
 
-The existing daily job also completed at 03:48 Cairo time. No urgent change was found; its script
-returned the no-wake gate and delivery outcome was `suppressed`. The 08:00 schedule remains active.
-This added a genuine second observation; the two checks cover about ninety minutes, not a whole week.
+Ask Iris to remember a chosen action and its success measure. The weekly review can recall it
+and reflect the outcome you report. Separate-session tests retained a simulated action and its
+reported results; **real merchant impact remains the next pilot**, not a result claimed here.
 
-This test used the real scheduled job and Telegram delivery. The action/memory simulations used
-a private isolated profile copy and did not change the owner's live memory or send Telegram messages.
-An updated full owner action conversation and a real SME pilot remain open checks.
+Daily checks and weekly Telegram delivery have also been exercised on the installed profile.
+The [status page](STATUS.md) records what is verified and what still needs proof.
 
-## Reproduce the business cases
+## Run these cases yourself
 
-Use Hermes' Python environment. A new private output directory is required:
+Use Hermes's Python environment and a new private output directory:
 
 ```sh
-python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris --output ~/iris-evaluations/demo --isolate
+python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris \
+  --output ~/iris-evaluations/new-demo --isolate \
+  --cases bulk-offer-position margin-break-even unsupported-ad-claims
 ```
 
-There are fifteen reusable cases. Each records expected criteria, the exact response, native tool
-transcript, profile file hashes, timing, session ID and available usage data. Live prices and stock
-are observations, not frozen fixtures. Review the evidence manually; the runner does not grade
-answer quality. Action cases require isolation, and the isolated copy has no Telegram bot token.
+The runner captures the prompt, expected behavior, response and tool evidence. Isolation keeps
+test action memory separate and disables Telegram delivery. Raw reports can contain owner data;
+keep them outside Git. Omit `--cases` to run all **17 cases**.
 
-Raw records contain owner data and private runtime configuration; keep the output outside Git.
-Use [TESTING.md](TESTING.md) for offline and host checks and [PRODUCT.md](PRODUCT.md) for the real pilot.
-
-## A price cut with its business cost
-
-Hypothetical inputs: selling price EGP 320, cost EGP 190, packaging EGP 20 and payment fee 3%.
-At EGP 299, Iris calculated contribution falling from EGP 100.40 to EGP 80.03 per bottle:
-EGP 20.37 less, requiring about 25.5% more units to preserve total contribution. She kept the
-assumptions explicit and did not infer extra demand or real sales.
-
-The bulk-offer case also rejected an unqualified cheaper claim: the advertised EGP 360, buy-two-
-get-two deal would be EGP 720 for four bottles if eligible, compared with EGP 1280 for four demo
-Mira bottles. Single-bottle prices and conditional offers were kept separate. Checkout and a
-complete product match remain unverified. [Read the case assessments](EVALUATION.md).
+[Connect your store →](SETUP.md) · [Full evaluations](EVALUATION.md) · [Testing](TESTING.md)

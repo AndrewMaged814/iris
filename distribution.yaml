@@ -1,6 +1,6 @@
 name: iris
 version: 1.0.0
-description: "Iris — a market scout for one small business, on Telegram"
+description: "Your AI growth scout. Iris watches your market, spots opportunities for your store, and brings your next move to Telegram."
 author: "Andrew Maged"
 hermes_requires: ">=0.21.3"
 repository: "https://github.com/AndrewMaged814/iris"
