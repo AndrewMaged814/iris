@@ -5,7 +5,7 @@
 #   DAILY_SCHEDULE  default "0 8 * * *"   (for the demo, e.g. "every 10m")
 #   WEEKLY_SCHEDULE default "0 10 * * 0"  (Sunday 10:00, profile time zone)
 set -euo pipefail
-: "${OWNER_CHAT_ID:?Set OWNER_CHAT_ID to the owner's Telegram user ID}"
+: "${OWNER_CHAT_ID:?Set OWNER_CHAT_ID to the Telegram user ID of the owner}"
 PROFILE="${IRIS_PROFILE:-iris}"
 HERMES_SOURCE="${HERMES_SOURCE:-${HOME}/.hermes/hermes-agent}"
 DAILY="${DAILY_SCHEDULE:-0 8 * * *}"
