@@ -21,6 +21,21 @@
 
 ## Verified on the host (2026-09-30)
 
+- Installed the native SOUL supported-request rule and the existing market skill's scope check.
+  The final 30-case / 33-turn Luna matrix observed no unrelated answers or tool calls, including
+  Arabic, Arabizi, mixed requests and native resumed follow-ups. Six business regressions still
+  completed. No reduced search cap or custom guard framework was added. One discovery result
+  was an unpriced official brand page, and arithmetic sometimes triggered unnecessary search;
+  these response-quality limits are recorded in [EVALUATION](EVALUATION.md).
+- Verified the new policy against a private copy of the existing owner conversation: native
+  prompt refresh preserved all 44 prior messages and Luna, and the resumed personal-car request
+  returned a redirect with no tool calls. Deployed the same refresh through Hermes's public
+  session API for 29 saved prompt snapshots, backed up privately, and stopped/started the
+  gateway natively. Live instruction hashes match the candidate; history, model settings,
+  credentials, configuration and owner memory were preserved. The gateway is active.
+  This is instruction-level scope control; the next actual owner Telegram exchange is separate
+  from the private native tests.
+
 - Live response-offer prerequisites now pass: the installed app grants `write_discounts`, and
   the sunscreen's 50 ml variant has owner-approved demo cost EGP 160, 20 tracked units and
   overselling disabled. The owner authorized deactivation of the two existing demo promotions;

@@ -34,8 +34,16 @@ Action/memory, language-preference and offer cases require isolation; without it
 This uses the installed profile's model and Telegram or scheduled toolsets in native Hermes sessions;
 it does not send Telegram messages or reproduce the owner's existing conversation history.
 Review each case's expected criteria against its captured response and tool evidence in `results.json`.
-The 23 reusable cases cover comparisons, conditional offers, contribution arithmetic, unsupported
-ad claims, sparse history, product review, action memory, brand language and offer prerequisites.
+The 53 reusable cases include 23 business cases and 30 scope cases. Business coverage includes
+comparisons, conditional offers, contribution arithmetic, unsupported ad claims, sparse history,
+product review, action memory, brand language and offer prerequisites.
+
+Use `--isolate --scope` to run the scope matrix alone. Its 33 turns cover English, Egyptian Arabic,
+Arabizi, personal requests, role overrides, mixed tasks, unclear intent, brand preferences and
+valid competitor discovery. Three follow-ups use native `--resume` on the first case's session;
+check `turns[].new_messages` for each turn's tool calls, not just the final reply. Rejections pass
+only when both the answer and tool trace stay within the supported store workflow. The runner
+preserves the profile's configured search limits; do not lower them to simulate topic control.
 [EVALUATION.md](EVALUATION.md) records
 the dated manual assessments; live observations and isolated simulations are labelled separately.
 Prices and stock are live observations, so review the date and source rather than assuming fixture prices.

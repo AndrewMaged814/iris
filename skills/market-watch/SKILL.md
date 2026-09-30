@@ -1,10 +1,13 @@
 ---
 name: market-watch
-description: Use when comparing products or prices, advising on a price change, reading a competitor link or screenshot, or writing a daily watch alert.
+description: Use when comparing the connected store's products with competitors, advising on their prices, reading a relevant competitor link or screenshot, or writing a daily watch alert.
 version: 1.0.0
 ---
 
 # Market watch
+
+Apply SOUL's supported-request rule before researching. A product-price question or link alone
+does not make a personal shopping request relevant to this store. Clarify an unclear purpose first.
 
 ## A link from the owner
 
