@@ -14,3 +14,9 @@ Create one finished original logo mascot for IRIS, an AI business scout, as a sq
 ```
 
 The asset is covered by the repository's [license notice](../LICENSE).
+
+## Architecture diagram
+
+[`architecture.png`](architecture.png) displays the architecture in GitHub clients that do not
+render Mermaid. Its editable source is [`architecture.svg`](architecture.svg).
+Render the SVG with Sharp at 2× resolution to update the PNG.

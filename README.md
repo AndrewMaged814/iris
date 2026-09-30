@@ -28,10 +28,6 @@ to **your products**, helps you weigh the decision, and drafts the next step whe
 >
 > **The decision:** A lower single-bottle price doesn't support an unqualified “cheaper” claim.
 
-*Condensed from tested business cases, 30 September 2026. Mira Nile is a demo catalog;
-competitor offers are dated observations, with checkout eligibility and full product equivalence
-unverified. [See the demo and sources →](docs/DEMO.md)*
-
 ## What you can do with Iris
 
 | Bring Iris a question | Get something you can use |
@@ -63,18 +59,7 @@ Then connect your catalog and Telegram, and enable the daily and weekly checks.
 
 Iris supplies the business judgment, skills and tools. Hermes supplies the agent runtime.
 
-```mermaid
-flowchart TD
-    You["You · Telegram"] <--> Hermes["Hermes · model, memory, vision & delivery"]
-    Hermes <--> Iris["Iris · business skills + four tools"]
-    Hermes -->|Scheduled runs| Jobs["Daily check / weekly brief"]
-    Iris --> Shopify["Your Shopify catalog"]
-    Iris --> Market["Competitor storefronts"]
-    Jobs --> Market
-    Jobs <--> Evidence[("Snapshots & changes · SQLite")]
-    Iris <--> Evidence
-    Jobs -->|Evidence for alerts & briefs| Hermes
-```
+![Iris architecture: Telegram connects to Hermes, which runs Iris and scheduled checks; Iris reads Shopify, competitor storefronts and saved market evidence.](assets/architecture.png)
 
 The four tools read your catalog, inspect competitors, manage the watchlist and retrieve changes.
 Public readers support Shopify, WooCommerce and structured product pages.

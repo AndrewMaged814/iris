@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="1020" viewBox="0 0 760 1020" role="img" aria-labelledby="title desc">
+  <title id="title">Iris architecture</title>
+  <desc id="desc">Telegram connects to Hermes. Hermes runs Iris and scheduled daily checks and weekly briefs. Iris reads Shopify and competitor storefronts. Iris and scheduled checks use saved market evidence in SQLite. Scheduled results return through Hermes.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b9b1d1"/></marker>
+    <style>
+      text { font-family: "Segoe UI", Arial, sans-serif; text-anchor: middle; fill: #f7f4ff; }
+      .heading { font-size: 28px; font-weight: 700; }
+      .detail { font-size: 23px; fill: #c5bed5; }
+      .label { font-size: 20px; fill: #c5bed5; }
+      .node { fill: #211c30; stroke: #655184; stroke-width: 2; }
+      .edge { fill: none; stroke: #b9b1d1; stroke-width: 2.5; marker-end: url(#arrow); }
+      .both { marker-start: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="760" height="1020" rx="24" fill="#100e19"/>
+
+  <g class="edge">
+    <path class="both" d="M 380 124 V 180"/>
+    <path class="both" d="M 270 302 C 270 355 191 360 191 416"/>
+    <path d="M 490 302 C 490 355 569 360 569 416"/>
+    <path d="M 724 468 H 742 V 242 H 632"/>
+    <path d="M 135 534 V 692"/>
+    <path d="M 272 534 C 272 610 418 610 418 692"/>
+    <path d="M 568 534 V 692"/>
+    <path class="both" d="M 36 475 H 14 V 926 H 250"/>
+    <path class="both" d="M 724 504 H 742 V 926 H 690"/>
+  </g>
+  <text class="label" x="406" y="363">Scheduled runs</text>
+  <text class="label" x="660" y="334">Alerts</text>
+  <text class="label" x="660" y="360">+ briefs</text>
+
+  <rect class="node" x="230" y="40" width="300" height="84" rx="16"/>
+  <text class="heading" x="380" y="93">You · Telegram</text>
+
+  <rect class="node" x="128" y="180" width="504" height="122" rx="16"/>
+  <text class="heading" x="380" y="225">Hermes</text>
+  <text class="detail" x="380" y="263">Model · memory · vision · delivery</text>
+
+  <rect class="node" x="36" y="416" width="310" height="118" rx="16"/>
+  <text class="heading" x="191" y="460">Iris</text>
+  <text class="detail" x="191" y="494">Business skills + four tools</text>
+
+  <rect class="node" x="414" y="416" width="310" height="118" rx="16"/>
+  <text class="heading" x="569" y="459">Scheduled checks</text>
+  <text class="detail" x="569" y="494">Daily watch · weekly brief</text>
+
+  <rect class="node" x="28" y="692" width="208" height="116" rx="16"/>
+  <text class="heading" x="132" y="737">Shopify</text>
+  <text class="detail" x="132" y="771">Your catalog</text>
+
+  <rect class="node" x="290" y="692" width="442" height="116" rx="16"/>
+  <text class="heading" x="511" y="737">Competitor storefronts</text>
+  <text class="detail" x="511" y="771">Prices · offers · availability</text>
+
+  <rect class="node" x="250" y="872" width="440" height="108" rx="16"/>
+  <text class="heading" x="470" y="916">Saved market evidence</text>
+  <text class="detail" x="470" y="950">Snapshots + changes · SQLite</text>
+</svg>
