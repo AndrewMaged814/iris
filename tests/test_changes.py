@@ -49,8 +49,23 @@ class Summary(unittest.TestCase):
     def test_price_picture_by_type(self):
         s = summarize([p("a", 300), p("b", 500), p("c", 400, available=False), p("d", 90, product_type="Toner")])
         self.assertEqual(s["Serum"], {"count": 3, "price_min": 300, "price_median": 400, "price_max": 500,
-                                      "on_sale": 0, "out_of_stock": 1})
+                                      "currency": "EGP", "on_sale": 0, "out_of_stock": 1})
         self.assertEqual(list(s)[0], "Serum")  # biggest group first
+
+    def test_mixed_currency_prices_are_not_aggregated(self):
+        other = p("b", 10)
+        other["currency"] = "USD"
+        picture = summarize([p("a", 300), other])["Serum"]
+        self.assertIsNone(picture["currency"])
+        self.assertIsNone(picture["price_median"])
+        self.assertIsNone(picture["price_min"])
+
+    def test_unknown_currency_is_preserved(self):
+        unknown = p("a", 300)
+        unknown["currency"] = None
+        picture = summarize([unknown])["Serum"]
+        self.assertIsNone(picture["currency"])
+        self.assertEqual(picture["price_min"], 300)
 
 
 if __name__ == "__main__":

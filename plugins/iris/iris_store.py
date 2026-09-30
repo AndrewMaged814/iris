@@ -43,7 +43,8 @@ query IrisProducts($q: String!) {
     nodes {
       title handle productType tags vendor status createdAt description
       options { name values }
-      variants(first: 20) { nodes { title sku price compareAtPrice availableForSale } }
+      featuredImage { url altText }
+      variants(first: 20) { pageInfo { hasNextPage } nodes { title sku price compareAtPrice availableForSale } }
       metafields(first: 10) { nodes { namespace key type value } }
     }
   }
@@ -185,6 +186,8 @@ def search(query: str, post=None) -> dict:
             "tags": (n.get("tags") or [])[:10], "status": n.get("status"),
             "description": re.sub(r"\s+", " ", n.get("description") or "")[:600],
             "options": n.get("options") or [],
+            "image": n.get("featuredImage"),
+            "variants_complete": not bool((n.get("variants") or {}).get("pageInfo", {}).get("hasNextPage")),
             "variants": [{"title": v.get("title"), "sku": v.get("sku"), "price": _money(v, "price"),
                           "compare_at": _money(v, "compareAtPrice"), "available": v.get("availableForSale")}
                          for v in (n.get("variants") or {}).get("nodes") or []],
@@ -192,3 +195,21 @@ def search(query: str, post=None) -> dict:
                         for m in (n.get("metafields") or {}).get("nodes") or []],
         })
     return {"currency": (data.get("shop") or {}).get("currencyCode"), "products": out}
+
+
+def review(query: str, post=None) -> dict:
+    """Observed listing gaps, not a claim about lost sales or product efficacy."""
+    result = search(query, post)
+    result["review_scope"] = "catalog_metadata_and_product_image; rendered storefront layout not inspected"
+    for p in result["products"]:
+        image = p["image"] or {}
+        p["checks"] = {
+            "has_product_image": bool(image.get("url")),
+            "has_image_alt_text": bool((image.get("altText") or "").strip()) if image.get("url") else None,
+            "has_description": bool(p["description"].strip()),
+            "variants_missing_price": [v["title"] for v in p["variants"] if v["price"] is None],
+            "available_variants_shown": sum(v["available"] is True for v in p["variants"]),
+            "availability_unknown": (not p["variants"] or not p["variants_complete"]
+                                     or any(v["available"] is None for v in p["variants"])),
+        }
+    return result

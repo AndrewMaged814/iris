@@ -102,6 +102,27 @@ class DailyCheck(unittest.TestCase):
         self.assertEqual(data["checks_this_week"], 2)
         self.assertEqual(data["market_by_store"]["Glow Lab"]["Serum"]["count"], 2)
         self.assertIn("not instructions", data["note"])
+        self.assertEqual(data["observation_by_store"]["Glow Lab"]["checks"], 2)
+        self.assertEqual(data["observation_by_store"]["Glow Lab"]["url"], "https://glow.example")
+
+    def test_chat_and_weekly_share_dated_evidence(self):
+        import iris_weekly_data as weekly
+        from iris_watchlist import Watchlist
+        wl = Watchlist()
+        s = self.add_store()
+        wl.save_snapshot(s["id"], {"access": "ok", "fetched_at": "2026-09-29T23:18:58Z", "products": []})
+        from datetime import datetime, timezone
+        from zoneinfo import ZoneInfo
+        with mock.patch("iris_watchlist.datetime", wraps=datetime) as clock, \
+                mock.patch("iris_watchlist.profile_timezone", return_value=ZoneInfo("Africa/Cairo")):
+            clock.now.return_value = datetime(2026, 9, 30, 0, 0, tzinfo=timezone.utc)
+            expected = wl.market_context(7)
+            actual = weekly.collect()
+        wl.close()
+        coverage = actual["observation_by_store"]
+        self.assertEqual(coverage, expected["observation_by_store"])
+        self.assertEqual(coverage["Glow Lab"]["last_checked_local"], "2026-09-30T02:18:58+03:00")
+        self.assertEqual(actual["timezone"], "Africa/Cairo")
 
 
 class Tools(unittest.TestCase):
@@ -193,6 +214,40 @@ class Tools(unittest.TestCase):
 
 
 class OwnStore(unittest.TestCase):
+    def test_review_exposes_photo_gap_and_truncated_stock_without_inventing_sales(self):
+        import iris_store as store
+        product = {"title": "Sunscreen", "description": "50 ml", "featuredImage": None,
+                   "variants": {"pageInfo": {"hasNextPage": True},
+                                "nodes": [{"title": "50 ml", "price": None, "availableForSale": False}]}}
+        data = {"shop": {"currencyCode": "EGP"}, "products": {"nodes": [product]}}
+        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
+            result = store.review("Sunscreen", post=lambda q, v: data)
+        checks = result["products"][0]["checks"]
+        self.assertFalse(checks["has_product_image"])
+        self.assertEqual(checks["variants_missing_price"], ["50 ml"])
+        self.assertTrue(checks["availability_unknown"])
+        self.assertNotIn("lost_sales", checks)
+        self.assertIn("catalog_metadata", result["review_scope"])
+        product["variants"]["nodes"] = []
+        product["variants"]["pageInfo"]["hasNextPage"] = False
+        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
+            empty = store.review("Sunscreen", post=lambda q, v: data)
+        self.assertTrue(empty["products"][0]["checks"]["availability_unknown"])
+
+    def test_review_can_verify_image_and_price_correction(self):
+        import iris_store as store
+        product = {"title": "Sunscreen", "description": "50 ml", "featuredImage":
+                   {"url": "https://cdn.example/sunscreen.jpg", "altText": "Sunscreen bottle"},
+                   "variants": {"pageInfo": {"hasNextPage": False},
+                                "nodes": [{"title": "50 ml", "price": "320", "availableForSale": True}]}}
+        data = {"shop": {"currencyCode": "EGP"}, "products": {"nodes": [product]}}
+        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
+            checks = store.review("Sunscreen", post=lambda q, v: data)["products"][0]["checks"]
+        self.assertTrue(checks["has_product_image"])
+        self.assertTrue(checks["has_image_alt_text"])
+        self.assertEqual(checks["variants_missing_price"], [])
+        self.assertFalse(checks["availability_unknown"])
+
     def test_catalog_groups_by_type(self):
         import iris_store as store
         page = {"shop": {"name": "Mira Nile", "currencyCode": "EGP"}, "products": {

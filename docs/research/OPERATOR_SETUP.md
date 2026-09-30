@@ -1,5 +1,9 @@
 # Operator setup versus merchant onboarding
 
+Historical prototype investigation: the connection service and OAuth bridge described below are
+not included in the current Iris distribution. Use [the current operator guide](../SETUP.md)
+for the working one-store credential setup and [STATUS.md](../STATUS.md) for verified capabilities.
+
 The profile uses the native Hermes Telegram gateway. `hermes -p iris-production setup model` configures inference; `hermes -p iris-production setup gateway` configures the separate bot and owner authorization. Create the bot in Telegram through BotFather `/newbot`; enter its token privately in the host's native wizard. A new profile should not clone existing bot tokens or merchant credentials. Native messaging settings and required features must be checked against the installed Hermes revision, not inferred from current docs.
 
 After operator setup, preserve the live profile's model/provider settings and secrets during distribution updates. The repository's blank `model` is an installation template. Do not force-reinstall that template over a configured profile: the inspected installer replaces distribution-owned `config.yaml` when forced. Apply reviewed plugin/skill changes without replacing live model or gateway settings, and verify the resolved tool inventory afterward. A model name alone is insufficient; verify a real native model turn and the profile-specific connected platform status.

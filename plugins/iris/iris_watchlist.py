@@ -10,6 +10,7 @@ import os
 import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 try:
     from agent.secret_scope import get_secret as _profile_value
@@ -38,6 +39,19 @@ CREATE TABLE IF NOT EXISTS notes (
 
 def now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def profile_timezone():
+    """Use Hermes' profile configuration, with the distribution's Cairo default offline."""
+    try:
+        from hermes_cli.config import load_config
+        name = load_config().get("timezone") or "Africa/Cairo"
+    except ImportError:
+        name = "Africa/Cairo"
+    try:
+        return ZoneInfo(name)
+    except (ZoneInfoNotFoundError, ValueError):
+        return timezone.utc
 
 
 def default_path() -> Path:
@@ -120,6 +134,31 @@ class Watchlist:
                         "(SELECT id FROM snapshots WHERE store_id = ? ORDER BY id DESC LIMIT ?)",
                         (store_id, store_id, KEEP_SNAPSHOTS))
         self.db.commit()
+
+    def market_context(self, days: int = 7) -> dict:
+        """The same dated evidence for chat and scheduled briefs; never inferred currency."""
+        from iris_changes import summarize
+        zone = profile_timezone()
+        since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        coverage, market = {}, {}
+        for s in self.stores():
+            row = self.db.execute("SELECT COUNT(*) AS checks, MIN(taken_at) AS first_checked, "
+                                  "MAX(taken_at) AS last_checked FROM snapshots "
+                                  "WHERE store_id = ? AND access = 'ok' AND taken_at >= ?",
+                                  (s["id"], since)).fetchone()
+            evidence = {"url": s["url"], **dict(row)}
+            for key in ("first_checked", "last_checked"):
+                evidence[key + "_local"] = (datetime.fromisoformat(row[key].replace("Z", "+00:00"))
+                                             .astimezone(zone).isoformat()) if row[key] else None
+            last = self.db.execute("SELECT taken_at, products FROM snapshots WHERE store_id = ? "
+                                   "AND access = 'ok' ORDER BY id DESC LIMIT 1", (s["id"],)).fetchone()
+            evidence["snapshot_checked_local"] = (datetime.fromisoformat(last["taken_at"].replace("Z", "+00:00"))
+                                                   .astimezone(zone).isoformat()) if last else None
+            coverage[s["name"]] = evidence
+            if last:
+                market[s["name"]] = summarize(json.loads(last["products"]))
+        return {"observation_by_store": coverage, "market_by_store": market,
+                "timezone": str(zone), "generated_at_local": datetime.now(zone).isoformat()}
 
     # ---- signals
     def save_signals(self, store_id: int, signals: list[dict]) -> None:

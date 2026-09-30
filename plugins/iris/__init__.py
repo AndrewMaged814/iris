@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # modules are shared with the cron scripts
@@ -58,6 +57,8 @@ def _store_view(result: dict, focus: list[str] | None = None, sample: int = 20) 
 
 def my_store_tool(args: dict, **_) -> str:
     try:
+        if args.get("operation") == "review":
+            return _ok(store.review(args.get("query", "")))
         if args.get("operation") == "search":
             return _ok(store.search(args.get("query", "")))
         return _ok(store.catalog())
@@ -119,23 +120,12 @@ def market_changes_tool(args: dict, **_) -> str:
     wl = Watchlist()
     try:
         signals = wl.signals(days=days)
-        market, coverage = {}, {}
-        since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        for s in wl.stores():
-            observed = wl.db.execute("SELECT COUNT(*) AS checks, MIN(taken_at) AS first_checked, "
-                                     "MAX(taken_at) AS last_checked FROM snapshots "
-                                     "WHERE store_id = ? AND access = 'ok' AND taken_at >= ?",
-                                     (s["id"], since)).fetchone()
-            coverage[s["name"]] = dict(observed)
-            snap = wl.last_good_snapshot(s["id"])
-            if snap is not None:
-                market[s["name"]] = dict(list(changes.summarize(snap).items())[:5])
+        context = wl.market_context(days)
         counts: dict[str, int] = {}
         for sig in signals:
             counts[sig["kind"]] = counts.get(sig["kind"], 0) + 1
         return _ok({"period_days": days, "counts": counts, "signals": signals[-40:],
-                    "screenshot_notes": wl.notes(days), "market_by_store": market,
-                    "observation_by_store": coverage, "note": UNTRUSTED})
+                    "screenshot_notes": wl.notes(days), **context, "note": UNTRUSTED})
     finally:
         wl.close()
 
@@ -145,9 +135,10 @@ def market_changes_tool(args: dict, **_) -> str:
 SCHEMAS = {
     "my_store": {
         "description": "Read the owner's own Shopify store (read-only). 'summary' groups the active catalog by "
-                       "product type with price ranges; 'search' returns details for matching products.",
+                       "product type with price ranges; 'search' returns details; 'review' checks a product's "
+                       "images, description, variant prices and availability without editing it.",
         "parameters": {"type": "object", "properties": {
-            "operation": {"type": "string", "enum": ["summary", "search"]},
+            "operation": {"type": "string", "enum": ["summary", "search", "review"]},
             "query": {"type": "string", "description": "Product name, type, tag or SKU (for search)"}},
             "required": ["operation"], "additionalProperties": False}},
     "read_store": {

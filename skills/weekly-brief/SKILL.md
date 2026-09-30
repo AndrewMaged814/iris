@@ -1,6 +1,6 @@
 ---
 name: weekly-brief
-description: Use when the owner asks what changed this week, asks about market history, or when writing the Sunday weekly market brief.
+description: Use when the owner asks what changed this week, asks about market history or chosen-action follow-ups, or when writing the Sunday weekly market brief.
 version: 1.0.0
 ---
 
@@ -14,11 +14,26 @@ version: 1.0.0
 - Always call `my_store` `summary` to connect findings to the owner's own products.
 - Saved category price summaries may omit currency. Do not label them with the owner's currency
   or compare prices until the competitor's currency is confirmed.
+- Use each store's evidence URL and local check date. A saved snapshot is not a fresh read.
 - Check the observation coverage in `market_changes`. One snapshot establishes a baseline, not
   a quiet week. With limited history, say how many checks you have and that changes cannot yet
   be established. Keep today's listings separate from recorded changes.
   With fewer than two successful checks, stop after explaining the baseline and the next check;
-  a weekly change question doesn't need a current price ranking or a marketing move.
+  a weekly change question doesn't need a current price ranking or a marketing move. This does
+  not prevent the separate owner-confirmed action follow-up below.
+- Two or more checks cover their first-to-last interval, not automatically a whole week. State
+  that interval when it is shorter than the requested period; do not call the entire week quiet.
+
+## Follow up on the owner's action
+
+- Read owner-confirmed moves from Hermes memory and the previous weekly message. Review one due
+  action even when the market is quiet: was it used, and what happened to its agreed success measure?
+- Suggested moves aren't commitments. If there are no confirmed actions, don't invent a task.
+- Ask once; don't repeat an unanswered question from the previous weekly message unless the owner
+  updated the action. An unknown outcome is unknown, not zero sales or a failed campaign.
+- Reflect measured results briefly with their period and owner-reported source. Keep simulated
+  results explicit; never present gross sales as profit or attributed lift. Scheduled runs cannot
+  write memory, so the owner's chat reply is where action status and results are saved.
 
 ## Shape
 

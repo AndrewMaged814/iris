@@ -69,13 +69,18 @@ def summarize(products: list[dict]) -> dict:
         groups.setdefault((p.get("product_type") or "other").strip() or "other", []).append(p)
     out = {}
     for name, items in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+        priced = [p for p in items if p.get("price") is not None]
+        currencies = {p.get("currency") for p in priced}
         prices = sorted(p["price"] for p in items if p.get("price") is not None)
+        if len(currencies) > 1:
+            prices = []  # an aggregate across different/unknown currencies has no price meaning
         median = None
         if prices:
             mid = len(prices) // 2
             median = prices[mid] if len(prices) % 2 else round((prices[mid - 1] + prices[mid]) / 2, 2)
         out[name] = {
             "count": len(items),
+            "currency": next(iter(currencies)) if len(currencies) == 1 else None,
             "price_min": prices[0] if prices else None,
             "price_median": median,
             "price_max": prices[-1] if prices else None,
