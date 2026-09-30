@@ -22,7 +22,10 @@ See `references/voice.md` for examples.
 ## Turn market evidence into a response offer
 
 1. Start with a relevant competitor observation, its link and check date. Explain why it matters
-   for the owner's product. A discount is one possible response; keeping the current offer is valid.
+   for the owner's product. Call an attribute a match only when both listings confirm it;
+   category overlap alone does not establish matching size, skin type or formulation. State which
+   attributes are confirmed on each side and which remain unknown. A discount is one possible
+   response; keeping the current offer is valid.
 2. `my_store` `search` the product; resolve ambiguity with the owner. Use the returned exact
    variant ID internally, then `offer_context` to check price, Shopify unit cost, tracked stock,
    overselling policy and existing discounts. An availability flag is not a stock count.

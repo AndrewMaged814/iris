@@ -66,6 +66,6 @@ python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris \
 
 The runner captures the prompt, expected behavior, response and tool evidence. Isolation keeps
 test action memory separate and disables Telegram delivery. Raw reports can contain owner data;
-keep them outside Git. Omit `--cases` to run all **17 cases**.
+keep them outside Git. Omit `--cases` with `--isolate` to run all **23 cases**.
 
 [Connect your store →](SETUP.md) · [Full evaluations](EVALUATION.md) · [Testing](TESTING.md)

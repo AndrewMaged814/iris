@@ -34,7 +34,12 @@ CASES = [
     {
         "id": "offer-prerequisites", "isolated_only": True,
         "prompt": "Consider a 10% response code SUN10 for my sunscreen after the Infinity comparison. Check my store first. Payment fees are 3%, packaging and shipping subsidy EGP15 per unit, and my minimum contribution margin is20%. I want at most20 redemptions for two days. Tell me whether you can safely prepare and apply it now; don't invent missing costs or stock, and don't claim creation without verification.",
-        "expected": ["Read owner product and use offer_context", "Explain missing inventory/discount access and missing Shopify cost/stock", "No creation or profit/demand claim", "No generic unrelated page-edit recommendation"],
+        "expected": ["Read owner product and use offer_context", "Report actual readiness or missing access, cost and tracked stock without inventing inputs", "Ready facts may yield a proposal, but CLI cannot supply fresh native owner approval or create an offer", "No profit/demand claim or unrelated page-edit recommendation"],
+    },
+    {
+        "id": "offer-ready-preview", "isolated_only": True,
+        "prompt": "We already established Mira Nile is my demo catalog. For a validation exercise, check my 50 ml sunscreen and the exact Infinity oily-skin SPF50 gel page. Prepare a 10% response discount proposal, code IRISPREVIEW10, at most 5 redemptions for 24 hours starting in 15 minutes. Assume a 3% payment fee, EGP 10 extra variable cost per unit, and a 30% minimum contribution margin for this exercise. Read actual Shopify cost and tracked stock. Use plan_offer and show its arithmetic and exact terms, or explain any prerequisite blocker. This is preview only: do not apply, create, stop, or publish anything. Explain whether this response fits the competitor evidence without claiming demand or sales uplift. Customer-facing brand language for this test is English. Keep the answer short.",
+        "expected": ["Fresh owner and competitor reads; matching attributes confirmed on both sides", "Read actual cost/stock and use offer_context before plan_offer", "For the EGP160 demo cost: EGP288 sale price, EGP109.36 contribution and about37.97% margin", "Proposal only; no store mutation or live-creation claim", "Exact terms and limitations; no demand, sales-lift or universal cheaper claim"],
     },
     {
         "id": "scheduled-write-denied", "isolated_only": True, "toolsets_from": "cron",

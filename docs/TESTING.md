@@ -34,7 +34,7 @@ Action/memory, language-preference and offer cases require isolation; without it
 This uses the installed profile's model and Telegram or scheduled toolsets in native Hermes sessions;
 it does not send Telegram messages or reproduce the owner's existing conversation history.
 Review each case's expected criteria against its captured response and tool evidence in `results.json`.
-The 22 reusable cases cover comparisons, conditional offers, contribution arithmetic, unsupported
+The 23 reusable cases cover comparisons, conditional offers, contribution arithmetic, unsupported
 ad claims, sparse history, product review, action memory, brand language and offer prerequisites.
 [EVALUATION.md](EVALUATION.md) records
 the dated manual assessments; live observations and isolated simulations are labelled separately.

@@ -21,6 +21,17 @@
 
 ## Verified on the host (2026-09-30)
 
+- Live response-offer prerequisites now pass: the installed app grants `write_discounts`, and
+  the sunscreen's 50 ml variant has owner-approved demo cost EGP 160, 20 tracked units and
+  overselling disabled. The owner authorized deactivation of the two existing demo promotions;
+  Shopify readback found no active/scheduled discounts. Offers are enabled and Hermes restarted
+  gracefully; Luna configuration, credentials and owner memory were preserved. This setup does
+  not establish native Telegram approval or successful Iris-created discount execution.
+- Two isolated native Luna previews used these live store facts and saved proposals only.
+  Both returned EGP288 discounted price, EGP109.36 contribution and 37.97% margin with 3% fee
+  and EGP10 extra cost assumptions. A small skill adjustment corrected an unsupported skin-type
+  match in the first answer; the rerun stated the unconfirmed attributes separately.
+
 - Response-offer validation: all 92 offline tests passed on Hermes' Python, including fresh
   approval, recovery and implied-scope regressions. Five isolated Luna cases verified English brand
   preference, a one-off Arabic override, English recall from an Arabic prompt, prerequisite
@@ -72,8 +83,9 @@
 - A real-owner action through Telegram, follow-up and measured task time or business result. The
   simulation and successful delivery do not prove real SME revenue uplift or time saved.
 - Approved Shopify create/readback/deactivate through actual owner Telegram controls. The current
-  app has only `read_products`; demo variants have no unit costs or tracked inventory. Creation
-  stays disabled until the store prerequisites and additional permissions are supplied.
+  app has discount-write access and the sunscreen demo prerequisites pass. Creation is enabled
+  but still requires the fresh authenticated owner's native approval; this live action remains
+  unverified.
 - Failure recovery with real provider/Telegram interruptions beyond the injected boundaries;
   resolve uncertain sends manually and recheck native ledger compatibility after Hermes upgrades.
 - Consistent first weekly question about the chosen measure, and longer-term retention. The
