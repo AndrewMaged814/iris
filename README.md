@@ -7,7 +7,7 @@ one thing you can do this week. She drafts it for you when you say yes.
 - Watches competitor stores: Shopify stores, WooCommerce stores, and product pages (Jumia, Noon and
   others that publish product data).
 - Reads screenshots of Instagram and Facebook posts you send her.
-- Compares by product type with your own Shopify catalog, never product against product.
+- Compares relevant products with your own Shopify catalog, explaining pack-size and match limits.
 - Messages you only when something urgent happens: a promotion starts, a watched item runs out, or a
   new product appears. Every Sunday: "This week in your market".
 - Read-only. Speaks Egyptian Arabic or English.

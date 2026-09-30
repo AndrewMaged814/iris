@@ -166,7 +166,7 @@ def catalog(post=None, max_pages: int = 5) -> dict:
         if p["price_max"] is not None:
             t["price_max"] = p["price_max"] if t["price_max"] is None else max(t["price_max"], p["price_max"])
         if len(t["products"]) < 8:
-            t["products"].append({k: p[k] for k in ("title", "price_min", "price_max", "compare_at_max")})
+            t["products"].append({k: p[k] for k in ("title", "tags", "price_min", "price_max", "compare_at_max")})
     newest = sorted(products, key=lambda p: p.get("created_at") or "", reverse=True)[:5]
     return {"shop": shop.get("name"), "currency": shop.get("currencyCode"), "product_count": len(products),
             "by_type": types, "newest": [{"title": p["title"], "created_at": p["created_at"]} for p in newest]}

@@ -45,7 +45,7 @@ def _hermes_client():
     """Hermes' SSRF-safe httpx client (checks every redirect, dials the checked IP)."""
     from tools.url_safety import create_ssrf_safe_client  # provided by the Hermes runtime
     return create_ssrf_safe_client(timeout=TIMEOUT_S, follow_redirects=True,
-                                   headers={"User-Agent": USER_AGENT, "Accept": "application/json, text/html;q=0.9"})
+                                   headers={"User-Agent": USER_AGENT, "Accept": "text/html, application/json;q=0.9"})
 
 
 def _basic_guard(url: str) -> None:
@@ -81,7 +81,7 @@ def http_get(url: str) -> tuple[int, str]:
     import urllib.error
     import urllib.request
     _basic_guard(url)
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html, application/json;q=0.9"})
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT_S) as resp:
             _basic_guard(resp.geturl())
@@ -161,6 +161,7 @@ def _shopify_products(items, base: str) -> list[dict]:
         out.append(_product(
             key=f"shopify:{p.get('handle') or p.get('id')}",
             title=_clean(p.get("title")),
+            description=_clean(p.get("body_html"), 1200),
             url=f"{base}/products/{p.get('handle')}" if p.get("handle") else base,
             product_type=_clean(p.get("product_type"), 60),
             tags=[_clean(t, 40) for t in tags][:10],
@@ -336,6 +337,7 @@ def _ld_products(page_html: str, page_url: str) -> list[dict]:
             out.append(_product(
                 key=f"page:{_base(url)}#{_clean(p.get('sku') or p.get('name'), 60)}",
                 title=_clean(p.get("name")),
+                description=_clean(p.get("description"), 1200),
                 url=url,
                 product_type=_clean(p.get("category"), 60),
                 tags=props[:10],
@@ -356,6 +358,64 @@ def _ld_products(page_html: str, page_url: str) -> list[dict]:
                                 currency=parser.meta.get("product:price:currency") or parser.meta.get("og:price:currency"),
                                 available=None, created_at=None, variants=1, image=parser.meta.get("og:image")))
     return out
+
+
+class _PageText(HTMLParser):
+    """Bounded page evidence for Iris to interpret, never a parsed promotion claim."""
+    def __init__(self):
+        super().__init__()
+        self.parts, self.main_parts, self.hidden, self.in_main = [], [], 0, False
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style", "noscript", "template"):
+            self.hidden += 1
+        if tag == "main":
+            self.in_main = True
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style", "noscript", "template"):
+            self.hidden = max(0, self.hidden - 1)
+        if tag == "main":
+            self.in_main = False
+
+    def handle_data(self, data):
+        if not self.hidden and data.strip():
+            self.parts.append(data.strip())
+            if self.in_main:
+                self.main_parts.append(data.strip())
+
+
+def _read_product_page(url: str, get) -> tuple[str, list[dict], str]:
+    status, text = get(url)
+    access = _status_access(status, text)
+    if access:
+        raise FetchError(access)
+    data = _json_or_none(text)
+    handle = urlparse(url).path.rstrip("/").rsplit("/", 1)[-1]
+    if isinstance(data, dict) and isinstance(data.get("product"), dict):
+        product = data["product"]
+        found = _shopify_products([product], _origin(url)) if product.get("handle") == handle else []
+        return "shopify", found, ""
+    parser = _PageText()
+    parser.feed(text)
+    page_text = _clean(" ".join(parser.main_parts or parser.parts), 10000)
+    found = [p for p in _ld_products(text, url)
+             if urlparse(p["url"]).path.rstrip("/").rsplit("/", 1)[-1] == handle]
+    if found:
+        return "page", found[:1], page_text
+    # A normal documented Shopify product endpoint, only if the page was readable.
+    # A missing or blocked product never falls back to an unrelated store catalog.
+    status, raw = get(_base(url) + ".json")
+    access = _status_access(status, raw)
+    if access == BLOCKED:
+        raise FetchError(access)
+    if access:
+        return "page", [], page_text
+    data = _json_or_none(raw)
+    product = data.get("product") if isinstance(data, dict) else None
+    found = (_shopify_products([product], _origin(url))
+             if isinstance(product, dict) and product.get("handle") == handle else [])
+    return "shopify" if found else "page", found, page_text
 
 
 def _read_page(url: str, get) -> list[dict]:
@@ -382,6 +442,12 @@ def read_store(url: str, get=None, kind: str = "auto") -> dict:
     attempts = {"auto": ("shopify", "woocommerce", "page"), "shopify": ("shopify",),
                 "woocommerce": ("woocommerce",), "page": ("page",)}.get(kind, ("shopify", "woocommerce", "page"))
     try:
+        if re.search(r"/products/[^/]+$", urlparse(base).path):
+            result["scope"] = "product"
+            result["source"], result["products"], result["page_text"] = _read_product_page(base, get)
+            if not result["products"]:
+                result["access"] = NO_PRODUCTS
+            return result
         for attempt in attempts:
             if attempt == "shopify":
                 found = _read_shopify(base, get)

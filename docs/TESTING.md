@@ -16,7 +16,23 @@ Time needed: about 1.5 hours the first time.
    python3 tools/validate_repo.py
    python3 -m unittest discover -s tests
    ```
-   **Expect:** `ok`, then `Ran 39 tests … OK`.
+   **Expect:** `ok`, then `Ran 45 tests … OK`.
+
+## Repeatable business cases (operator only)
+
+On the Hermes host, use its Python environment to run `tools/evaluate_iris.py`:
+
+```sh
+python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris --output ~/iris-evaluations/new-batch
+```
+
+The output directory must be new. Use `--cases price-cut weekly-evidence` for targeted reruns.
+This uses the installed profile's model and Telegram toolsets in isolated native Hermes sessions;
+it does not send Telegram messages or reproduce the owner's existing conversation history.
+Review each case's expected criteria against its captured response and tool evidence in `results.json`.
+Prices and stock are live observations, so review the date and source rather than assuming fixture prices.
+Raw records contain owner data: keep them private. `output/` is excluded from this repository.
+The runner hashes profile instructions and plugin files; it does not assign an automatic quality score.
 
 ---
 

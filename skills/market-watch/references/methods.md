@@ -19,6 +19,6 @@ Report confirmed and emerging. Leave noise out.
 
 ## Missing currency
 
-Shopify's public feed has no currency. If a store sells in the owner's country, use the owner's
-currency from `my_store` and say "prices in EGP" once. If you can't tell, say the currency is unknown
-instead of guessing.
+Shopify's public feed has no currency. Confirm it from the relevant product page before comparing
+prices with the owner's store. If it remains unknown, report the raw number with that limitation
+and leave out cheaper/more expensive judgments. Shared location alone doesn't confirm currency.

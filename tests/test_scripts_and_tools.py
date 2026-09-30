@@ -161,6 +161,31 @@ class Tools(unittest.TestCase):
         out = json.loads(self.plugin.market_changes_tool({"period": "week"}))
         self.assertEqual(out["screenshot_notes"][0]["about"], "Cairo Skin (Instagram)")
 
+    def test_product_page_evidence_reaches_iris_without_a_sale_claim(self):
+        result = {"url": "https://glow.example/products/gel", "source": "page", "access": "ok",
+                  "scope": "product", "page_text": "Buy 2 get 2 free; eligible products only",
+                  "products": [{"title": "Gel", "description": "50 ml for oily skin", "price": 360}]}
+        with mock.patch.object(self.plugin.feeds, "read_store", return_value=result):
+            out = json.loads(self.plugin.read_store_tool({"url": result["url"]}))
+        self.assertEqual(out["scope"], "product")
+        self.assertEqual(out["products"][0]["description"], "50 ml for oily skin")
+        self.assertIn("eligible products", out["page_text"])
+        self.assertFalse(out["products"][0]["on_sale"])
+        self.assertIn("page_text", out["note"])
+
+    def test_market_changes_exposes_limited_observation_history(self):
+        from iris_watchlist import Watchlist
+        wl = Watchlist()
+        s = wl.add("Glow", "https://glow.example")
+        wl.save_snapshot(s["id"], {"access": "ok", "products": []})
+        wl.save_snapshot(s["id"], {"access": "blocked", "products": []})
+        wl.close()
+        out = json.loads(self.plugin.market_changes_tool({"period": "week"}))
+        coverage = out["observation_by_store"]["Glow"]
+        self.assertEqual(coverage["checks"], 1)
+        self.assertEqual(coverage["first_checked"], coverage["last_checked"])
+        self.assertEqual(out["signals"], [])
+
     def test_my_store_errors_are_plain_words(self):
         with mock.patch.dict(os.environ, {"SHOPIFY_STORE": ""}):
             out = json.loads(self.plugin.my_store_tool({"operation": "summary"}))
@@ -172,13 +197,14 @@ class OwnStore(unittest.TestCase):
         import iris_store as store
         page = {"shop": {"name": "Mira Nile", "currencyCode": "EGP"}, "products": {
             "pageInfo": {"hasNextPage": False},
-            "nodes": [{"title": "Rose Serum", "handle": "rose", "productType": "Serum", "tags": [],
+            "nodes": [{"title": "Rose Serum", "handle": "rose", "productType": "Serum", "tags": ["iris-demo"],
                        "priceRangeV2": {"minVariantPrice": {"amount": "520.0"}, "maxVariantPrice": {"amount": "780.0"}},
                        "compareAtPriceRange": {"maxVariantCompareAtPrice": None}, "createdAt": "2026-06-01"}]}}
         with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
             out = store.catalog(post=lambda q, v: page)
         self.assertEqual(out["by_type"]["Serum"]["price_min"], 520.0)
         self.assertEqual(out["currency"], "EGP")
+        self.assertEqual(out["by_type"]["Serum"]["products"][0]["tags"], ["iris-demo"])
 
     def test_store_address_must_be_myshopify(self):
         import iris_store as store
