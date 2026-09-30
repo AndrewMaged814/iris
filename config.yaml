@@ -10,7 +10,8 @@ cron:
   wrap_response: false
 
 # Tools Iris may use in chat and in scheduled runs. Terminal, files, browser, messaging and
-# cron scheduling stay off: Iris reads outside pages, so she only gets fixed read-only tools.
+# cron scheduling stay off. Fixed offer writes require the live owner's private Telegram approval;
+# scheduled runs can read/propose but cannot execute them.
 platform_toolsets:
   telegram:
     - iris

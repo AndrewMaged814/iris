@@ -82,4 +82,35 @@ When reusing a previously deleted profile name on the tested Hermes revision, cr
 home first with `hermes profile create iris --no-skills --no-alias`. Installation with `--force`
 is only for that empty profile, before configuring credentials or the model.
 
+## Optional response offers
+
+Catalog reading needs only `read_products`. Enable Iris's first store action separately:
+
+1. In the installed Shopify app, add `write_discounts` (includes discount reads).
+   Release/install the app's updated permissions. Refresh its token if the cached grant still has
+   the old scopes. Existing `read_products` covers costs and aggregate variant stock; no inventory,
+   orders, customers or product-write access is added. For analysis alone, use `read_discounts`.
+2. In Shopify, enter the selected variant's unit cost in store currency. Enable inventory tracking,
+   supply its actual available stock and disable selling when out of stock. The first slice needs
+   tax-exclusive pricing and no other active/scheduled discount; existing markdowns also block it.
+   Offer arithmetic currently supports EGP, USD, EUR, GBP, CAD and AUD; catalog reads are unchanged.
+3. Set `IRIS_ENABLE_OFFERS=1` in the profile's private `.env` and reload Hermes gracefully.
+   Keep `TELEGRAM_ALLOWED_USERS` set to the single owner's numeric ID. Preserve provider settings.
+4. Ask Iris to assess a market response. Supply variable payment fees, packaging/shipping subsidy
+   per unit and the minimum contribution margin. Review the code, variant, percentage, start/end,
+   redemption limit and assumptions. Creation requires **Approve** on the fresh native Telegram
+   prompt, even if a prior chat message said yes. **Cancel**, timeout or changed facts means no write.
+5. Iris verifies the saved Shopify configuration and offers copy in your chosen brand language.
+   Readback does not test checkout eligibility. To stop the code, ask Iris and approve its separate
+   deactivation prompt. Past orders remain unchanged.
+
+The native approval bridge is tested against Hermes `c1488ac`: it uses the live gateway runner's
+clarification primitive with a unique question ID. If this API changes or the owner/session cannot
+be established, execution fails closed. Revalidate it after upgrading Hermes. Cron, CLI evaluation,
+group chats and other users cannot execute offers, even with the enable flag set.
+
+An uncertain write is not retried. Ask for its status to reconcile the exact code and terms;
+investigate unresolved cases in Shopify. Keep a newly prepared proposal separate from the original.
+No automatic campaign publishing, base-price editing or customer-data access is included.
+
 [Try the demo cases →](DEMO.md) · [Current deployment](STATUS.md) · [Testing](TESTING.md)

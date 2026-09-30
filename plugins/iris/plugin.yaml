@@ -1,6 +1,6 @@
 name: iris
-version: 1.0.0
-description: "Read-only market tools for one store owner: own store, other stores, watchlist, changes"
+version: 1.1.0
+description: "Market intelligence and owner-approved response offers for one Shopify store"
 author: Andrew Maged
 requires_hermes: ">=0.21.3"
 provides_tools:

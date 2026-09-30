@@ -1,4 +1,4 @@
-"""The owner's own Shopify store, read-only, with fixed queries.
+"""The owner's own Shopify store, with fixed queries.
 
 One Iris per store: credentials come from the profile's .env.
 Auth: a Dev Dashboard app on the owner's store using the client credentials grant
@@ -41,10 +41,13 @@ query IrisProducts($q: String!) {
   shop { currencyCode }
   products(first: 10, query: $q) {
     nodes {
-      title handle productType tags vendor status createdAt description
+      id title handle productType tags vendor status createdAt description
       options { name values }
       featuredImage { url altText }
-      variants(first: 20) { pageInfo { hasNextPage } nodes { title sku price compareAtPrice availableForSale } }
+      variants(first: 20) { pageInfo { hasNextPage } nodes {
+        id title sku price compareAtPrice availableForSale
+        inventoryItem { tracked unitCost { amount currencyCode } }
+      } }
       metafields(first: 10) { nodes { namespace key type value } }
     }
   }
@@ -182,13 +185,15 @@ def search(query: str, post=None) -> dict:
     out = []
     for n in (data.get("products") or {}).get("nodes") or []:
         out.append({
-            "title": n.get("title"), "handle": n.get("handle"), "product_type": n.get("productType"),
+            "id": n.get("id"), "title": n.get("title"), "handle": n.get("handle"), "product_type": n.get("productType"),
             "tags": (n.get("tags") or [])[:10], "status": n.get("status"),
             "description": re.sub(r"\s+", " ", n.get("description") or "")[:600],
             "options": n.get("options") or [],
             "image": n.get("featuredImage"),
             "variants_complete": not bool((n.get("variants") or {}).get("pageInfo", {}).get("hasNextPage")),
-            "variants": [{"title": v.get("title"), "sku": v.get("sku"), "price": _money(v, "price"),
+            "variants": [{"id": v.get("id"), "title": v.get("title"), "sku": v.get("sku"), "price": _money(v, "price"),
+                          "unit_cost": (v.get("inventoryItem") or {}).get("unitCost"),
+                          "inventory_tracked": (v.get("inventoryItem") or {}).get("tracked"),
                           "compare_at": _money(v, "compareAtPrice"), "available": v.get("availableForSale")}
                          for v in (n.get("variants") or {}).get("nodes") or []],
             "details": [{"key": f"{m.get('namespace')}.{m.get('key')}", "value": str(m.get("value"))[:200]}

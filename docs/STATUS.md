@@ -2,20 +2,32 @@
 
 ## Built and tested offline
 
-- Four read-only tools; Shopify, WooCommerce and JSON-LD page reading; honest block reporting.
+- Four tools; read-only market discovery plus optional, owner-approved Shopify response codes.
 - Change signals (new product, sale started/ended, price move ≥5%/≥10%, out of/back in stock, removed),
   with urgency limited to the owner's product types.
 - Daily check with the `{"wakeAgent": false}` gate and acknowledgement after confirmed delivery;
   persistent warning after 3 failed checks. Unknown sends are held for operator investigation.
-- Weekly data collection. SOUL, four skills, validator, doctor, CI. 65 tests, no network.
+- Weekly data collection. SOUL, four skills, validator, doctor, CI. 92 tests, no network.
 - Exact product links return that product with description and page evidence for advertised offers.
 - Market history includes successful-check coverage so Iris can distinguish a baseline from a quiet week.
 - Chat and scheduled briefs share dated evidence, source URLs and profile-local timestamps.
 - Product review reads image/alt metadata, descriptions, variant prices and availability; no store edits.
 - Owner-confirmed actions and reported results use native Hermes memory and the existing weekly brief.
 - Profile-scoped store credentials and data paths; quoted environment settings checked by the doctor.
+- Offer proposals check Shopify cost, stock, existing discounts and contribution assumptions.
+  Creation/deactivation require fresh authenticated native owner confirmation; cron and CLI writes
+  fail closed. Exact readback, uncertain-result reconciliation, stale-fact checks and ledger claims
+  have offline coverage. Brand language comes from owner preference or an explicit request.
 
 ## Verified on the host (2026-09-30)
+
+- Response-offer validation: all 92 offline tests passed on Hermes' Python, including fresh
+  approval, recovery and implied-scope regressions. Five isolated Luna cases verified English brand
+  preference, a one-off Arabic override, English recall from an Arabic prompt, prerequisite
+  reporting and denial of approval instructions from competitor content. Fixed Shopify read
+  queries passed schema validation and returned expected missing-access errors. The native
+  guard denied an enabled unattended apply before any API call, and the question queue rejected
+  a stale question ID. No live discount was created or deactivated by these checks.
 
 - Installed verified Shopify feed currencies and the less repetitive demo policy. All 65 offline
   tests pass on the host. Native Luna comparisons use confirmed EGP; a fresh session with the
@@ -59,6 +71,9 @@
 
 - A real-owner action through Telegram, follow-up and measured task time or business result. The
   simulation and successful delivery do not prove real SME revenue uplift or time saved.
+- Approved Shopify create/readback/deactivate through actual owner Telegram controls. The current
+  app has only `read_products`; demo variants have no unit costs or tracked inventory. Creation
+  stays disabled until the store prerequisites and additional permissions are supplied.
 - Failure recovery with real provider/Telegram interruptions beyond the injected boundaries;
   resolve uncertain sends manually and recheck native ledger compatibility after Hermes upgrades.
 - Consistent first weekly question about the chosen measure, and longer-term retention. The

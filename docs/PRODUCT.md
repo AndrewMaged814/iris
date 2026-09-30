@@ -19,14 +19,15 @@ a specific market response when the evidence calls for it.
 4. **Make it usable.** Draft the caption or product line, or review a listing, when asked.
 5. **Close the loop.** Remember the owner's chosen action; review the reported result in the weekly brief.
 
-The installed version is read-only: the owner applies the action. Hermes supplies memory,
-scheduling, vision and delivery. Approved Shopify offer creation is the planned extension;
-it has not been implemented or granted access.
+Hermes supplies memory, scheduling, vision and delivery. The offer workflow extends the existing
+own-store tool; live creation stays disabled until the operator grants the narrow permissions
+and the store has the required cost and inventory facts.
 
 ## What comes next
 
 The next milestone is **one relevant market opportunity leading to one approved response offer
-created and verified in Shopify, followed by an Arabic announcement draft and a remembered review.**
+created and verified in Shopify, followed by an announcement in the owner's brand language
+and a remembered review.** An explicit language request overrides the saved preference.
 
 Start with one product-specific discount code, with an explicit value, start/end time and usage
 limit. Check product costs, stock and existing offers before proposing it; missing facts need
@@ -35,9 +36,13 @@ before execution, then re-read Shopify to verify creation. Provide a way to deac
 Storefront content cannot authorize a write; scheduled discovery runs cannot execute offers.
 
 Shopify's [code-discount API](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBasicCreate)
-requires `write_discounts`. The installed connection has only `read_products`; additional access
-and implementation are prerequisites. Read richer product/cost context first, then add the
-bounded action using the existing Hermes and Iris architecture.
+requires `write_discounts`, which includes verification reads. Existing `read_products` covers
+cost and aggregate stock reads. The installed connection currently has only `read_products`. The first slice
+requires Shopify unit costs, tracked positive stock, overselling disabled, tax-exclusive prices
+and no other active/scheduled store discount. Each proposal expires after 30 minutes. Limits are
+1–30% off, 1–100 redemptions and a duration of up to seven days. Redemptions are not a unit/spend cap.
+Native Telegram confirmation shows the canonical terms; fresh reads before and after creation
+prevent stale approvals and unsupported success claims. [Enable the workflow](SETUP.md#optional-response-offers).
 
 | What to learn | Evidence |
 | --- | --- |

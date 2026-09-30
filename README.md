@@ -37,9 +37,11 @@ to **your products**, helps you weigh the decision, and drafts the next step whe
 | **“What should I improve?”** | One useful product-listing fix based on its photos and catalog details |
 | **“Write it in Egyptian Arabic.”** | A caption, product line or reply using the facts your store supplies |
 | **“Let's do this. Remember it.”** | A saved chosen action and a weekly review of what you report happened |
+| **“Prepare a response offer.”** | A margin-checked code proposal; exact owner approval before creation and Shopify readback |
 
 Iris checks daily and brings a weekly brief. Quiet daily checks stay quiet.
-You choose the competitors and the actions; Iris never changes store prices or publishes campaigns.
+You choose the competitors and the actions. Optional response codes require fresh approval in
+Telegram; base prices stay unchanged and announcement publishing stays with you.
 
 ## Quick start
 
@@ -62,6 +64,7 @@ Iris supplies the business judgment, skills and tools. Hermes supplies the agent
 ![Iris architecture: Telegram connects to Hermes, which runs Iris and scheduled checks; Iris reads Shopify, competitor storefronts and saved market evidence.](assets/architecture.png)
 
 The four tools read your catalog, inspect competitors, manage the watchlist and retrieve changes.
+The own-store tool also handles bounded response codes when offer access is enabled.
 Public readers support Shopify, WooCommerce and structured product pages.
 Saved observations distinguish today's listings from changes recorded over time.
 
@@ -82,11 +85,12 @@ iris/
 
 ## Proof & next steps
 
-**65 offline tests. 17 reusable business cases.** Native Luna runs exercise comparisons,
+**92 offline tests. 22 reusable business cases.** Native Luna runs exercise comparisons,
 drafting and remembered actions; Telegram delivery and scheduled checks have been verified.
 [Expected vs. actual](docs/EVALUATION.md) · [Deployment status](docs/STATUS.md)
 
-- **Next:** complete a real merchant pilot and measure whether Iris saves time and informs useful decisions.
+- **Next:** enable the narrow offer permissions and verify the approved-create-stop flow through
+  Telegram, then measure a real merchant pilot.
 - Improve promotion coverage and weekly follow-up from the cases that expose gaps.
 
 [Product direction](docs/PRODUCT.md) · [Testing guide](docs/TESTING.md)

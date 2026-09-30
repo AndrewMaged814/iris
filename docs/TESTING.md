@@ -16,7 +16,7 @@ Time needed: about 1.5 hours the first time.
    python3 tools/validate_repo.py
    python3 -m unittest discover -s tests
    ```
-   **Expect:** `ok`, then `Ran 65 tests … OK`. Three doctor tests need Hermes' `python-dotenv`;
+   **Expect:** `ok`, then `Ran 92 tests … OK`. Three doctor tests need Hermes' `python-dotenv`;
    they skip in a bare Python environment and all run in Hermes' environment.
 
 ## Repeatable business cases (operator only)
@@ -30,12 +30,13 @@ python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris --output ~/
 The output directory must be new. Use `--cases price-cut weekly-evidence` for targeted reruns.
 `--isolate` makes a private runtime copy, including provider/store credentials and a consistent
 snapshot database backup. Its Telegram bot token is removed. Never share this private directory.
-The four action/memory cases require isolation; without isolation they are excluded by default.
+Action/memory, language-preference and offer cases require isolation; without it they are excluded.
 This uses the installed profile's model and Telegram or scheduled toolsets in native Hermes sessions;
 it does not send Telegram messages or reproduce the owner's existing conversation history.
 Review each case's expected criteria against its captured response and tool evidence in `results.json`.
-The fifteen cases cover comparisons, conditional offers, contribution arithmetic, unsupported ad
-claims, sparse history, product review and action memory. [EVALUATION.md](EVALUATION.md) records
+The 22 reusable cases cover comparisons, conditional offers, contribution arithmetic, unsupported
+ad claims, sparse history, product review, action memory, brand language and offer prerequisites.
+[EVALUATION.md](EVALUATION.md) records
 the dated manual assessments; live observations and isolated simulations are labelled separately.
 Prices and stock are live observations, so review the date and source rather than assuming fixture prices.
 Raw records contain owner data: keep them private. `output/` is excluded from this repository.

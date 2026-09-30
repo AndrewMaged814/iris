@@ -26,7 +26,7 @@ These workflows are not proven market gaps. Test them with one Egyptian merchant
 
 ## Finishable first slice
 
-Definition of done: **one market opportunity produces a source-backed, margin-aware Telegram recommendation, one owner-approved response offer created and verified in Shopify, an Arabic announcement draft and one remembered review.**
+Definition of done: **one market opportunity produces a source-backed, margin-aware Telegram recommendation, one owner-approved response offer created and verified in Shopify, an announcement in the owner's brand language and one remembered review.**
 
 Use existing tools, Hermes vision/memory/scheduling and one category. Keep a saved expected-versus-actual case covering a multi-buy offer whose effective unit price reverses the single-item comparison. Require explicit eligibility, currency, pack size, freshness and known costs; abstain on missing facts. Check whether the owner uses the proposed response and whether it saves work.
 
@@ -65,7 +65,9 @@ cost inputs, stock and interaction with existing offers before recommendation. B
 the precise terms, prevent duplicate execution, check errors and read back the saved terms. Allow
 deactivation. An active offer affects checkout economics; it must not be described as an unpublished
 draft. The owner may also choose no action. Scheduled discovery and competitor content cannot
-authorize execution. This is planned, not implemented; the installed token is still read-only.
+authorize execution. The bounded workflow is now implemented with native confirmation and offline
+coverage; the installed token is still read-only, so actual Telegram-to-Shopify execution awaits
+additional permissions and the store's cost/inventory prerequisites.
 Shopify requires `write_discounts` for [discountCodeBasicCreate](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBasicCreate).
 
 ## Ranked brainstorm and recommendation
@@ -95,7 +97,7 @@ An attractive campaign or translated caption alone is not a defensible advantage
    bundle or gift with known costs. Report contribution and break-even thresholds, not predicted sales.
    A different basket can be an alternative strategy but never an equivalent-price victory.
 5. Recommend one response or explain why no response meets the constraints. On request, provide
-   a copyable Egyptian Arabic caption and a customer reply; do not publish them.
+   a copyable caption in the saved/requested brand language and a customer reply; do not publish them.
 6. When the owner approves precise supported offer terms, create the bounded Shopify discount
    code and verify it. Retain the chosen move in native memory and review it in the existing weekly
    conversation. Distinguish verified offer creation from owner-reported business outcomes.
