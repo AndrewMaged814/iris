@@ -7,6 +7,7 @@
 set -euo pipefail
 : "${OWNER_CHAT_ID:?Set OWNER_CHAT_ID to the owner's Telegram user ID}"
 PROFILE="${IRIS_PROFILE:-iris}"
+HERMES_SOURCE="${HERMES_SOURCE:-${HOME}/.hermes/hermes-agent}"
 DAILY="${DAILY_SCHEDULE:-0 8 * * *}"
 WEEKLY="${WEEKLY_SCHEDULE:-0 10 * * 0}"
 
@@ -19,5 +20,23 @@ hermes -p "$PROFILE" cron create "$WEEKLY" \
   "Write 'This week in your market' for the owner, using the data above and the weekly-brief skill. Check the owner's own products with my_store. Do not repeat what you already reported last week." \
   --name iris-weekly-brief --script iris_weekly_data.py --skill weekly-brief --continuity \
   --deliver "telegram:${OWNER_CHAT_ID}"
+
+# Explicit Telegram targets require native per-job opt-in; the global mirror flag
+# alone only covers origin/home targets. The CLI doesn't expose this setting yet.
+"${HERMES_PYTHON:-${HERMES_SOURCE}/venv/bin/python}" - "$HERMES_SOURCE" "$PROFILE" "$OWNER_CHAT_ID" <<'PY'
+import json, os, sys
+sys.path.insert(0, sys.argv[1])
+from hermes_cli.profiles import get_profile_dir
+os.environ["HERMES_HOME"] = str(get_profile_dir(sys.argv[2]))
+from cron.jobs import load_jobs, update_job
+ids = []
+for job in load_jobs():
+    if job.get("name") in ("iris-daily-check", "iris-weekly-brief") and job.get("deliver") == "telegram:" + sys.argv[3]:
+        updated = update_job(job["id"], {"attach_to_session": True})
+        assert updated and updated.get("attach_to_session") is True
+        ids.append(job["id"])
+assert len(ids) == 2, "Expected exactly the two Iris jobs for this owner; inspect the schedule setup."
+print(json.dumps({"chat_continuity_enabled_for": ids}))
+PY
 
 hermes -p "$PROFILE" cron list

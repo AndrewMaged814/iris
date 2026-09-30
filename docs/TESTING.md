@@ -48,7 +48,10 @@ uncertain sends are held; known failures retry. Native queue tombstones retain d
 An uncertain or missing execution record requires operator investigation rather than automatic
 replay. Without a unique native worker/job match, facts remain unacknowledged. This adapter reads
 Hermes' local ledgers, so confirm compatibility after a Hermes upgrade.
-`cron.mirror_delivery: true` uses Hermes to put delivered briefs in the owner conversation;
+`cron.mirror_delivery: true` enables native mirroring for origin/home targets. Iris's explicit
+Telegram targets also need `attach_to_session: true` on each job; `setup_jobs.sh` sets it through
+Hermes' API because the current CLI doesn't expose it. `HERMES_SOURCE` and `HERMES_PYTHON` can
+override the default checkout and Python paths when Hermes is installed elsewhere.
 `cron.wrap_response: false` keeps native job-management headers out of owner messages.
 
 ---

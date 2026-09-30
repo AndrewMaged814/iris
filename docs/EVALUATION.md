@@ -66,6 +66,12 @@ generic draft offer. It also omitted the intended first measure question: follow
 still a partial result. This doesn't establish long-term retention or a complete updated
 Telegram action conversation.
 
+The live weekly report was confirmed delivered at 04:27 Cairo, and the updated daily check
+completed quietly at 08:00. Explicit Telegram destinations require per-job `attach_to_session`
+as well as the native mirroring configuration. Both existing jobs now qualify. Hermes mirrored
+the already-delivered weekly text into the active owner transcript without resending a message;
+this is a verified backfill, not a fabricated owner turn or a test of the next scheduled send.
+
 Real-owner adoption, measured time saving and revenue impact remain unverified. A useful next
 pilot is one merchant choosing one action, reporting whether it was used and measuring the
 agreed task time or business result. [Current deployment evidence](STATUS.md).

@@ -45,6 +45,12 @@
   output only. Previous output was injected on the second run. The latest pair retained the
   simulated plan and unknown result without a generic draft offer. The initial measure question
   was still omitted, so follow-up wording remains a partial result.
+- The updated live weekly job completed with confirmed Telegram delivery at 04:27 Cairo. The
+  08:00 daily job completed with suppressed delivery and no error. Both existing jobs now opt
+  into native chat mirroring; Hermes' target eligibility was verified. One already-delivered
+  weekly report was backfilled through Hermes' mirror into the active Telegram transcript,
+  without resending it. Future scheduled mirror delivery and the owner's subsequent reply
+  remain separate from this verified backfill.
 
 ## Remaining live checks
 
