@@ -30,7 +30,7 @@ stock cannot prove demand, and gross sales cannot establish profit or causal upl
 ## Pilot definition of done
 
 One real owner receives a correct relevant proactive alert, obtains a usable draft, chooses
-and completes one move, and reports its measured effort or a sourced business outcome. Verify
+and completes one move, and reports measured task time plus a sourced business outcome. Verify
 the actual Telegram conversation and follow-up; isolated model runs alone are insufficient.
 
 Record the evidence without customer-level data:
@@ -45,6 +45,12 @@ Record the evidence without customer-level data:
 
 The current synthetic catalog and simulation prove parts of the workflow. They do not satisfy
 this real-owner pilot requirement. [Current evidence](STATUS.md).
+
+Completing the wider goal requires all three: an owner-validated feasible revenue opportunity,
+measured time saved on a repeated task, and the complete owner conversation/action/follow-up
+working through Telegram. Research, attractive documentation, synthetic results or green unit
+tests alone cannot satisfy those gates. Profit and incremental-revenue claims additionally
+need costs and a defensible comparison; otherwise report the narrower observed result.
 
 ## Boundaries and next candidates
 

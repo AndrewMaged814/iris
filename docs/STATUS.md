@@ -57,3 +57,16 @@
 ## Not built (by choice)
 
 Multiple stores per Iris, Meta/Instagram APIs, ad libraries, automatic actions.
+
+## Full goal audit
+
+| Requirement | Current evidence | Remaining proof |
+| --- | --- | --- |
+| SME can find a revenue opportunity | Public comparisons, stock/offer evidence and action drafts exercised | Real owner validates a feasible opportunity against their product, margin and customers and reports its outcome |
+| SME can save time | Listing review removes a screenshot handoff; simulated action reports retained | Timed manual versus Iris-assisted repeated task for a real owner |
+| Iris works end to end | Prior inbound Telegram exchanges; live weekly delivery and daily quiet gate; isolated native action memory chain | Updated owner action and follow-up through Telegram, plus delivery/failure recovery and continuity checks |
+| Research and useful proactive additions | Sourced SME/commercial-agent brief; listing review and weekly chosen-action follow-up implemented | Pilot feedback on relevance and whether the actions are used |
+| Compelling repo and accurate positioning | AI growth scout title, task-led README, dated demo and repository description | Keep proof current as remaining gates pass |
+
+The goal remains active. No real SME uplift, measured time saving or complete updated owner
+action conversation has been established by this distribution's current evidence.
