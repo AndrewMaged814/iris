@@ -48,9 +48,10 @@ are separate checks.
   weekly instructions distinguish a chosen-action question from a generic draft offer.
 - Routine comparisons retain demo provenance internally after the owner knows it. Material
   publishing and simulated-result caveats remain; the tested ad reply put its caveat outside the draft.
-- Existing conversations restore a frozen Hermes system prompt. Updating SOUL alone does not
-  update those sessions: deployments must refresh the stored prompt through native session storage
-  and evict the running agent cache while retaining the conversation and owner memory.
+- Existing conversations restore a frozen Hermes system prompt, and this long chat kept echoing
+  old disclaimer wording even after a prompt refresh. A fresh native session with the owner's
+  preference saved gave direct advice without the disclaimer. The live Iris session was rotated
+  through Hermes, retaining its 64-message predecessor, owner memory and watchlist.
 - Shopify feed currency requires store metadata plus one first-party product page agreeing on
   price and currency. Collection and localized links are covered. Missing or conflicting evidence
   leaves currency unknown without losing the readable catalog; historical snapshots are not relabeled.

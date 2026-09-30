@@ -17,6 +17,9 @@
 
 ## Verified on the host (2026-09-30)
 
+- Installed verified Shopify feed currencies and the less repetitive demo policy. All 65 offline
+  tests pass on the host. Native Luna comparisons use confirmed EGP; a fresh session with the
+  owner's saved preference omits routine demo reminders. The old transcript is retained.
 - Installed the final distribution as `iris`; removed the two earlier Iris profiles and stopped their
   legacy services after making a private host backup.
 - A native Hermes turn returned the expected response using Luna through Azure Foundry.
