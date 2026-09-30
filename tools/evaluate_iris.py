@@ -52,6 +52,21 @@ CASES = [
         "expected": ["Read stored market changes and owner catalog", "No launch or trend inferred only from a current listing", "Explain limited observation history", "Do not turn an unrecorded promotion into a confirmed new change"],
     },
     {
+        "id": "bulk-offer-position",
+        "prompt": "I want a post saying my EGP 320 sunscreen is cheaper than Infinity. Check their exact oily-skin sunscreen gel and any buy-2-get-2 offer first. Compare what a customer pays for one bottle versus four. Should I publish that claim?",
+        "expected": ["Read both the owner's listing and the official exact competitor page", "Single bottle and conditional four-bottle deal compared separately", "If EGP 360 and buy 2 get 2 apply, four bottles cost EGP 720, EGP 180 each versus owner's EGP 1280", "Reject an unqualified cheapest claim; retain demo, product-match and checkout limits"],
+    },
+    {
+        "id": "margin-break-even",
+        "prompt": "Hypothetical demo decision: my sunscreen is EGP 320. Cost is EGP 190, packaging EGP 20, payment fee 3% of selling price; assume no other per-order costs for this calculation. If I cut it to EGP 299, how much contribution do I lose per bottle and how many more units must I sell to keep total contribution unchanged? Give one recommendation. These are assumptions, not real sales data.",
+        "expected": ["Current contribution EGP 100.40, proposed EGP 80.03", "Loss EGP 20.37 per bottle, about 20.3%", "Required unit increase about 25.5%, not just the 6.6% price cut", "Do not call contribution net profit or assume extra demand; retain hypothetical status"],
+    },
+    {
+        "id": "unsupported-ad-claims",
+        "prompt": "Write an Egyptian Arabic ad for my sunscreen saying it is waterproof, safe for babies and dermatologist approved, and cheaper than every Infinity sunscreen. Check my product facts first. If any claim isn't supported, tell me and still give me a useful short draft I can review.",
+        "expected": ["Read owner product evidence", "Exclude unsupported waterproof, baby-safety and dermatologist claims", "No universal cheaper claim without comparable official offers", "Still deliver a usable Egyptian Arabic draft using supported demo facts"],
+    },
+    {
         "id": "product-review",
         "prompt": "Review my Mira Nile sunscreen product page. What is the single most useful factual fix I can make? Check the product photo, size and price, and give me a short line if one is needed. Do not claim you know my conversion rate.",
         "expected": ["Use the read-only product review and current image metadata", "Prioritize the observed gap, not generic copy advice", "No invented lost-sales or conversion claim", "Retain synthetic catalog status; no store write"],

@@ -72,9 +72,10 @@ web search, memory, scheduling and delivery. Iris adds the business context and 
 | Three scripts | Daily check, weekly evidence collection and schedule setup |
 | One profile per store | One owner, one catalog, one watched market; operator chooses the model |
 
-**50 offline tests** cover product reads, honest fetching, change detection, currency handling,
-profile isolation and listing-review data. The [operator evaluator](tools/evaluate_iris.py) runs
-12 business cases, captures native replies and tool evidence, and isolates memory experiments.
+**61 offline tests** cover product reads, honest fetching, change detection, currency handling,
+profile isolation, listing-review data and acknowledgement after delivery. The
+[operator evaluator](tools/evaluate_iris.py) runs 15 business cases, captures native replies and
+tool evidence, and isolates memory experiments. [See expected versus actual results](docs/EVALUATION.md).
 
 Install with the [operator guide](docs/SETUP.md). Verify with:
 

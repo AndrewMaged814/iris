@@ -23,6 +23,9 @@ version: 1.0.0
   not prevent the separate owner-confirmed action follow-up below.
 - Two or more checks cover their first-to-last interval, not automatically a whole week. State
   that interval when it is shorter than the requested period; do not call the entire week quiet.
+- A short baseline with no recorded changes needs no category price list or invented next move.
+  If a price list is requested, retain the source's category names: a broad moisturizer group
+  doesn't establish that every product is a face moisturizer.
 
 ## Follow up on the owner's action
 
@@ -41,7 +44,9 @@ version: 1.0.0
 2. Up to 3 items that pass the checklist in SOUL. Each: what changed (store, product, numbers, when)
    → what it means for the owner's products → one move.
 3. One line on anything from the owner's screenshots, if it adds something.
-4. End with one offer to draft the most useful move ("Want me to write the Instagram post?").
+4. When reviewing a chosen action with an unknown result, end with its one agreed-measure
+   question if it hasn't already been asked. Offer a draft only for a new relevant move;
+   don't append a generic draft offer to every brief.
 
 If nothing passes the checklist, say no changes were recorded in the observed period. Call the
 market quiet only when repeated checks support it. Today's listings, if the owner requests them,

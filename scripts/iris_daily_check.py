@@ -10,7 +10,8 @@ Urgent = a promotion started, a watched item went out of stock, or a new product
 import json
 import sys
 
-import _iris_paths  # noqa: F401  (sets sys.path and IRIS_DATA_DIR)
+import _iris_paths  # sets sys.path and IRIS_DATA_DIR
+import iris_delivery
 from iris_changes import diff
 from iris_feeds import OK, read_store
 from iris_watchlist import Watchlist
@@ -21,6 +22,7 @@ UNREACHABLE_AFTER = 3
 def run(get=None) -> dict:
     wl = Watchlist()
     try:
+        held = iris_delivery.reconcile(wl, _iris_paths.PROFILE_HOME)
         checked, unreachable = 0, []
         for s in wl.stores():
             result = read_store(s["url"], get=get, kind=s["kind"])
@@ -28,15 +30,24 @@ def run(get=None) -> dict:
             if result["access"] != OK:
                 wl.save_snapshot(s["id"], result)
                 if wl.record_failure(s["id"], True) == UNREACHABLE_AFTER:
-                    unreachable.append({"store": s["name"], "url": s["url"], "access": result["access"]})
+                    wl.save_signals(s["id"], [{"kind": "store_unreachable", "urgent": True,
+                                              "url": s["url"], "access": result["access"]}])
                 continue
             wl.record_failure(s["id"], False)
+            # A recovered store no longer needs an undelivered failure alert.
+            wl.db.execute("UPDATE signals SET reported=1 WHERE store_id=? AND kind='store_unreachable'",
+                          (s["id"],))
+            wl.db.commit()
             previous = wl.last_good_snapshot(s["id"])
             wl.save_snapshot(s["id"], result)
             wl.save_signals(s["id"], diff(previous, result["products"], s["focus"]))
-        urgent = wl.signals(days=2, urgent_only=True, unreported_only=True)
+        pending = [x for x in wl.signals(days=None, urgent_only=True, unreported_only=True)
+                   if x["id"] not in held]
+        urgent = [x for x in pending if x["kind"] != "store_unreachable"]
+        unreachable = [x for x in pending if x["kind"] == "store_unreachable"]
         other = [x for x in wl.signals(days=1) if not x.get("urgent")]
-        wl.mark_reported([x["id"] for x in urgent])
+        iris_delivery.record(wl, iris_delivery.current_execution(_iris_paths.PROFILE_HOME),
+                             [x["id"] for x in pending])
         return {"stores_checked": checked, "urgent": urgent, "unreachable": unreachable,
                 "other_changes_today": len(other)}
     finally:

@@ -5,8 +5,9 @@
 - Four read-only tools; Shopify, WooCommerce and JSON-LD page reading; honest block reporting.
 - Change signals (new product, sale started/ended, price move ≥5%/≥10%, out of/back in stock, removed),
   with urgency limited to the owner's product types.
-- Daily check with the `{"wakeAgent": false}` gate, reported-once alerts, one message after 3 failed checks.
-- Weekly data collection. SOUL, four skills, validator, doctor, CI. 50 tests, no network.
+- Daily check with the `{"wakeAgent": false}` gate and acknowledgement after confirmed delivery;
+  persistent warning after 3 failed checks. Unknown sends are held for operator investigation.
+- Weekly data collection. SOUL, four skills, validator, doctor, CI. 61 tests, no network.
 - Exact product links return that product with description and page evidence for advertised offers.
 - Market history includes successful-check coverage so Iris can distinguish a baseline from a quiet week.
 - Chat and scheduled briefs share dated evidence, source URLs and profile-local timestamps.
@@ -35,15 +36,24 @@
 - Four separate isolated native sessions verified a planned action, weekly follow-up, simulated
   reported result and subsequent recall. Scheduled toolsets could read memory but had no memory write.
   Simulation records and credentials remained in a private test copy; the live owner's memory was preserved.
+- Three harder business cases passed: conditional bulk offers, contribution break-even arithmetic
+  and unsupported ad claims. The fifteen-case [expected-versus-actual review](EVALUATION.md) retains
+  partial results instead of assigning an automatic quality score.
+- Eleven isolated native scheduler runs verified generation/transport failure, recovery and quiet
+  checks after acknowledgement. Actual script and execution records; simulated model/send boundaries.
+- Two native weekly runs before and two after the brief adjustment used actual Luna and local
+  output only. Previous output was injected on the second run. The latest pair retained the
+  simulated plan and unknown result without a generic draft offer. The initial measure question
+  was still omitted, so follow-up wording remains a partial result.
 
 ## Remaining live checks
 
 - A real-owner action through Telegram, follow-up and measured task time or business result. The
   simulation and successful delivery do not prove real SME revenue uplift or time saved.
-- Observe delivery/model failure recovery; a script marking alerts reported before delivery can
-  lose a daily notification. Weekly history retains its evidence, but this is not a tested retry guarantee.
-- Evaluate weekly continuity after an unanswered follow-up; the short action simulation does not
-  establish long-term retention or suppression of repeated questions.
+- Failure recovery with real provider/Telegram interruptions beyond the injected boundaries;
+  resolve uncertain sends manually and recheck native ledger compatibility after Hermes upgrades.
+- Consistent first weekly question about the chosen measure, and longer-term retention. The
+  short continuity pairs don't establish behavior over successive real weeks.
 
 - `hermes cron create --script` finds the scripts in the profile's `scripts/` folder. (Confirmed in the Hermes
   source: the installer copies every folder listed in `distribution_owned`, and `scripts` isn't a reserved name.)
@@ -64,7 +74,7 @@ Multiple stores per Iris, Meta/Instagram APIs, ad libraries, automatic actions.
 | --- | --- | --- |
 | SME can find a revenue opportunity | Public comparisons, stock/offer evidence and action drafts exercised | Real owner validates a feasible opportunity against their product, margin and customers and reports its outcome |
 | SME can save time | Listing review removes a screenshot handoff; simulated action reports retained | Timed manual versus Iris-assisted repeated task for a real owner |
-| Iris works end to end | Prior inbound Telegram exchanges; live weekly delivery and daily quiet gate; isolated native action memory chain | Updated owner action and follow-up through Telegram, plus delivery/failure recovery and continuity checks |
+| Iris works end to end | Prior inbound Telegram exchanges; live weekly delivery and daily quiet gate; isolated native action memory chain, recovery boundaries and weekly continuity | Updated owner action and follow-up through Telegram; real interrupted transport recovery and longer-term checks |
 | Research and useful proactive additions | Sourced SME/commercial-agent brief; listing review and weekly chosen-action follow-up implemented | Pilot feedback on relevance and whether the actions are used |
 | Compelling repo and accurate positioning | AI growth scout title, task-led README, dated demo and repository description | Keep proof current as remaining gates pass |
 

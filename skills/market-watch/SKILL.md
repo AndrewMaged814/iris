@@ -44,8 +44,12 @@ Say what you can't read. Save anything useful for the weekly message with `watch
 The facts from the daily check are in your prompt. For each urgent item:
 - `sale_started`: what is on sale, the old and new price, and since when you saw it.
 - `out_of_stock`: which item ran out at which store.
-- `new_product`: what they launched and at what price.
-- Stores listed as `unreachable`: say which store you couldn't open for 3 days; it may have moved.
+- `new_product`: what was newly observed and at what price; this doesn't prove its launch date.
+- Stores listed as `unreachable`: say which store failed 3 consecutive checks, not 3 days.
+
+Facts can be retried after a failed run. Retain their original observation date. Before describing
+an old sale or stock alert as current, re-read its product or store URL; if it has ended or recovered,
+say so. A past change is still history, not a current opportunity.
 
 Then check the owner's own products in that type with `my_store`, say what it could mean for them,
 and offer one move (see `references/signals.md`). One message, at most 3 items.

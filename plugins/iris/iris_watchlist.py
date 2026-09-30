@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS signals (
   reported INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS notes (
   id INTEGER PRIMARY KEY, created_at TEXT NOT NULL, source TEXT NOT NULL, about TEXT, text TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS alert_runs (
+  execution_id TEXT PRIMARY KEY, signal_ids TEXT NOT NULL);
 """
 
 
@@ -168,14 +170,18 @@ class Watchlist:
         self.db.commit()
 
     def signals(self, days: int = 7, urgent_only=False, unreported_only=False) -> list[dict]:
-        since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
         sql = ("SELECT signals.*, stores.name AS store FROM signals JOIN stores ON stores.id = signals.store_id "
-               "WHERE signals.created_at >= ?")
+               "WHERE stores.active = 1")
+        params = []
+        if days is not None:
+            since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            sql += " AND signals.created_at >= ?"
+            params.append(since)
         if urgent_only:
             sql += " AND urgent = 1"
         if unreported_only:
             sql += " AND reported = 0"
-        rows = self.db.execute(sql + " ORDER BY signals.id", (since,)).fetchall()
+        rows = self.db.execute(sql + " ORDER BY signals.id", params).fetchall()
         return [{"id": r["id"], "store": r["store"], "created_at": r["created_at"], **json.loads(r["data"])} for r in rows]
 
     def mark_reported(self, ids: list[int]) -> None:

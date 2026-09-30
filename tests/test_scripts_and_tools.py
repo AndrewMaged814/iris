@@ -2,11 +2,12 @@ import io
 import importlib.util
 import json
 import os
+import sqlite3
 import sys
 import tempfile
 import types
 import unittest
-from contextlib import redirect_stdout
+from contextlib import closing, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
@@ -29,10 +30,35 @@ class DailyCheck(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         os.environ["IRIS_DATA_DIR"] = self.tmp.name
+        import _iris_paths
+        self.home = Path(self.tmp.name)
+        self.profile = mock.patch.object(_iris_paths, "PROFILE_HOME", self.home)
+        self.profile.start()
 
     def tearDown(self):
+        self.profile.stop()
         self.tmp.cleanup()
         os.environ.pop("IRIS_DATA_DIR", None)
+
+    def native_execution(self, status="running", delivery=None, execution_id="run-1"):
+        cron = self.home / "cron"
+        cron.mkdir(exist_ok=True)
+        (cron / "jobs.json").write_text(json.dumps({"jobs": [
+            {"id": "daily", "script": "iris_daily_check.py", "no_agent": False}]}))
+        with closing(sqlite3.connect(cron / "executions.db")) as db, db:
+            db.execute("CREATE TABLE IF NOT EXISTS executions "
+                       "(id TEXT PRIMARY KEY,job_id TEXT,pid INTEGER,status TEXT,delivery_outcome TEXT)")
+            db.execute("INSERT OR REPLACE INTO executions VALUES (?,?,?,?,?)",
+                       (execution_id, "daily", os.getppid(), status, delivery))
+
+    def queue_delivery(self, status, tombstone=False):
+        with closing(sqlite3.connect(self.home / "cron/deliveries.db")) as db, db:
+            if tombstone:
+                db.execute("CREATE TABLE delivery_tombstones (execution_id TEXT, terminal_status TEXT)")
+                db.execute("INSERT INTO delivery_tombstones VALUES ('run-1',?)", (status,))
+            else:
+                db.execute("CREATE TABLE deliveries (execution_id TEXT, status TEXT)")
+                db.execute("INSERT INTO deliveries VALUES ('run-1',?)", (status,))
 
     def web(self, products):
         return FakeWeb({"https://glow.example/products.json": (200, shop(products))})
@@ -76,17 +102,143 @@ class DailyCheck(unittest.TestCase):
         import iris_daily_check as daily
         self.add_store()
         daily.run(get=self.web([item(1)]))
+        self.native_execution()
         first = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
         self.assertEqual([s["kind"] for s in first["urgent"]], ["sale_started"])
+        self.native_execution("completed", "delivered")
         again = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
         self.assertEqual(again["urgent"], [])        # already reported, nothing new
+
+    def test_delivery_proof_acknowledges_only_that_runs_facts(self):
+        import iris_daily_check as daily
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        self.native_execution()
+        first = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
+        self.native_execution("completed", "delivered")
+        next_report = daily.run(get=self.web([item(1, price="80.00", compare="100.00"), item(2)]))
+        self.assertEqual([s["kind"] for s in next_report["urgent"]], ["new_product"])
+        self.assertNotEqual(next_report["urgent"][0]["id"], first["urgent"][0]["id"])
+
+    def test_failed_model_with_delivered_error_ping_retries_business_alert(self):
+        import iris_daily_check as daily
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        self.native_execution()
+        first = daily.run(get=self.web([item(1), item(2)]))
+        self.native_execution("failed", "delivered")
+        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], first["urgent"])
+
+    def test_failed_transport_retries_business_alert(self):
+        import iris_daily_check as daily
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        self.native_execution()
+        first = daily.run(get=self.web([item(1), item(2)]))
+        self.native_execution("completed", "failed")
+        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], first["urgent"])
+
+    def test_active_or_uncertain_send_is_held_without_consuming_facts(self):
+        import iris_daily_check as daily
+        from iris_watchlist import Watchlist
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        self.native_execution()
+        first = daily.run(get=self.web([item(1), item(2)]))
+        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        self.native_execution("unknown", "unknown")
+        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        wl = Watchlist()
+        self.assertEqual(wl.signals(days=None, unreported_only=True)[0]["id"], first["urgent"][0]["id"])
+        wl.close()
+
+    def test_deferred_delivery_waits_for_native_queue_proof(self):
+        import iris_daily_check as daily
+        from iris_watchlist import Watchlist
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        self.native_execution()
+        daily.run(get=self.web([item(1), item(2)]))
+        self.native_execution("completed", "queued")
+        self.queue_delivery("pending")
+        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        with closing(sqlite3.connect(self.home / "cron/deliveries.db")) as db, db:
+            db.execute("UPDATE deliveries SET status='delivered'")
+        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        wl = Watchlist()
+        self.assertEqual(wl.signals(days=None, unreported_only=True), [])
+        wl.close()
+
+    def test_pruned_queue_delivery_tombstone_is_valid_proof(self):
+        import iris_daily_check as daily
+        from iris_watchlist import Watchlist
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        self.native_execution()
+        daily.run(get=self.web([item(1), item(2)]))
+        self.native_execution("completed", "queued")
+        self.queue_delivery("delivered", tombstone=True)
+        daily.run(get=self.web([item(1), item(2)]))
+        wl = Watchlist()
+        self.assertEqual(wl.signals(days=None, unreported_only=True), [])
+        wl.close()
+
+    def test_ambiguous_native_worker_is_not_correlated(self):
+        import iris_delivery
+        self.native_execution()
+        self.native_execution(execution_id="run-2")
+        self.assertIsNone(iris_delivery.current_execution(self.home))
+
+    def test_unreported_facts_do_not_expire_during_an_outage(self):
+        import iris_daily_check as daily
+        from iris_watchlist import Watchlist
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        first = daily.run(get=self.web([item(1), item(2)]))
+        wl = Watchlist()
+        wl.db.execute("UPDATE signals SET created_at='2020-01-01T00:00:00Z'")
+        wl.db.commit()
+        wl.close()
+        retry = daily.run(get=self.web([item(1), item(2)]))
+        self.assertEqual(retry["urgent"][0]["id"], first["urgent"][0]["id"])
+        self.assertEqual(retry["urgent"][0]["created_at"], "2020-01-01T00:00:00Z")
+
+    def test_failed_generation_does_not_consume_alert(self):
+        import iris_daily_check as daily
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        first = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
+        # No successful Hermes delivery occurred after the first script result.
+        retry = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
+        self.assertEqual([s["id"] for s in retry["urgent"]], [s["id"] for s in first["urgent"]])
+
+    def test_failed_generation_does_not_consume_store_problem(self):
+        import iris_daily_check as daily
+        self.add_store()
+        down = FakeWeb({"https://glow.example/": (403, "no")})
+        reports = [daily.run(get=down) for _ in range(4)]
+        self.assertEqual(len(reports[2]["unreachable"]), 1)
+        self.assertEqual(len(reports[3]["unreachable"]), 1)
 
     def test_three_failed_checks_report_once(self):
         import iris_daily_check as daily
         self.add_store()
         down = FakeWeb({"https://glow.example/": (403, "no")})
-        reports = [daily.run(get=down) for _ in range(4)]
+        self.native_execution()
+        reports = [daily.run(get=down) for _ in range(3)]
+        self.native_execution("completed", "delivered")
+        reports.append(daily.run(get=down))
         self.assertEqual([len(r["unreachable"]) for r in reports], [0, 0, 1, 0])
+
+    def test_recovered_store_cancels_stale_failure_and_new_episode_alerts(self):
+        import iris_daily_check as daily
+        self.add_store()
+        down = FakeWeb({"https://glow.example/": (403, "no")})
+        for _ in range(3):
+            daily.run(get=down)
+        self.assertEqual(daily.run(get=self.web([item(1)]))["unreachable"], [])
+        reports = [daily.run(get=down) for _ in range(3)]
+        self.assertEqual([len(r["unreachable"]) for r in reports], [0, 0, 1])
 
     def test_weekly_data_counts_the_week(self):
         import iris_daily_check as daily

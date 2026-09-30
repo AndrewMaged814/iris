@@ -16,7 +16,7 @@ Time needed: about 1.5 hours the first time.
    python3 tools/validate_repo.py
    python3 -m unittest discover -s tests
    ```
-   **Expect:** `ok`, then `Ran 50 tests … OK`. Three doctor tests need Hermes' `python-dotenv`;
+   **Expect:** `ok`, then `Ran 61 tests … OK`. Three doctor tests need Hermes' `python-dotenv`;
    they skip in a bare Python environment and all run in Hermes' environment.
 
 ## Repeatable business cases (operator only)
@@ -34,11 +34,22 @@ The four action/memory cases require isolation; without isolation they are exclu
 This uses the installed profile's model and Telegram or scheduled toolsets in native Hermes sessions;
 it does not send Telegram messages or reproduce the owner's existing conversation history.
 Review each case's expected criteria against its captured response and tool evidence in `results.json`.
+The fifteen cases cover comparisons, conditional offers, contribution arithmetic, unsupported ad
+claims, sparse history, product review and action memory. [EVALUATION.md](EVALUATION.md) records
+the dated manual assessments; live observations and isolated simulations are labelled separately.
 Prices and stock are live observations, so review the date and source rather than assuming fixture prices.
 Raw records contain owner data: keep them private. `output/` is excluded from this repository.
 The runner hashes profile instructions and plugin files; it does not assign an automatic quality score.
 An actual scheduled Telegram delivery test is separate: `hermes -p iris cron run <existing-job-id>`.
 Check `cron runs` and the durable delivery outcome; execution success alone does not prove delivery.
+Daily facts are acknowledged on the next check only after the linked native run completed and
+delivery was confirmed. A delivered failure notice does not consume them. Active, queued or
+uncertain sends are held; known failures retry. Native queue tombstones retain deferred-send proof.
+An uncertain or missing execution record requires operator investigation rather than automatic
+replay. Without a unique native worker/job match, facts remain unacknowledged. This adapter reads
+Hermes' local ledgers, so confirm compatibility after a Hermes upgrade.
+`cron.mirror_delivery: true` uses Hermes to put delivered briefs in the owner conversation;
+`cron.wrap_response: false` keeps native job-management headers out of owner messages.
 
 ---
 

@@ -60,10 +60,22 @@ Use Hermes' Python environment. A new private output directory is required:
 python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris --output ~/iris-evaluations/demo --isolate
 ```
 
-There are twelve reusable cases. Each records expected criteria, the exact response, native tool
+There are fifteen reusable cases. Each records expected criteria, the exact response, native tool
 transcript, profile file hashes, timing, session ID and available usage data. Live prices and stock
 are observations, not frozen fixtures. Review the evidence manually; the runner does not grade
 answer quality. Action cases require isolation, and the isolated copy has no Telegram bot token.
 
 Raw records contain owner data and private runtime configuration; keep the output outside Git.
 Use [TESTING.md](TESTING.md) for offline and host checks and [PRODUCT.md](PRODUCT.md) for the real pilot.
+
+## A price cut with its business cost
+
+Hypothetical inputs: selling price EGP 320, cost EGP 190, packaging EGP 20 and payment fee 3%.
+At EGP 299, Iris calculated contribution falling from EGP 100.40 to EGP 80.03 per bottle:
+EGP 20.37 less, requiring about 25.5% more units to preserve total contribution. She kept the
+assumptions explicit and did not infer extra demand or real sales.
+
+The bulk-offer case also rejected an unqualified cheaper claim: the advertised EGP 360, buy-two-
+get-two deal would be EGP 720 for four bottles if eligible, compared with EGP 1280 for four demo
+Mira bottles. Single-bottle prices and conditional offers were kept separate. Checkout and a
+complete product match remain unverified. [Read the case assessments](EVALUATION.md).

@@ -4,6 +4,11 @@ model: ""
 # Scheduled jobs use this time zone ("0 8 * * *" = 8:00 in Cairo).
 timezone: "Africa/Cairo"
 
+# Native Hermes delivery: the owner's reply can refer back to a scheduled alert.
+cron:
+  mirror_delivery: true
+  wrap_response: false
+
 # Tools Iris may use in chat and in scheduled runs. Terminal, files, browser, messaging and
 # cron scheduling stay off: Iris reads outside pages, so she only gets fixed read-only tools.
 platform_toolsets:
