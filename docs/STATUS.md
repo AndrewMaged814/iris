@@ -7,7 +7,7 @@
   with urgency limited to the owner's product types.
 - Daily check with the `{"wakeAgent": false}` gate and acknowledgement after confirmed delivery;
   persistent warning after 3 failed checks. Unknown sends are held for operator investigation.
-- Weekly data collection. SOUL, four skills, validator, doctor, CI. 61 tests, no network.
+- Weekly data collection. SOUL, four skills, validator, doctor, CI. 65 tests, no network.
 - Exact product links return that product with description and page evidence for advertised offers.
 - Market history includes successful-check coverage so Iris can distinguish a baseline from a quiet week.
 - Chat and scheduled briefs share dated evidence, source URLs and profile-local timestamps.

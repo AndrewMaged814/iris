@@ -44,7 +44,7 @@ a Telegram bot and a model provider. **[Follow the setup guide →](docs/SETUP.m
 Four tools. Three scripts. Hermes handles Telegram, memory and scheduling.
 Stores stay read-only; you choose and apply the action.
 
-**Early pilot:** 61 offline tests and a 15-case business evaluator.
+**Early pilot:** 65 offline tests and a 17-case business evaluator.
 Real merchant revenue impact and time savings still need validation.
 
 [Expected vs. actual](docs/EVALUATION.md) · [Status](docs/STATUS.md) · [Testing](docs/TESTING.md) · [MIT license](LICENSE)

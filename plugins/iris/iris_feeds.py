@@ -190,7 +190,9 @@ def _read_shopify(base: str, get) -> list[dict] | None:
         data = _json_or_none(text)
         items = data.get("products") if isinstance(data, dict) else None
         if not isinstance(items, list):
-            return None if page == 1 else products
+            if page == 1:
+                return None
+            break
         if not items:
             break
         first = str(items[0].get("id") or items[0].get("handle"))
@@ -201,7 +203,45 @@ def _read_shopify(base: str, get) -> list[dict] | None:
         if len(items) < 250:
             break
         time.sleep(PAGE_DELAY_S)
+    _confirm_shopify_currency(products, base, get)
     return products
+
+
+def _confirm_shopify_currency(products: list[dict], base: str, get) -> None:
+    """Confirm feed currency with store metadata and one matching first-party price.
+
+    Public feeds omit currency. A presentment currency alone could mislabel base
+    prices, so require the metadata currency AND the representative page's price
+    to agree. Optional evidence failures leave the readable feed intact.
+    """
+    sample = next((p for p in products if p.get("price") and p.get("url")), None)
+    if sample is None:
+        return
+    metadata_url = f"{_origin(base)}/meta.json"
+    try:
+        status, raw = get(metadata_url)
+        if _status_access(status, raw):
+            return
+        metadata = _json_or_none(raw)
+        currency = metadata.get("currency") if isinstance(metadata, dict) else None
+        if not isinstance(currency, str) or not re.fullmatch(r"[A-Z]{3}", currency):
+            return
+        status, page = get(sample["url"])
+        if _status_access(status, page):
+            return
+        handle = urlparse(sample["url"]).path.rstrip("/").rsplit("/", 1)[-1]
+        evidence = [p for p in _ld_products(page, sample["url"])
+                    if _origin(p["url"]) == _origin(sample["url"])
+                    and urlparse(p["url"]).path.rstrip("/").rsplit("/", 1)[-1] == handle]
+        if not evidence or any(p["currency"] != currency or p["price"] != sample["price"]
+                               for p in evidence):
+            return
+    except FetchError:
+        return
+    for product in products:
+        product["currency"] = currency
+        product["currency_evidence"] = {"metadata_url": metadata_url,
+                                        "verified_product_url": sample["url"]}
 
 
 # ---------------------------------------------------------------- WooCommerce Store API
@@ -323,6 +363,8 @@ def _ld_products(page_html: str, page_url: str) -> list[dict]:
         for p in _walk_ld(data):
             offers = p.get("offers") or {}
             offers = offers[0] if isinstance(offers, list) and offers else offers
+            if not isinstance(offers, dict):
+                continue
             price = _num(offers.get("price") or offers.get("lowPrice"))
             spec = offers.get("priceSpecification") or {}
             spec = spec[0] if isinstance(spec, list) and spec else spec

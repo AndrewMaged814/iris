@@ -19,6 +19,8 @@ Report confirmed and emerging. Leave noise out.
 
 ## Missing currency
 
-Shopify's public feed has no currency. Confirm it from the relevant product page before comparing
-prices with the owner's store. If it remains unknown, report the raw number with that limitation
-and leave out cheaper/more expensive judgments. Shared location alone doesn't confirm currency.
+Shopify's public feed omits currency. The reader can confirm it using first-party store metadata
+and a product page with the same price and currency. Use that confirmed currency. If missing,
+read the relevant product page before comparing prices; retain its own price and currency together.
+If still unknown, give the raw number with that limitation and omit relative price judgments.
+Shared location alone doesn't confirm currency.

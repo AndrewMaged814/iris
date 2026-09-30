@@ -30,7 +30,7 @@ def _err(message: str) -> str:
 
 def _brief(p: dict) -> dict:
     return {k: p.get(k) for k in ("title", "url", "description", "product_type", "price", "compare_at", "on_sale",
-                                  "currency", "available", "created_at")}
+                                  "currency", "currency_evidence", "available", "created_at")}
 
 
 def _store_view(result: dict, focus: list[str] | None = None, sample: int = 20) -> dict:

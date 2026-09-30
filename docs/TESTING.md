@@ -16,7 +16,7 @@ Time needed: about 1.5 hours the first time.
    python3 tools/validate_repo.py
    python3 -m unittest discover -s tests
    ```
-   **Expect:** `ok`, then `Ran 61 tests … OK`. Three doctor tests need Hermes' `python-dotenv`;
+   **Expect:** `ok`, then `Ran 65 tests … OK`. Three doctor tests need Hermes' `python-dotenv`;
    they skip in a bare Python environment and all run in Hermes' environment.
 
 ## Repeatable business cases (operator only)

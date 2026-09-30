@@ -8,6 +8,80 @@ feeds.PAGE_DELAY_S = 0
 
 
 class ShopifyFeed(unittest.TestCase):
+    def test_currency_confirmed_by_store_metadata_and_matching_product(self):
+        web = FakeWeb({
+            "https://glow.example/products.json": (200, fixture("shopify_products.json")),
+            "https://glow.example/meta.json": (200, {"currency": "EGP"}),
+            "https://glow.example/products/glow-vitamin-c-serum": (200, '''<script type="application/ld+json">
+                {"@type":"Product","name":"Vitamin C Serum","offers":{"price":"450","priceCurrency":"EGP"}}
+                </script>'''),
+        })
+        result = feeds.read_store("https://glow.example", get=web)
+        self.assertEqual({p["currency"] for p in result["products"]}, {"EGP"})
+        self.assertEqual(len(web.calls), 3)
+
+    def test_currency_remains_unknown_when_evidence_is_missing_or_conflicts(self):
+        for metadata, price, page_currency in [
+            ({"currency": "EGP"}, "12", "USD"),
+            ({"currency": "EGP"}, "440", "EGP"),
+            ({"currency": "EGP"}, "450", None),
+            ({"currency": "Egypt"}, "450", "EGP"),
+            ({}, "450", "EGP"),
+        ]:
+            with self.subTest(metadata=metadata, price=price, page_currency=page_currency):
+                page = '<script type="application/ld+json">' + json.dumps({
+                    "@type": "Product", "name": "Serum", "offers": {
+                        "price": price, "priceCurrency": page_currency}}) + '</script>'
+                web = FakeWeb({
+                    "https://glow.example/products.json": (200, fixture("shopify_products.json")),
+                    "https://glow.example/meta.json": (200, metadata),
+                    "https://glow.example/products/glow-vitamin-c-serum": (200, page),
+                })
+                result = feeds.read_store("https://glow.example", get=web)
+                self.assertEqual(result["access"], "ok")
+                self.assertTrue(all(p["currency"] is None for p in result["products"]))
+                self.assertEqual(result["products"][0]["price"], 450)
+
+    def test_optional_currency_fetch_failure_preserves_readable_catalog(self):
+        for status in (403, 404):
+            web = FakeWeb({
+                "https://glow.example/products.json": (200, fixture("shopify_products.json")),
+                "https://glow.example/meta.json": (status, "unavailable"),
+            })
+            result = feeds.read_store("https://glow.example", get=web)
+            self.assertEqual((result["access"], len(result["products"])), ("ok", 3))
+            self.assertTrue(all(p["currency"] is None for p in result["products"]))
+            self.assertEqual(len(web.calls), 2)  # no attempt to bypass a blocked metadata endpoint
+        for page in (None, '<script type="application/ld+json">'
+                     '{"@type":"Product","offers":["malformed"]}</script>'):
+            web = FakeWeb({
+                "https://glow.example/products.json": (200, fixture("shopify_products.json")),
+                "https://glow.example/meta.json": (200, {"currency": "EGP"}),
+                "https://glow.example/products/glow-vitamin-c-serum": (200, page or ""),
+            })
+            def get(url):
+                if page is None and url.endswith("/meta.json"):
+                    raise feeds.FetchError(feeds.UNREACHABLE)
+                return web(url)
+            result = feeds.read_store("https://glow.example", get=get)
+            self.assertEqual((result["access"], len(result["products"])), ("ok", 3))
+            self.assertTrue(all(p["currency"] is None for p in result["products"]))
+
+    def test_collection_currency_uses_store_metadata_and_canonical_product(self):
+        base = "https://glow.example/ar/collections/skin-care"
+        web = FakeWeb({
+            base + "/products.json": (200, fixture("shopify_products.json")),
+            "https://glow.example/meta.json": (200, {"currency": "EGP"}),
+            base + "/products/glow-vitamin-c-serum": (200, '''<script type="application/ld+json">
+                {"@type":"Product","name":"Serum","url":"https://glow.example/products/glow-vitamin-c-serum",
+                 "offers":{"price":"450","priceCurrency":"EGP"}}</script>'''),
+        })
+        result = feeds.read_store(base, get=web)
+        self.assertEqual({p["currency"] for p in result["products"]}, {"EGP"})
+        self.assertEqual(web.calls, [base + "/products.json?limit=250&page=1",
+                                    "https://glow.example/meta.json",
+                                    base + "/products/glow-vitamin-c-serum"])
+
     def test_reads_products_prices_sales_and_stock(self):
         web = FakeWeb({"https://glow.example/products.json": (200, fixture("shopify_products.json"))})
         r = feeds.read_store("glow.example", get=web)
@@ -24,7 +98,7 @@ class ShopifyFeed(unittest.TestCase):
         web = FakeWeb({"https://static.example/shop/products.json": (200, big)})
         r = feeds.read_store("https://static.example/shop/", get=web)
         self.assertEqual(len(r["products"]), 250)
-        self.assertEqual(len(web.calls), 2)  # page 2 repeated page 1, so reading stopped
+        self.assertEqual(len(web.calls), 3)  # page 2 repeats, then optional currency metadata
 
     def test_store_under_a_path_like_github_pages(self):
         web = FakeWeb({"https://me.github.io/world/glow/products.json": (200, fixture("shopify_products.json"))})

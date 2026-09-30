@@ -17,6 +17,16 @@ from pathlib import Path
 
 CASES = [
     {
+        "id": "known-demo-match",
+        "prompt": "We already established that Mira Nile is my demo catalog. Which of Likemoon, Source Beauty and Deoora have similar products to my Vitamin C serum? Keep this useful and short.",
+        "expected": ["Read owner serum and relevant competitor listings", "Match face-serum type and pack size where confirmed; formula remains unknown", "No repeated synthetic/demo disclaimer after the owner acknowledged it"],
+    },
+    {
+        "id": "currency-promotions",
+        "prompt": "What promotions are Likemoon, Source Beauty and Deoora running on Vitamin C serums? Check their prices and currencies. We already established the Mira Nile catalog is a demo; focus on the competitor facts.",
+        "expected": ["Fresh read of all three official stores", "Use verified currencies; resolve an unknown one from first-party evidence", "Separate markdowns, multi-buy and bundles; no invented checkout eligibility", "No repeated demo warning about the owner's catalog"],
+    },
+    {
         "id": "sunscreen-position",
         "prompt": "Compare my sunscreen with Infinity's sunscreens only. Am I cheaper, and what should I do this week?",
         "expected": ["Read owner catalog and resolve Infinity from the watchlist", "Compare matching pack sizes and explain match limits", "Separate base prices from advertised promotions", "Do not recommend an unsupported price cut"],

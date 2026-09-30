@@ -14,6 +14,8 @@ are separate checks.
 
 | Case | Expected | Observed result and limit |
 | --- | --- | --- |
+| Known demo, Vitamin C match | Useful matches after acknowledging the demo once | Baseline repeated synthetic/demo labels and withheld practical advice; revised Luna reply gave matches and verified EGP prices without repeating the disclaimer |
+| Vitamin C promotions and currency | Confirm currency, distinguish markdowns, multi-buy and bundles | All three watched collection feeds returned EGP with first-party metadata and matching product-price evidence; Luna separated offers and flagged conflicting stock evidence |
 | Sunscreen position | Compare relevant packs and base prices versus offers | Improved offer separation and demo labels; some English pages did not expose confirmed pack size; advice remained generic |
 | Exact product | Read that official product, including size and offers | Reader correction returned 50 ml, skin-type evidence, LE 360 and the advertised 2+2 offer; no checkout verification |
 | Price cut | Check saved competitor and offers; account for unknown margin | Resolved saved URL and avoided an unsupported cut; demand and full formulation match unknown |
@@ -44,6 +46,14 @@ are separate checks.
   Failed generation and delivery no longer consume the alert before it can be retried.
 - Native Hermes delivery mirroring carries scheduled reports into the owner's chat context;
   weekly instructions distinguish a chosen-action question from a generic draft offer.
+- Routine comparisons retain demo provenance internally after the owner knows it. Material
+  publishing and simulated-result caveats remain; the tested ad reply put its caveat outside the draft.
+- Existing conversations restore a frozen Hermes system prompt. Updating SOUL alone does not
+  update those sessions: deployments must refresh the stored prompt through native session storage
+  and evict the running agent cache while retaining the conversation and owner memory.
+- Shopify feed currency requires store metadata plus one first-party product page agreeing on
+  price and currency. Collection and localized links are covered. Missing or conflicting evidence
+  leaves currency unknown without losing the readable catalog; historical snapshots are not relabeled.
 
 ## Reliability evidence and limits
 
