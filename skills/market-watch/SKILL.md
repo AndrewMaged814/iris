@@ -38,6 +38,9 @@ does not make a personal shopping request relevant to this store. Clarify an unc
   `[countdown target: …]` instead of digits. A past target suggests that timer ended; a future
   one is the advertised end; "end time not in page" means the offer is advertised with no visible
   end date. Never call an offer expired from timer digits alone.
+- When a multi-buy could reverse the comparison, give its basket math in one line even if its
+  validity is unclear ("If it's live, 4 of theirs cost EGP 720 vs EGP 1,280 for 4 of yours"),
+  then what that means for the owner's claim or move. That line is the decision, not a caveat.
 - Describe offers as advertised, with their conditions. Calculate an effective unit price only
   when quantities and prices are clear; checkout eligibility and delivery are unverified.
 - Recommend a price cut only with evidence about the match, customer need and the owner's margin.
