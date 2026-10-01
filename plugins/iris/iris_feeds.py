@@ -497,7 +497,60 @@ def _read_page(url: str, get) -> list[dict]:
 
 # ---------------------------------------------------------------- public entry
 
-def read_store(url: str, get=None, kind: str = "auto") -> dict:
+class _PageLinks(HTMLParser):
+    """Preserve first-party destinations omitted by main-text extraction."""
+
+    def __init__(self, url):
+        super().__init__()
+        self.url, self.tags, self.anchor, self.links = url, [], None, []
+
+    def handle_starttag(self, tag, attrs):
+        if tag not in _VOID:
+            self.tags.append(tag)
+        if tag == 'a' and not any(t in self.tags for t in ('script', 'style', 'template', 'noscript')):
+            a = dict(attrs)
+            target = urlparse(urljoin(self.url, a.get('href') or ''))
+            if a.get('href') and target.scheme in ('http', 'https') and target.netloc == urlparse(self.url).netloc:
+                priority = any(t in self.tags for t in ('header', 'nav', 'footer'))
+                self.anchor = (target._replace(fragment='').geturl(), priority, [], a.get('aria-label') or a.get('title') or '')
+
+    def handle_data(self, data):
+        if self.anchor and not any(t in self.tags for t in ('script', 'style', 'template', 'noscript')):
+            self.anchor[2].append(data)
+
+    def handle_endtag(self, tag):
+        if tag == 'a' and self.anchor:
+            url, priority, parts, fallback = self.anchor
+            title = _clean(' '.join(parts) or fallback, 160)
+            if title:
+                self.links.append((priority, {'url': url, 'title': title}))
+            self.anchor = None
+        if tag in self.tags:
+            self.tags = self.tags[:len(self.tags) - 1 - self.tags[::-1].index(tag)]
+
+
+def read_page_links(url: str, get=None) -> dict:
+    result = {'url': url, 'access': OK, 'links': []}
+    try:
+        status, text = (get or http_get)(url)
+        result['access'] = _status_access(status, text) or OK
+        if result['access'] != OK:
+            return result
+        parser = _PageLinks(url)
+        parser.feed(text)
+        seen = set()
+        for _, link in sorted(parser.links, key=lambda p: not p[0]):
+            if link['url'] not in seen:
+                seen.add(link['url'])
+                result['links'].append(link)
+        result['links_truncated'] = len(result['links']) > 80
+        result['links'] = result['links'][:80]
+    except FetchError as exc:
+        result['access'] = exc.access
+    return result
+
+
+def read_store(url: str, get=None, kind: str = "auto", include_links: bool = False) -> dict:
     """Read one store or page. Never raises: failures come back as an access state."""
     get = get or http_get
     url = url.strip()
@@ -536,4 +589,6 @@ def read_store(url: str, get=None, kind: str = "auto") -> dict:
         return result
     if not result["products"]:
         result["access"] = NO_PRODUCTS
+    if include_links:
+        result['page_links'] = read_page_links(url, get=get)
     return result

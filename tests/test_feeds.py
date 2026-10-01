@@ -7,6 +7,29 @@ import iris_feeds as feeds
 feeds.PAGE_DELAY_S = 0
 
 
+class PageLinks(unittest.TestCase):
+    def test_preserves_navigation_links_outside_product_content(self):
+        url = 'https://glow.example/collections/skin-care'
+        page = '''<header><nav><a href="/collections/near-to-expire">Clearance <b>Buy1 Get1</b></a>
+            <a href="/collections/near-to-expire">Duplicate</a></nav></header>
+            <main><a href="/products/serum">Serum</a></main>
+            <footer><a href="/policies/refund-policy">Returns</a></footer>
+            <template><a href="/hidden">Hidden</a></template>
+            <a href="javascript:alert(1)">Bad</a><a href="https://other.example">External</a>'''
+        result = feeds.read_page_links(url, get=FakeWeb({url: (200, page)}))
+        self.assertEqual(result['access'], feeds.OK)
+        self.assertEqual([p['title'] for p in result['links']], ['Clearance Buy1 Get1', 'Returns', 'Serum'])
+        self.assertEqual(result['links'][0]['url'], 'https://glow.example/collections/near-to-expire')
+
+    def test_blocked_navigation_is_reported_without_retry(self):
+        url = 'https://glow.example'
+        web = FakeWeb({url: (403, 'Access denied')})
+        result = feeds.read_page_links(url, get=web)
+        self.assertEqual(result['access'], feeds.BLOCKED)
+        self.assertEqual(result['links'], [])
+        self.assertEqual(web.calls, [url])
+
+
 class ShopifyFeed(unittest.TestCase):
     def test_currency_confirmed_by_store_metadata_and_matching_product(self):
         web = FakeWeb({

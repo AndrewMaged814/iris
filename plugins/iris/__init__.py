@@ -45,6 +45,7 @@ def _store_view(result: dict, focus: list[str] | None = None, sample: int = 20) 
         "scope": result.get("scope", "catalog"),
         "products_shown": min(sample, len(products)),
         "page_text": result.get("page_text", ""),
+        "page_links": result.get("page_links", {}),
         "by_type": changes.summarize(products),
         "on_sale": [_brief(p) for p in products if p.get("on_sale")][:10],
         "out_of_stock": [_brief(p) for p in products if p.get("available") is False][:10],
@@ -84,7 +85,7 @@ def read_store_tool(args: dict, **_) -> str:
     url = (args.get("url") or "").strip()
     if not url:
         return _err("A store or product link is needed.")
-    result = feeds.read_store(url)
+    result = feeds.read_store(url, include_links=True)
     return _ok(_store_view(result, args.get("focus") or None))
 
 

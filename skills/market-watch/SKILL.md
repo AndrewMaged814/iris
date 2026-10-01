@@ -31,8 +31,13 @@ Choose the source by the fact needed, including short follow-ups about the same 
 - For facts missing from or outside that evidence, use Hermes `web_extract` on the relevant
   first-party page. For a store-wide question, start at its homepage and follow navigation links
   that could answer it: policies, delivery, ingredients, offers, bundles or clearance as relevant.
+  Use `read_store`'s `page_links` to find destinations omitted from extracted text; they include
+  navigation from the requested collection page. Extract the destination, not its catalog feed.
   Read the destination's actual text and conditions; a link or search snippet alone is not proof.
-- If the link is missing, use `web_search` scoped to the official domain to find it, then extract it.
+- If extraction omits navigation or the link is missing, use `web_search` scoped to the official
+  domain with the owner's specific term, then extract the matching page. Keep each query focused
+  on one concept; try related wording separately if needed. A different page about a related topic
+  does not resolve the question. Use a larger `char_limit` when truncation could hide needed evidence.
   Follow relevant leads until the question is answered or the remaining evidence is unavailable.
   For truncated text, extract the more specific linked page instead of drawing a conclusion from the excerpt.
 - Answer directly with a source link and check date. When evidence is blocked, missing or conflicting,
