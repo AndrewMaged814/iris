@@ -179,6 +179,9 @@ def plan(args, post=None):
     limit = args.get("redemption_limit")
     if type(limit) is not int or not 1 <= limit <= 100:
         raise store.StoreError("Use a redemption limit from 1 to 100.")
+    quantity = args.get("minimum_quantity", 1)  # 2+ answers a rival multi-buy with a multi-unit deal
+    if type(quantity) is not int or not 1 <= quantity <= 5:
+        raise store.StoreError("Use a minimum quantity from 1 to 5 units.")
     start, end = _date(args.get("starts_at")), _date(args.get("ends_at"))
     if start < _now() - timedelta(minutes=5) or start > _now() + timedelta(days=7):
         raise store.StoreError("Choose a start time within the next seven days.")
@@ -209,7 +212,8 @@ def plan(args, post=None):
              "estimated_margin_percent": _cash(margin), "stock_at_check": variant["inventoryQuantity"],
              "market_reason": evidence, "all_buyers": True, "once_per_customer": True,
              "combines_with_other_discounts": False, "one_time_purchases_only": True,
-             "minimum_quantity": 1, "redemption_limit_is_not_a_unit_or_spend_cap": True,
+             "minimum_quantity": quantity, "basket_price": _cash(sale * quantity),
+             "redemption_limit_is_not_a_unit_or_spend_cap": True,
              "estimate_basis": "Before tax; extra costs must include packaging and shipping subsidy per unit."}
     proposal = {"terms": terms, "variant_id": variant["id"], "product_id": variant["product"]["id"],
                 "fingerprint": _fingerprint(facts)}
@@ -320,6 +324,10 @@ def _confirm(runner, question, terms, action):
                              f"after cost {currency} {_cash(Decimal(t['shopify_unit_cost']))}, "
                              f"{t['fee_percent']}% fees, {currency} {t['extra_cost_per_unit']} extra; before tax",
     }
+    quantity = t.get("minimum_quantity", 1)
+    if quantity > 1:
+        fields["Who"] = f"Orders of {quantity}+ units ({currency} {t['basket_price']} for {quantity}); " + fields["Who"]
+
     payload = "\n".join(f"{label}: {value}" for label, value in fields.items())
     if len(question + payload) > 3500:
         raise store.StoreError("The offer review is too long. Use a shorter market reason.")
@@ -335,7 +343,7 @@ def _input(proposal):
             "startsAt": t["starts_at"], "endsAt": t["ends_at"], "usageLimit": t["redemption_limit"],
             "appliesOncePerCustomer": True,
             "combinesWith": {"orderDiscounts": False, "productDiscounts": False, "shippingDiscounts": False},
-            "minimumRequirement": {"quantity": {"greaterThanOrEqualToQuantity": "1"}},
+            "minimumRequirement": {"quantity": {"greaterThanOrEqualToQuantity": str(t.get("minimum_quantity", 1))}},
             "customerGets": {"items": {"products": {"productVariantsToAdd": [proposal["variant_id"]]}},
                              "value": {"percentage": float(Decimal(t["percent_off"]) / 100)},
                              "appliesOnOneTimePurchase": True, "appliesOnSubscription": False}}
@@ -364,7 +372,7 @@ def _matches(node, proposal):
                 and d["combinesWith"] == {"orderDiscounts": False, "productDiscounts": False, "shippingDiscounts": False}
                 and d["context"] == {"__typename": "DiscountBuyerSelectionAll", "all": "ALL"}
                 and d["minimumRequirement"]["__typename"] == "DiscountMinimumQuantity"
-                and str(d["minimumRequirement"]["greaterThanOrEqualToQuantity"]) == "1"
+                and str(d["minimumRequirement"]["greaterThanOrEqualToQuantity"]) == str(t.get("minimum_quantity", 1))
                 and gets["appliesOnOneTimePurchase"] is True and gets["appliesOnSubscription"] is False
                 and gets["value"]["__typename"] == "DiscountPercentage"
                 and Decimal(str(gets["value"]["percentage"])) == Decimal(t["percent_off"]) / 100

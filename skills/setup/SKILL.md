@@ -24,7 +24,7 @@ version: 1.0.0
    the owner's product types that store also sells. Confirm in plain words what you'll watch.
    Save a one-line note to MEMORY.md: the stores you watch and why each matters to the owner.
 6. Tell the owner how Iris works from now on, in three lines: a message only when something urgent
-   happens (a promotion starts, a watched rival product advertises an offer, a watched item runs out, a new product appears), "This week in your
+   happens (a promotion starts, a watched item runs out, a new product appears), "This week in your
    market" every Sunday, and screenshots of Instagram or Facebook posts are welcome any time.
    Ask once if the morning check time works for them; if they want another time, tell them the
    operator will change it and save their wish to USER.md.

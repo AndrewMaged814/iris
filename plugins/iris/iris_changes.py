@@ -61,26 +61,6 @@ def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | No
     return signals
 
 
-def offer_signals(current: list[dict], known: dict[str, set], focus: list[str] | None = None) -> list[dict]:
-    """Advertised-offer lines on watched product pages, each reported once while it stays up.
-
-    Unlike price diffs, the first check reports offers already running: an owner who starts
-    watching a rival product wants to hear about its live promotion. `known` holds each
-    product's lines already reported and not yet ended. Catalog feeds carry no offer lines.
-    """
-    signals = []
-    for product in current:
-        if "offer_text" not in product:
-            continue
-        now, before = set(product["offer_text"]), known.get(product["key"], set())
-        relevant = _matches(product, focus or [])
-        for line in sorted(now - before):
-            signals.append(_signal("offer_advertised", product, urgent=relevant, offer_text=line))
-        for line in sorted(before - now):
-            signals.append(_signal("offer_ended", product, urgent=False, offer_text=line))
-    return signals
-
-
 def summarize(products: list[dict]) -> dict:
     """Market picture by product type: count, price range, median, on sale, out of stock.
     This is the "compare by product type, not head to head" view (pricing-intel method, FlatNine, MIT)."""

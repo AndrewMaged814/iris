@@ -1,6 +1,6 @@
 ---
 name: market-watch
-description: Use when comparing the connected store's products with competitors, advising on their prices, asking what is trending in their market, reading a relevant competitor link or screenshot, or writing a daily watch alert.
+description: Use when comparing the connected store's products with competitors, advising on their prices, asking what is trending in their market, reading a relevant competitor link or screenshot, or writing a daily watch alert or morning offer check.
 version: 1.0.0
 ---
 
@@ -19,18 +19,27 @@ does not make a personal shopping request relevant to this store. Clarify an unc
 4. Call `my_store` (`summary`, or `search` for one product type) to see what the owner sells in the
    same types.
 5. Answer with what matters, using the checklist in SOUL. Offer to watch the store if it isn't watched yet.
-   After comparing one rival product with the owner's, offer to watch that exact product page:
-   Iris then alerts on offers it advertises (multi-buys, gifts, "% off"), which catalog feeds miss.
-   Add it with `watchlist` `add`, the product link, a short name and the owner's product type as focus.
+   After comparing one rival product with the owner's, offer to watch that exact product page too,
+   so the morning offer check can catch multi-buys and gifts that catalog feeds miss. Add it with
+   `watchlist` `add`, the product link, a short name and the owner's product type as focus.
 
 ## "What's trending?" / "What's happening in my market?"
 
-Answer from patterns across watched stores today, even with little history: how many stores
-discount the owner's product types and how deep, multi-buys, new lines several stores launched,
-and where the owner's prices sit. Two or more stores doing the same thing is a trend worth naming;
-one store is "one competitor is…". Say "over time" only when repeated checks support it.
-Lead with the pattern, then what it means for the owner's matching product, then one move tied
-to that pattern. Don't use the words "signal" or "early signals" with the owner.
+Answer from patterns across watched stores today, even with little history: how many discount the
+owner's product types and how deep, multi-buys, lines several stores launched, and where the
+owner's prices sit. Two or more stores doing the same thing is a trend worth naming; one store is
+"one competitor is…". Say "over time" only when repeated checks support it. Lead with the
+pattern, then the owner's matching product, then one move tied to that pattern. Never say
+"signal" or "early signals" to the owner.
+
+## The morning offer check (scheduled run)
+
+Read every watched product page (`watchlist` `list`, then `read_store` each product link) and
+look in its page text for an advertised offer: multi-buy, gift, % off, free delivery, a timer.
+Your previous report is in your prompt. If no page advertises an offer you haven't already
+reported, reply exactly `[SILENT]`. Otherwise write one alert: quote the offer, the rival's
+price, the owner's matching product (`my_store`), the basket math for a multi-buy, and one
+response you can set up (hold and highlight the single price, or a matching multi-unit code).
 
 ## Product comparisons and price decisions
 
@@ -70,10 +79,6 @@ The facts from the daily check are in your prompt. For each urgent item:
 - `sale_started`: what is on sale, the old and new price, and since when you saw it.
 - `out_of_stock`: which item ran out at which store.
 - `new_product`: what was newly observed and at what price; this doesn't prove its launch date.
-- `offer_advertised`: the offer line from a watched rival product page, quoted, with its price.
-  Compare it with the owner's matching product, including the basket math for a multi-buy, and
-  offer one response: hold and highlight the single price, or a matching multi-unit code.
-  Several lines for one product are one alert. `offer_ended` is weekly news, not an alert.
 - Stores listed as `unreachable`: say which store failed 3 consecutive checks, not 3 days.
 
 Facts can be retried after a failed run. Retain their original observation date. Before describing

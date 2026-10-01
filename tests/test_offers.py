@@ -54,7 +54,8 @@ class Shopify:
             d.update(__typename="DiscountCodeBasic", status="ACTIVE", asyncUsageCount=0,
                      codes={"pageInfo": {"hasNextPage": False}, "nodes": [{"code": value["code"]}]},
                      context={"__typename": "DiscountBuyerSelectionAll", "all": "ALL"},
-                     minimumRequirement={"__typename": "DiscountMinimumQuantity", "greaterThanOrEqualToQuantity": "1"},
+                     minimumRequirement={"__typename": "DiscountMinimumQuantity", "greaterThanOrEqualToQuantity":
+                                         value["minimumRequirement"]["quantity"]["greaterThanOrEqualToQuantity"]},
                      customerGets={"appliesOnOneTimePurchase": True, "appliesOnSubscription": False,
                                    "value": {"__typename": "DiscountPercentage", "percentage": value["customerGets"]["value"]["percentage"]},
                                    "items": {"__typename": "DiscountProducts",
@@ -197,11 +198,23 @@ class Offers(unittest.TestCase):
         self.assertEqual(self.plan(extra_cost_per_unit=200)["status"], "blocked")
         self.assertEqual(self.shop.writes, [])
 
+    def test_multi_unit_code_answers_a_rival_multi_buy_and_verifies_its_minimum(self):
+        identifier = self.plan(minimum_quantity=2)["proposal_id"]
+        result = self.apply(identifier)
+        self.assertTrue(result["verified"])
+        self.assertEqual(result["terms"]["basket_price"], "576.00")
+        self.assertEqual(self.shop.writes[0][1]["input"]["minimumRequirement"],
+                         {"quantity": {"greaterThanOrEqualToQuantity": "2"}})
+        self.assertIn("Orders of 2+ units (EGP 576.00 for 2)", self.runner.questions[0][0])
+        self.shop.node["codeDiscount"]["minimumRequirement"]["greaterThanOrEqualToQuantity"] = "1"
+        self.assertFalse(offers.status(identifier, self.shop)["verified"])  # readback must match the minimum
+
     def test_invalid_money_dates_limits_and_codes_cannot_be_proposed(self):
         cases = [{"percent_off": 31}, {"percent_off": 10.123}, {"fee_percent": "NaN"},
                  {"extra_cost_per_unit": -1}, {"extra_cost_per_unit": 15.123},
                  {"redemption_limit": True}, {"redemption_limit": 101}, {"code": "x"}, {"market_reason": ""},
-                 {"starts_at": "2026-10-01"}, {"ends_at": offers._stamp(offers._now() + timedelta(days=10))}]
+                 {"starts_at": "2026-10-01"}, {"ends_at": offers._stamp(offers._now() + timedelta(days=10))},
+                 {"minimum_quantity": 6}, {"minimum_quantity": "2"}]
         for case in cases:
             with self.subTest(case=case), self.assertRaises(store.StoreError):
                 self.plan(**case)

@@ -165,6 +165,8 @@ SCHEMAS = {
             "starts_at": {"type": "string", "description": "ISO date/time with explicit time zone"},
             "ends_at": {"type": "string", "description": "ISO date/time; within 7 days of starting"},
             "redemption_limit": {"type": "integer", "minimum": 1, "maximum": 100},
+            "minimum_quantity": {"type": "integer", "minimum": 1, "maximum": 5,
+                                 "description": "Units the order must contain; 2+ answers a rival multi-buy. Default 1"},
             "fee_percent": {"type": "number", "description": "Owner-supplied payment/platform variable fee percentage"},
             "extra_cost_per_unit": {"type": "number", "description": "Owner-supplied packaging/shipping subsidy and other variable costs in store currency"},
             "minimum_margin_percent": {"type": "number", "description": "Owner-chosen minimum contribution margin after listed variable costs"},

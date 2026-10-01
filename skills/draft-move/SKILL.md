@@ -37,9 +37,15 @@ See `references/voice.md` for examples.
    no other active/scheduled discount anywhere in the store, with EGP/USD/EUR/GBP/CAD/AUD prices.
    Never disable existing offers to pass.
 4. Ask for missing variable fees, packaging/shipping subsidy per unit and minimum contribution
-   margin. Zero is valid only when explicitly supplied by the owner. Separate estimated
+   margin. Ask once whether they take cash on delivery; if so, ask roughly what share of orders is
+   delivered and what one refused order costs them. Work out what they keep per order after
+   refusals yourself (delivered share × contribution − refused share × refusal cost), show the
+   inputs in one line, and lead with that number. Save these store facts to memory. Zero is valid only when explicitly supplied by the owner. Separate estimated
    contribution from profit, sales lift and demand. No customer/order data is needed.
-5. Use `plan_offer` for one variant, 1–30% off, 1–100 redemptions, a start within the next week,
+5. Match the response to the rival's offer. Against a multi-buy, propose a multi-unit code
+   (`minimum_quantity` 2–5) and compare baskets: "2 of yours for EGP 576 vs their 4 for EGP 720".
+   Against a single-item markdown, a single-unit code or holding the price.
+   Use `plan_offer` for one variant, 1–30% off, 1–100 redemptions, a start within the next week,
    and an expiry within seven days of starting. Include market evidence and owner cost inputs.
    Present the exact code, product/variant, discounted price, dates in the owner's time zone,
    redemption count, once-per-customer/all-buyer eligibility, no stacking and one-time purchases
