@@ -31,6 +31,14 @@ owner's prices sit. Two or more stores doing the same thing is a trend worth nam
 "one competitor is…". Say "over time" only when repeated checks support it. Lead with the
 pattern, then the owner's matching product, then one move tied to that pattern. Never say
 "signal" or "early signals" to the owner.
+- Give the pattern in numbers: "9 of 14 sunscreens at Likemoon are on sale, about 30% off".
+  For depth, `read_store` the discounting stores with `focus` on the owner's type and use
+  their sale and compare-at prices.
+- Compare the owner with the stores that make the pattern, at their sale prices, not with an
+  unrelated store.
+- Pick the move from that comparison: if the owner is now the expensive one, say so and weigh
+  a time-limited code; if they're still cheaper, a "no code needed" price post. Don't repeat a
+  move you already suggested in this conversation; offer a different one or none.
 
 ## The morning offer check (scheduled run)
 
