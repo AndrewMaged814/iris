@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 import iris_store as store
-from iris_watchlist import Watchlist
+from iris_watchlist import Watchlist, profile_timezone
 
 READ_SCOPES = {"read_products", "read_discounts"}
 OFFER_CURRENCIES = {"EGP", "USD", "EUR", "GBP", "CAD", "AUD"}  # first slice: two-decimal prices
@@ -294,27 +294,31 @@ def _native_runner():
 
 
 def _confirm(runner, question, terms, action):
-    question = str(question or "").strip()
+    # Hermes prefixes its own question marker; a repeated one reads as noise on a phone.
+    question = str(question or "").strip().lstrip("❓").strip()
     if not question or len(question) > 600:
         raise store.StoreError("Iris needs to present a short approval question first.")
     # Iris supplies the question. The native UI presents canonical form fields, without IDs/JSON.
     # These are a consent receipt, not a tool-authored recommendation or announcement.
+    # Binding terms come first, in the profile's time zone; Iris already explained the evidence.
     t = terms
     currency = t["currency"]
+    zone = profile_timezone()
+
+    def when(value):
+        local = _date(value).astimezone(zone)
+        return f"{local:%a} {local.day} {local:%b %H:%M}"
+
     fields = {
-        "Action": action, "Code": t["code"], "Product": t["product"], "Variant": t["variant"],
-        "Discount": t["percent_off"] + "%", "Unit price": currency + " " + t["unit_price"],
+        "Action": action, "Code": t["code"], "Product": f"{t['product']} ({t['variant']})",
+        "Discount": f"{t['percent_off']}% off {currency} {t['unit_price']}",
         "Discounted unit price": currency + " " + t["discounted_unit_price"],
-        "Starts (UTC)": t["starts_at"], "Ends (UTC)": t["ends_at"],
-        "Redemptions": t["redemption_limit"], "Units / spend cap": "None",
-        "Eligibility": "All buyers; once per customer; one-time purchases; minimum 1 eligible unit",
-        "Other discounts": "Cannot combine", "Stock at check": t["stock_at_check"],
-        "Shopify unit cost": currency + " " + t["shopify_unit_cost"], "Variable fees": t["fee_percent"] + "%",
-        "Extra cost per unit": currency + " " + t["extra_cost_per_unit"],
-        "Estimated contribution per unit": currency + " " + t["estimated_contribution_per_unit"],
-        "Estimated contribution margin": t["estimated_margin_percent"] + "%",
-        "Minimum margin": t["minimum_margin_percent"] + "%", "Estimate basis": t["estimate_basis"],
-        "Market evidence": t["market_reason"],
+        "Runs": f"{when(t['starts_at'])} → {when(t['ends_at'])} ({str(zone).split('/')[-1].replace('_', ' ')} time)",
+        "Limit": f"{t['redemption_limit']} uses, once per customer; not a cap on units",
+        "Who": "All buyers; one-time purchases; cannot combine with other discounts",
+        "You keep per unit": f"~{currency} {t['estimated_contribution_per_unit']} ({t['estimated_margin_percent']}%) "
+                             f"after cost {currency} {_cash(Decimal(t['shopify_unit_cost']))}, "
+                             f"{t['fee_percent']}% fees, {currency} {t['extra_cost_per_unit']} extra; before tax",
     }
     payload = "\n".join(f"{label}: {value}" for label, value in fields.items())
     if len(question + payload) > 3500:

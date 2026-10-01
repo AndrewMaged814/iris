@@ -219,6 +219,11 @@ class Offers(unittest.TestCase):
         self.assertIn('Discounted unit price: EGP 288.00', self.runner.questions[0][0])
         self.assertIn('Action: create', self.runner.questions[0][0])
         self.assertNotIn(VARIANT, self.runner.questions[0][0])
+        card = self.runner.questions[0][0]
+        self.assertNotIn("UTC)", card)  # owner-facing times use the profile's zone
+        self.assertNotIn("Market evidence", card)
+        self.assertIn("not a cap on units", card)
+        self.assertLessEqual(len(card.splitlines()), 12)
         self.apply(identifier)
         self.assertEqual(len(self.shop.writes), 1)
 
