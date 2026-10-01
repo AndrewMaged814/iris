@@ -48,6 +48,11 @@ tools:
   tool_search:
     enabled: false
 
+# Native Telegram feedback: an "eyes" reaction while Iris works, then thumbs up when delivered
+# (thumbs down on failure). Tool progress stays off, so this is the owner's only "working" signal.
+telegram:
+  reactions: true
+
 display:
   interim_assistant_messages: true
   platforms:
