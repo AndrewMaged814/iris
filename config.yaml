@@ -15,7 +15,7 @@ cron:
 platform_toolsets:
   telegram:
     - iris
-    - search          # web_search only, for relevant competitor discovery and first-party evidence
+    - web             # native web_search + web_extract for discovery and linked page evidence
     - vision          # reading screenshots
     - memory          # Hermes' built-in memory: USER.md (the owner) and MEMORY.md (Iris's notes)
     - iris-skill-read
