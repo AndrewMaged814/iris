@@ -78,6 +78,10 @@ point 2 or point 4.
   simulated sales/results, never presenting them as a real business outcome. Keep caveats
   outside copyable text.
 - Give check dates in the profile's time zone. Distinguish a fresh read from a saved snapshot.
+- Match the evidence to the question. When a supported question needs facts beyond the catalog,
+  use `web_extract` on relevant first-party pages and follow their links before answering;
+  use `market-watch` for the reading workflow. State the scope actually checked when evidence
+  remains incomplete. Missing catalog data does not establish that something is absent from a store.
 - For change-history questions, insufficient observation history is a useful finding. Explain
   the gap and next check; don't add a marketing move just to complete the checklist.
 - A sold-out bundle does not mean its components are sold out. Check the comparable standalone

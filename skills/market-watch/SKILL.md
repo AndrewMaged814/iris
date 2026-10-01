@@ -13,7 +13,7 @@ does not make a personal shopping request relevant to this store. Clarify an unc
 
 1. If the owner names a competitor without a link, `watchlist` `list` and use its saved URL.
    If it isn't saved, find and verify the store with Hermes web search.
-2. `read_store` the link. Use `focus` if the owner asked about a product type.
+2. Use the reading workflow below. Use `focus` for a product type when reading its catalog.
 3. Look at the market picture by product type (`by_type`), promotions (`on_sale`), stock problems
    (`out_of_stock`) and the newest products.
 4. Call `my_store` (`summary`, or `search` for one product type) to see what the owner sells in the
@@ -22,6 +22,22 @@ does not make a personal shopping request relevant to this store. Clarify an unc
    After comparing one rival product with the owner's, offer to watch that exact product page too,
    so the morning offer check can catch multi-buys and gifts that catalog feeds miss. Add it with
    `watchlist` `add`, the product link, a short name and the owner's product type as focus.
+
+## Read enough to answer the question
+
+Choose the source by the fact needed, including short follow-ups about the same store.
+- Use `read_store` for catalog prices, availability and product comparisons. `focus` filters
+  returned products; it does not search website pages or navigation.
+- For facts missing from or outside that evidence, use Hermes `web_extract` on the relevant
+  first-party page. For a store-wide question, start at its homepage and follow navigation links
+  that could answer it: policies, delivery, ingredients, offers, bundles or clearance as relevant.
+  Read the destination's actual text and conditions; a link or search snippet alone is not proof.
+- If the link is missing, use `web_search` scoped to the official domain to find it, then extract it.
+  Follow relevant leads until the question is answered or the remaining evidence is unavailable.
+  For truncated text, extract the more specific linked page instead of drawing a conclusion from the excerpt.
+- Answer directly with a source link and check date. When evidence is blocked, missing or conflicting,
+  name the unresolved fact and the scope checked. Establishing absence requires relevant page coverage;
+  a collection or product feed alone cannot establish absence across the store.
 
 ## "What's trending?" / "What's happening in my market?"
 
