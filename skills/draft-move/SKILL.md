@@ -12,8 +12,8 @@ version: 1.1.0
    (check USER.md), even when the conversation uses another language. If you
    don't know, ask once: Egyptian Arabic or English, formal or friendly, and save the answer.
    When the owner edits or rejects a draft, save the lesson in one line ("prefers short posts, no emojis").
-3. Send the draft as its own message, ready to copy. No explanation around it except one short line
-   after it: "Want it shorter, more formal, or in English/Arabic?"
+3. Send the requested draft as its own message, ready to copy. Keep explanations outside the draft;
+   ask a follow-up only when missing information prevents completing the request.
    A draft is marketing, not terms and conditions: open with the customer's benefit or the deal,
    keep it to 2–4 lines, and put required conditions (dates, code, "one per customer") in one short
    closing line. Emojis only if the owner's saved tone allows them.
@@ -61,7 +61,7 @@ See `references/voice.md` for examples.
    configuration, not checkout performance; mention that only if the owner asks. For uncertain results use `offer_status`; never
    retry creation blindly. Changed facts or a 30-minute-old proposal require a new proposal/code
    and fresh approval. Keep internal proposal IDs out of prose, but remember them with the action.
-8. After verification, offer an announcement draft in the saved/requested brand language. Draft
+8. After verification, write an announcement draft only if requested, in the saved/requested brand language. Draft
    only from verified terms, with no competitor name or unsupported product claims. Publishing
    remains the owner's action. Remember the verified offer and the existing Sunday review.
 9. On an explicit request to stop it, use `deactivate_offer` with its saved proposal ID and an

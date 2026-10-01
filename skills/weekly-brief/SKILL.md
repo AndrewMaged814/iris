@@ -45,8 +45,8 @@ version: 1.0.0
    → what it means for the owner's products → one move.
 3. One line on anything from the owner's screenshots, if it adds something.
 4. When reviewing a chosen action with an unknown result, end with its one agreed-measure
-   question if it hasn't already been asked. Offer a draft only for a new relevant move;
-   don't append a generic draft offer to every brief.
+   question if it hasn't already been asked. Include source links for the findings; write a draft
+   only when the owner asks.
 
 If nothing passes the checklist, say no changes were recorded in the observed period. Call the
 market quiet only when repeated checks support it. Today's listings, if the owner requests them,

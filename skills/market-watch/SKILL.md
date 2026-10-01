@@ -18,7 +18,8 @@ does not make a personal shopping request relevant to this store. Clarify an unc
    (`out_of_stock`) and the newest products.
 4. Call `my_store` (`summary`, or `search` for one product type) to see what the owner sells in the
    same types.
-5. Answer with what matters, using the checklist in SOUL. Offer to watch the store if it isn't watched yet.
+5. Answer the owner's question with the relevant source links. Use SOUL's alert checklist for
+   proactive alerts and advice requests. Offer to watch the store if it isn't watched yet.
    After comparing one rival product with the owner's, offer to watch that exact product page too,
    so the morning offer check can catch multi-buys and gifts that catalog feeds miss. Add it with
    `watchlist` `add`, the product link, a short name and the owner's product type as focus.
