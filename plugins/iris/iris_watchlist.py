@@ -184,6 +184,16 @@ class Watchlist:
         rows = self.db.execute(sql + " ORDER BY signals.id", params).fetchall()
         return [{"id": r["id"], "store": r["store"], "created_at": r["created_at"], **json.loads(r["data"])} for r in rows]
 
+    def active_offers(self, store_id: int) -> dict[str, set]:
+        """Offer lines already reported for this store and not seen ending since."""
+        active: dict[str, set] = {}
+        for row in self.db.execute("SELECT kind, data FROM signals WHERE store_id = ? AND kind IN "
+                                   "('offer_advertised', 'offer_ended') ORDER BY id", (store_id,)):
+            data = json.loads(row["data"])
+            lines = active.setdefault(data["product_key"], set())
+            (lines.add if row["kind"] == "offer_advertised" else lines.discard)(data["offer_text"])
+        return active
+
     def mark_reported(self, ids: list[int]) -> None:
         if ids:
             self.db.executemany("UPDATE signals SET reported = 1 WHERE id = ?", [(i,) for i in ids])

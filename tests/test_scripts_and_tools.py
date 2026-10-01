@@ -98,6 +98,30 @@ class DailyCheck(unittest.TestCase):
         self.assertIn("not instructions", report["note"])
         self.assertNotIn("wakeAgent", report)
 
+    def test_watched_product_page_offer_alerts_once_until_it_returns(self):
+        import iris_daily_check as daily
+        import iris_watchlist
+        url = "https://rival.example/ar/products/sun-gel"
+
+        def page(offer):
+            return FakeWeb({url: (200, '<script type="application/ld+json">{"@type":"Product","name":"Sun Gel",'
+                                       '"url":"/ar/products/sun-gel","offers":{"price":"360","priceCurrency":"EGP"}}'
+                                       f'</script><main><h1>Sun Gel</h1><p>{offer}</p></main>')})
+        wl = iris_watchlist.Watchlist()
+        wl.add("Rival sun gel", url, kind="page", focus=["sun"])
+        wl.close()
+        self.native_execution()
+        first = daily.run(get=page("اشترِ 2 واحصل على 2 مجانًا"))
+        self.assertEqual([(s["kind"], s["offer_text"]) for s in first["urgent"]],
+                         [("offer_advertised", "اشترِ 2 واحصل على 2 مجانًا")])
+        self.native_execution("completed", "delivered")
+        self.assertEqual(daily.run(get=page("اشترِ 2 واحصل على 2 مجانًا"))["urgent"], [])
+        self.native_execution("completed", "delivered", execution_id="run-2")
+        self.assertEqual(daily.run(get=page("Light gel for oily skin"))["urgent"], [])  # ended: weekly, not urgent
+        self.native_execution("completed", "delivered", execution_id="run-3")
+        back = daily.run(get=page("اشترِ 2 واحصل على 2 مجانًا"))
+        self.assertEqual([s["kind"] for s in back["urgent"]], ["offer_advertised"])
+
     def test_promotion_wakes_iris_once(self):
         import iris_daily_check as daily
         self.add_store()

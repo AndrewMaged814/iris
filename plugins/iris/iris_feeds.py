@@ -454,6 +454,23 @@ class _PageText(HTMLParser):
                 self.main_parts.append(data.strip())
 
 
+# Advertised-offer wording on a product page, in Arabic (whole words, common prefixes) and English.
+# Matches are evidence lines for Iris to interpret, not parsed offer terms.
+_OFFER_RE = re.compile(
+    r"(?<![؀-ۿ])(?:و|ب|ف|ال|وال|بال|لل)?(?:عرض|عروض|خصم|خصومات|هدية|هدايا|مجان|اشتر|احصل|تخفيض|تخفيضات)"
+    r"|\b(?:buy\s*\d|get\s*\d|\d+\s*%\s*off|sale|discount|deal|bundle|gift|save\s+\d|(?<!-)free)\b", re.I)
+
+
+def offer_lines(parts: list[str], limit: int = 5) -> list[str]:
+    """Distinct short page lines that advertise an offer; theme labels ("Sale") are too short."""
+    out = []
+    for text in parts:
+        line = _clean(text, 160)
+        if len(line.split()) >= 3 and _OFFER_RE.search(line) and line not in out:
+            out.append(line)
+    return out[:limit]
+
+
 def _read_product_page(url: str, get) -> tuple[str, list[dict], str]:
     status, text = get(url)
     access = _status_access(status, text)
@@ -468,9 +485,11 @@ def _read_product_page(url: str, get) -> tuple[str, list[dict], str]:
     parser = _PageText()
     parser.feed(text)
     page_text = _clean(" ".join(parser.main_parts or parser.parts), 10000)
+    offers = offer_lines(parser.main_parts or parser.parts)
     found = [p for p in _ld_products(text, url)
              if urlparse(p["url"]).path.rstrip("/").rsplit("/", 1)[-1] == handle]
     if found:
+        found[0]["offer_text"] = offers  # saved with snapshots so daily checks see page-only offers
         return "page", found[:1], page_text
     # A normal documented Shopify product endpoint, only if the page was readable.
     # A missing or blocked product never falls back to an unrelated store catalog.
@@ -484,6 +503,8 @@ def _read_product_page(url: str, get) -> tuple[str, list[dict], str]:
     product = data.get("product") if isinstance(data, dict) else None
     found = (_shopify_products([product], _origin(url))
              if isinstance(product, dict) and product.get("handle") == handle else [])
+    for p in found:
+        p["offer_text"] = offers
     return "shopify" if found else "page", found, page_text
 
 

@@ -107,6 +107,6 @@ has to repeat themselves. Call the owner by name.
 ## Where to go
 
 - No store connection yet, or a new owner → `setup`.
-- A link or screenshot about another store, "what are they selling", or a watch alert → `market-watch`.
+- A link or screenshot about another store, "what are they selling", "what's trending", or a watch alert → `market-watch`.
 - The weekly message, "how was the week", or "what changed this week" → `weekly-brief`.
 - A product-page review, draft, response offer, "apply it", "stop the offer", or action result → `draft-move`.

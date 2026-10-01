@@ -5,14 +5,15 @@ Reads every watched store, saves a snapshot, and records what changed.
 - Nothing urgent            -> prints JSON status and {"wakeAgent": false}: no model run, no message.
 - Urgent change or a store  -> prints the facts as JSON; Hermes injects them into Iris's prompt
   failing 3 checks in a row    and Iris writes the alert herself.
-Urgent = a promotion started, a watched item went out of stock, or a new product appeared.
+Urgent = a promotion started, an offer is advertised on a watched product page, a watched item
+went out of stock, or a new product appeared.
 """
 import json
 import sys
 
 import _iris_paths  # sets sys.path and IRIS_DATA_DIR
 import iris_delivery
-from iris_changes import diff
+from iris_changes import diff, offer_signals
 from iris_feeds import OK, read_store
 from iris_watchlist import Watchlist
 
@@ -41,6 +42,7 @@ def run(get=None) -> dict:
             previous = wl.last_good_snapshot(s["id"])
             wl.save_snapshot(s["id"], result)
             wl.save_signals(s["id"], diff(previous, result["products"], s["focus"]))
+            wl.save_signals(s["id"], offer_signals(result["products"], wl.active_offers(s["id"]), s["focus"]))
         pending = [x for x in wl.signals(days=None, urgent_only=True, unreported_only=True)
                    if x["id"] not in held]
         urgent = [x for x in pending if x["kind"] != "store_unreachable"]
