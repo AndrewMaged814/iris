@@ -132,6 +132,23 @@ class WooAndPages(unittest.TestCase):
         self.assertNotIn("Other products", r["page_text"])
         self.assertEqual(web.calls, [url])
 
+    def test_countdown_reports_its_target_not_unrendered_zeros(self):
+        url = "https://glow.example/products/daily-sunscreen"
+        page = '''<html><head><script type="application/ld+json">
+        {"@type":"Product","name":"Daily Sunscreen","url":"/products/daily-sunscreen",
+        "offers":{"price":"380","priceCurrency":"EGP"}}</script></head><body><main>
+        <p>Buy one get one free <hdt-countdown config='{"month":"9", "date":"16, 2026 23:59:00"}'>
+        <hdt-countdown-amount data-days>00</hdt-countdown-amount> days
+        <hdt-countdown-amount data-hours>00</hdt-countdown-amount>:00</hdt-countdown></p>
+        <div class="promo-timer" data-end="2026-10-05T23:59:00+02:00"><span>00</span>:<span>00</span></div>
+        <p>Limited time</p></main></body></html>'''
+        r = feeds.read_store(url, get=FakeWeb({url: (200, page)}))
+        self.assertIn('"date":"16, 2026 23:59:00"', r["page_text"])
+        self.assertIn("2026-10-05T23:59:00+02:00", r["page_text"])
+        self.assertIn("Buy one get one free", r["page_text"])
+        self.assertIn("Limited time", r["page_text"])
+        self.assertNotIn("00 days", r["page_text"])
+
     def test_product_json_fallback_is_one_product_not_store_feed(self):
         url = "https://glow.example/products/daily-sunscreen"
         product = json.loads(fixture("shopify_products.json"))["products"][1]

@@ -402,26 +402,53 @@ def _ld_products(page_html: str, page_url: str) -> list[dict]:
     return out
 
 
+_VOID = {"br", "img", "input", "hr", "meta", "link", "source", "wbr"}
+_DATE_LIKE = re.compile(r"\d{4}.*[:\-]|[:\-].*\d{4}")
+
+
 class _PageText(HTMLParser):
-    """Bounded page evidence for Iris to interpret, never a parsed promotion claim."""
+    """Bounded page evidence for Iris to interpret, never a parsed promotion claim.
+
+    Countdown widgets ship placeholder digits ("00 days 00:00") that JavaScript fills in later.
+    Iris doesn't run scripts, so report the widget's configured target instead of fake zeros.
+    """
     def __init__(self):
         super().__init__()
         self.parts, self.main_parts, self.hidden, self.in_main = [], [], 0, False
+        self.countdown = 0
+
+    def _add(self, text):
+        self.parts.append(text)
+        if self.in_main:
+            self.main_parts.append(text)
 
     def handle_starttag(self, tag, attrs):
         if tag in ("script", "style", "noscript", "template"):
             self.hidden += 1
         if tag == "main":
             self.in_main = True
+        if self.countdown:
+            self.countdown += tag not in _VOID
+            return
+        a = dict(attrs)
+        names = " ".join([tag, a.get("class") or "", a.get("id") or ""]).lower()
+        if tag not in _VOID and ("countdown" in names or "timer" in names):
+            self.countdown = 1
+            targets = [_clean(v, 160) for k, v in attrs if v and k not in ("class", "id", "style")
+                       and _DATE_LIKE.search(v)]
+            self._add(f"[countdown target: {'; '.join(targets)}]" if targets
+                      else "[countdown: end time not in page]")
 
     def handle_endtag(self, tag):
         if tag in ("script", "style", "noscript", "template"):
             self.hidden = max(0, self.hidden - 1)
         if tag == "main":
             self.in_main = False
+        if self.countdown and tag not in _VOID:
+            self.countdown -= 1
 
     def handle_data(self, data):
-        if not self.hidden and data.strip():
+        if not self.hidden and not self.countdown and data.strip():
             self.parts.append(data.strip())
             if self.in_main:
                 self.main_parts.append(data.strip())
