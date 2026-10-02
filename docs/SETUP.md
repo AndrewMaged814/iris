@@ -36,8 +36,26 @@ Use [`.env.EXAMPLE`](../.env.EXAMPLE) as the checklist for the profile's `.env`:
 | `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` | Installed Shopify app credentials |
 | `SHOPIFY_ADMIN_TOKEN` | Alternative to the client-credential pair |
 
+| `SEARXNG_URL` | Your SearXNG instance, for free competitor search |
+
 Never commit real credentials. This version uses operator-configured product access;
 a merchant OAuth onboarding service is not included. [Shopify background](research/SHOPIFY_DEV_APP.md).
+
+### Competitor search (SearXNG)
+
+Iris finds competitors with Hermes `web_search` through a self-hosted
+[SearXNG](https://docs.searxng.org/) instance: free, no API key, results from several engines.
+`config.yaml` selects it with `web.search_backend: searxng`; Hermes does not fall back to another
+backend, so search fails visibly if SearXNG is unreachable. Page reading (`web_extract`) keeps
+Hermes's own backend selection.
+
+```sh
+docker run -d --name searxng --restart unless-stopped -p 127.0.0.1:8888:8080 searxng/searxng
+```
+
+In the instance's `settings.yml`, add `json` to `search.formats` (Hermes requests JSON results)
+and restart it. Then set `SEARXNG_URL=http://127.0.0.1:8888` in the profile's `.env`. Keep it bound
+to localhost; it doesn't need to be public.
 
 ## 3. Verify the connection
 

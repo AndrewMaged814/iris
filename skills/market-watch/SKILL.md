@@ -27,6 +27,10 @@ does not make a personal shopping request relevant to this store. Clarify an unc
 ## Read enough to answer the question
 
 Choose the source by the fact needed, including short follow-ups about the same store.
+- For questions across watched stores, start from `market_changes`: it returns each store's saved
+  price picture and when it was checked. Re-read live only the stores or products you will quote
+  as current, with `focus` on the product type to keep the result short. Each live read fetches
+  the whole catalog, so prefer a product link when one product is the question.
 - Use `read_store` for catalog prices, availability and product comparisons. `focus` filters
   returned products; it does not search website pages or navigation.
 - For facts missing from or outside that evidence, use Hermes `web_extract` on the relevant
@@ -44,6 +48,23 @@ Choose the source by the fact needed, including short follow-ups about the same 
 - Answer directly with a source link and check date. When evidence is blocked, missing or conflicting,
   name the unresolved fact and the scope checked. Establishing absence requires relevant page coverage;
   a collection or product feed alone cannot establish absence across the store.
+
+## "Who is my real competitor?" / "Who else sells this?"
+
+The watchlist is where to start, not the answer: it holds the stores chosen at setup, and a closer
+rival may not be on it.
+1. `my_store` `summary` for the owner's main product types, price range and currency.
+2. `market_changes` for the watched stores' saved price picture by type, without re-reading them.
+3. `web_search` for other sellers: one query per main product type and market, in English and
+   Egyptian Arabic, plus a marketplace query (`site:jumia.com.eg`, `site:noon.com`) when useful.
+   Send these searches together in one step; they run in parallel. Skip articles, review and
+   comparison pages (see `../setup/references/finding-competitors.md`).
+4. `read_store` the best 2–3 new candidates together, with `focus` on the owner's matching type;
+   keep only stores that return comparable products.
+5. Rank watched and new stores together by how many of the owner's types they sell, how close their
+   prices are, and same country and currency. Name the closest one or two with one product-price
+   example and its link. If an unwatched store is closer than a watched one, say so and offer to
+   watch it. If the evidence can't separate two stores, say what would.
 
 ## "What's trending?" / "What's happening in my market?"
 
