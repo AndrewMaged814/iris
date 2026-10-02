@@ -4,3 +4,5 @@ __pycache__/
 iris.db
 .shopify-token-*
 output/
+.codex-impact-preview/
+.codex-impact-output/

@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://t.me/IrisMarketWatcherBot"><strong>Try Iris on Telegram</strong></a> ·
   <a href="docs/DEMO.md">See Iris in action</a> ·
+  <a href="docs/impact-slides.pdf">Impact slides</a> ·
   <a href="docs/SETUP.md">Set up Iris</a> ·
   <a href="#architecture">See the architecture</a>
 </p>
@@ -48,6 +49,10 @@ The catalog source can be any supported connected app. Iris confirms the source 
 </p>
 
 The diagram is available as an [editable SVG](assets/architecture.svg). The PNG is exported at **2400 × 1380** for a readable full-width view.
+
+## Hackathon impact slides
+
+Read the [impact slides in PDF](docs/impact-slides.pdf) on GitHub, or download the [editable PowerPoint](docs/impact-slides.pptx).
 
 ## Try Iris
 
