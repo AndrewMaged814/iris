@@ -17,6 +17,10 @@
 https://github.com/user-attachments/assets/340f8976-7280-4cd8-b8e8-2c61eb3eb937
 
 
+https://github.com/user-attachments/assets/5589bbcf-d863-47f4-bb4f-4ad275969891
+
+
+
 ## Why a store owner would use Iris
 
 - **Know what a discount would cost you.** Using the costs you provide, Iris shows how much is left from each sale after a price cut and how many extra sales it would take to break even. If the numbers do not support the cut, Iris recommends keeping your price.
