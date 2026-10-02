@@ -13,10 +13,8 @@
   <a href="#architecture">See the architecture</a>
 </p>
 
-<p align="center">
-  <a href="assets/iris-demo.mp4"><img src="assets/iris-demo-poster.png" alt="Iris demo video: an owner forwards a rival's buy-2-get-2 post, Iris checks the rival page and the store's catalog, advises holding the price, drafts an Egyptian Arabic caption and connects Shopify through Composio" width="100%"></a>
-</p>
-<p align="center"><sub><a href="assets/iris-demo.mp4">▶ Watch the 25-second demo (with sound)</a></sub></p>
+https://github.com/user-attachments/assets/340f8976-7280-4cd8-b8e8-2c61eb3eb937
+
 
 ## Why a store owner would use Iris
 
