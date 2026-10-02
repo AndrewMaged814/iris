@@ -2,7 +2,7 @@
 
 Good candidates:
 - Sell the same product types as the owner, to the same customers (same country, similar price range).
-- Have a readable online store: `read_store` returns products.
+- Have official product pages that Hermes can read and verify; a structured catalog feed is optional.
 - Are active: recent products, prices in the same currency.
 
 Skip:

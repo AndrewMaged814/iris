@@ -41,7 +41,7 @@ query IrisProducts($q: String!) {
   shop { currencyCode }
   products(first: 10, query: $q) {
     nodes {
-      id title handle productType tags vendor status createdAt description
+      id title handle onlineStoreUrl productType tags vendor status createdAt description
       options { name values }
       featuredImage { url altText }
       variants(first: 20) { pageInfo { hasNextPage } nodes {
@@ -186,6 +186,7 @@ def search(query: str, post=None) -> dict:
     for n in (data.get("products") or {}).get("nodes") or []:
         out.append({
             "id": n.get("id"), "title": n.get("title"), "handle": n.get("handle"), "product_type": n.get("productType"),
+            "url": n.get("onlineStoreUrl"),
             "tags": (n.get("tags") or [])[:10], "status": n.get("status"),
             "description": re.sub(r"\s+", " ", n.get("description") or "")[:600],
             "options": n.get("options") or [],

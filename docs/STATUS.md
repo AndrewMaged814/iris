@@ -161,3 +161,40 @@ Multiple stores per Iris, Meta/Instagram APIs, ad libraries, automatic actions.
 
 The goal remains active. No real SME uplift, measured time saving or complete updated owner
 action conversation has been established by this distribution's current evidence.
+
+## Any-store validation follow-up — 2 October 2026
+
+The candidate adds canonical own-product storefront links and an isolated electronics fixture
+to the native evaluator. All 119 offline tests and the repository validator pass locally.
+Four native turns verified setup confirmation, saved Market profile readback, new-session recall
+and cron-toolset recall. No merchant store exists yet, so live non-beauty Shopify onboarding
+remains pending; scheduled context does not prove scheduled transport.
+
+An acknowledged Arabic caption preview used listed facts and correctly reported a null storefront
+URL. Known-match answers still echo demo provenance and run long. A retained 30-name public-web
+probe records seven readable feeds/pages/samples and every blocked/empty outcome; original URL
+identity is not fully recoverable. Search relevance is also open: the sole configured Bing engine
+returned empty or irrelevant store queries, although HTTP/JSON availability passed.
+
+The earlier python-dotenv CI failure is fixed and its pushed checks passed. Candidate code and
+private native evidence have not replaced the live profile, memory, sessions or cron jobs.
+No owner Telegram message, Shopify mutation or production rollout occurred in this follow-up.
+
+## Current simplification — supersedes the crawler plan
+
+The owner asked to reuse default Hermes research and chose specific-product watches. The
+forced SearXNG backend, catalog paging, sitemap/navigation discovery, custom page-text extraction
+and optional changedetection integration are removed. Hermes performs native research; Iris
+retains one-product structured snapshots, owner context, change history, approved offers and
+delivery safeguards. Web tools are available in scheduled checks; memory/store-write limits remain.
+
+An isolated native research conversation found and extracted the official Greenuts matcha page
+through web_search/web_extract and returned its supported price/size/source. No custom reader
+or writes. The current 96-test suite passes locally. Previous 116/119-test counts include retired
+features and do not describe the current suite. Historical broad-store coverage isn't a current
+capability claim or a release gate.
+
+No live profile or legacy watches have been migrated. Existing homepage watches require explicit
+owner selection of product pages; preserve their history. Retired service watches are not stopped
+by code removal. Native Telegram/scheduled transport and a real merchant store remain separate
+proof. See [the handoff](HANDOFF_ANY_STORE.md) for the remaining deployment checks.

@@ -35,26 +35,27 @@ Use [`.env.EXAMPLE`](../.env.EXAMPLE) as the checklist for the profile's `.env`:
 | `SHOPIFY_STORE` | The store's `your-store.myshopify.com` address |
 | `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` | Installed Shopify app credentials |
 | `SHOPIFY_ADMIN_TOKEN` | Alternative to the client-credential pair |
-| `SEARXNG_URL` | Your SearXNG instance, for free competitor search |
 
 Never commit real credentials. This version uses operator-configured product access;
 a merchant OAuth onboarding service is not included. [Shopify background](research/SHOPIFY_DEV_APP.md).
 
-### Competitor search (SearXNG)
+### Research: reuse Hermes
 
-Iris finds competitors with Hermes `web_search` through a self-hosted
-[SearXNG](https://docs.searxng.org/) instance: free, no API key, results from several engines.
-`config.yaml` selects it with `web.search_backend: searxng`; Hermes does not fall back to another
-backend, so search fails visibly if SearXNG is unreachable. Page reading (`web_extract`) keeps
-Hermes's own backend selection.
+Iris uses native `web_search` and `web_extract`, including Hermes's provider selection,
+cache, website policy and fallback. Configure the same working web provider as the default
+profile with Hermes; keep provider credentials private in the profile. No separate search
+service is required by Iris.
 
 ```sh
-docker run -d --name searxng --restart unless-stopped -p 127.0.0.1:8888:8080 searxng/searxng
+hermes -p iris tools
 ```
 
-In the instance's `settings.yml`, add `json` to `search.formats` (Hermes requests JSON results)
-and restart it. Then set `SEARXNG_URL=http://127.0.0.1:8888` in the profile's `.env`. Keep it bound
-to localhost; it doesn't need to be public.
+For an existing profile, remove the old `web.search_backend: searxng` override and remove
+`SEARXNG_URL` if it was added only for Iris. Removing the config override alone can still
+leave Hermes autodetecting SearXNG from that environment variable. Preserve deliberately
+chosen provider settings. Verify a real store query and product-page extraction, not only
+HTTP reachability. Profile settings are separate: a fresh Iris profile does not automatically
+inherit the default profile's credentials.
 
 ### Product reader dependencies
 
@@ -96,24 +97,6 @@ and vision; it blocks browser actions, private addresses and robots-disallowed n
 Cron has no browser toolset. Check the actual request User-Agent and guard on your installed
 revision before relying on browser reads. Report blocks; never bypass a challenge.
 
-### Optional daily product monitor (changedetection.io)
-
-Run a local [changedetection.io](https://github.com/dgtlmoon/changedetection.io) service:
-
-```sh
-docker run -d --name iris-changedetection --restart unless-stopped -p 127.0.0.1:5000:5000 -v iris-changedetection:/datastore ghcr.io/dgtlmoon/changedetection.io
-```
-
-Create/copy an API key in Settings → API, then set `CHANGEDETECTION_URL=http://127.0.0.1:5000`
-and `CHANGEDETECTION_API_KEY` privately in the profile's `.env`. Leave both empty to opt out.
-Reload Hermes gracefully. Newly approved product-page watches use its daily `restock_diff`
-processor with Iris's User-Agent. The current watch API omits native restock fields, so Iris
-parses its authenticated cached raw page snapshot to retain confirmed currency as well as price/stock. Removing the Iris watch removes the service watch.
-This replaces daily price/stock fetching for those pages; catalog checks and Iris's judgment
-stay in Iris. It does not verify page-only promotions. If the service fails, the daily script
-falls back to Iris's own reader. Existing watches need owner-approved remove/add to enroll;
-do not silently recreate them. The doctor's `--live` checks authenticated service reachability.
-
 ## 3. Verify the connection
 
 From the repository, use Hermes's Python environment:
@@ -125,7 +108,8 @@ hermes -p iris gateway status
 
 The doctor needs Hermes's `python-dotenv` and safe web client. Verify the chosen model with an
 actual Iris reply. Open the bot, tap **Start**, then ask: **“What products do I sell?”**
-Iris should read the connected catalog. Ask her to suggest competitors and approve the ones to watch.
+Iris should read the connected catalog. Ask her to research competitors and approve specific
+product pages to watch.
 
 Gateway ownership depends on your Hermes setup. The tested host uses one shared gateway for
 all profiles; it does not need a separate Iris service. Use Hermes's native gateway management.
@@ -141,7 +125,7 @@ hermes -p iris cron list --all
 
 Expect `iris-daily-check` at **08:00** and `iris-weekly-brief` on **Sunday at 10:00**, Cairo time.
 The setup enables native delivery mirroring so the owner's reply can refer to the report.
-Daily catalog checks do not automatically detect every page-only promotion.
+Daily structured price/stock checks do not automatically detect page-only promotions.
 
 ## Updating an existing Iris
 

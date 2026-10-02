@@ -48,8 +48,6 @@ def main() -> int:
     good &= check("store credentials", bool(env.get("SHOPIFY_ADMIN_TOKEN") or
                                              (env.get("SHOPIFY_CLIENT_ID") and env.get("SHOPIFY_CLIENT_SECRET"))),
                   "set the Shopify app credentials")
-    good &= check("competitor search (SearXNG)", bool(env.get("SEARXNG_URL")),
-                  "set SEARXNG_URL in .env; see docs/SETUP.md")
     good &= check("browser user agent", any(arg.strip().startswith("--user-agent=IrisBot")
                   for arg in env.get("AGENT_BROWSER_ARGS", "").split(",")),
                   "set AGENT_BROWSER_ARGS with --user-agent=IrisBot/1.0; see docs/SETUP.md")
@@ -61,10 +59,6 @@ def main() -> int:
         except ImportError:
             good &= check(module + " importable", False,
                           "install extruct and price-parser with Hermes' Python")
-    monitor_url, monitor_key = env.get("CHANGEDETECTION_URL"), env.get("CHANGEDETECTION_API_KEY")
-    if monitor_url or monitor_key:
-        good &= check("optional product monitor credentials", bool(monitor_url and monitor_key),
-                      "set both CHANGEDETECTION_URL and CHANGEDETECTION_API_KEY, or leave both empty")
     print("Hermes pieces Iris relies on")
     try:
         import tools.url_safety  # noqa: F401
@@ -73,21 +67,13 @@ def main() -> int:
         check("Hermes safe web client importable", False,
               "run the doctor with Hermes' Python; Iris falls back to a basic address check without it")
     if a.live:
-        os.environ.update({k: v for k, v in env.items() if k.startswith(("SHOPIFY_", "CHANGEDETECTION_"))})
+        os.environ.update({k: v for k, v in env.items() if k.startswith(("SHOPIFY_",))})
         os.environ.setdefault("IRIS_DATA_DIR", str(home / "iris"))
         sys.path.insert(0, str(home / "plugins" / "iris"))
         import iris_feeds
         import iris_store
         from iris_watchlist import Watchlist
         print("Live")
-        if monitor_url and monitor_key:
-            import iris_monitor
-            try:
-                watches = iris_monitor._call("GET", "/api/v1/watch")
-                good &= check("optional product monitor reachable with key", isinstance(watches, dict),
-                              "check the monitor URL and API key")
-            except iris_monitor.MonitorError as exc:
-                good &= check("optional product monitor reachable with key", False, str(exc))
         try:
             cat = iris_store.catalog(max_pages=1)
             check(f"own store readable ({cat['shop']}, {cat['product_count']} products)", True)

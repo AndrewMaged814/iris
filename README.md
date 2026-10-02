@@ -65,9 +65,9 @@ Iris supplies the business judgment, skills and tools. Hermes supplies the agent
 
 The four tools read your catalog, inspect competitors, manage the watchlist and retrieve changes.
 The own-store tool also handles bounded response codes when offer access is enabled.
-Public readers support Shopify, WooCommerce and structured product pages, with labelled sitemap
-samples when a catalog is unavailable. Hermes supplies chat-only browser reads for JavaScript
-pages; optional changedetection.io monitors product-page price and stock daily. Comparisons use
+Hermes supplies native search, extraction, cache/fallback and browser reads for research.
+Iris records price/stock history only for owner-selected product pages; it does not crawl catalogs
+or sitemaps. Hermes supplies chat-only browser reads for JavaScript pages. Comparisons use
 an owner-confirmed Market profile and category references for beauty, fashion, electronics,
 food, home and other categories. Mira Nile remains the skincare demo.
 Saved observations distinguish today's listings from changes recorded over time.
@@ -89,8 +89,9 @@ iris/
 
 ## Proof & next steps
 
-**116 offline tests.** Reusable business cases cover Mira Nile and hypothetical category expansions. Native Luna runs exercise comparisons,
-drafting and remembered actions; Telegram delivery and scheduled checks have been verified.
+**96 offline tests.** Reusable business cases cover Mira Nile and isolated category onboarding.
+Native Hermes research verifies official product pages. Earlier Telegram/scheduled delivery
+evidence is retained separately; the simplified candidate still needs live transport checks.
 [Expected vs. actual](docs/EVALUATION.md) · [Deployment status](docs/STATUS.md)
 
 - **Next:** enable the narrow offer permissions and verify the approved-create-stop flow through

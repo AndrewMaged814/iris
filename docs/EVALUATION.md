@@ -153,3 +153,49 @@ The four new cases explicitly concern hypothetical expansion of the connected st
 replacing its real Shopify catalog or saved Market profile. They test comparison judgment,
 not onboarding, confirmed-profile memory readback or live non-beauty catalog integration.
 Private session evidence is retained on the operator host; owner data is not committed.
+
+### Follow-up: isolated electronics onboarding
+
+The owner has no merchant store yet. Three native cases (four turns) used the retained
+`tests/fixtures/own_electronics_catalog.json` in a private profile with empty owner memory,
+no copied watch database, no Shopify credentials, offers disabled and Telegram removed.
+The catalog seam is read-only and requires `--isolate`; this is synthetic data, not a
+live non-beauty merchant or a cron transport test.
+
+Initial setup read the summary and product options, proposed model/storage/condition/
+warranty/accessory keys and requested confirmation. Its first memory write saved Noor's
+owner-supplied preference, not a Market profile. After explicit confirmation it saved and
+verified: Electronics, Egypt (EGP), exact model, storage, condition, warranty, included
+accessories, price/item, official dealers and specialist retailers. A new native session
+and another session with cron toolsets recalled those keys without research or memory writes.
+
+The caption rerun with an explicitly acknowledged preview produced Egyptian Arabic copy
+using SPF50, 50 ml and EGP320, without invented benefits or a CDN citation. Own-product
+search now returns Shopify's canonical `onlineStoreUrl`. The demo sunscreen is unpublished
+and returns null; Iris said the product-page link was unavailable rather than constructing one.
+The caption prompt changed to acknowledge the demo, so this is a contextual follow-up,
+not a same-prompt before/after comparison. An intervening run refused the unacknowledged draft.
+
+Known-match reruns still sometimes repeat "demo" and exceed the usual length target;
+that wording remains an evaluation gate. No automatic pass score is assigned.
+
+SearXNG's HTTP200/JSON availability check did not establish useful discovery. Attempts to
+reconstruct the named cohort returned unrelated dictionary results or empty lists for store
+queries. Relevant competitor discovery needs investigation and a native conversation check.
+
+### Superseding decision: Hermes-native research
+
+The owner chose specific-product watches and substantial removal of custom research. The
+catalog/page-text/sitemap readers, forced SearXNG setup and changedetection integration were
+removed. Earlier crawler coverage is historical evidence, not a remaining acceptance gate.
+
+An isolated native Iris session with the SearXNG pin and environment removed used only
+`skill_view`, `web_search` and `web_extract`. It found Greenuts' official Match Tea 50 G page,
+read it and answered 50 g, EGP350 reduced from EGP400 with a dated source link. No custom
+reader, watch mutation, memory write or store write. Direct default-Hermes tools also returned
+the official listings and exact page. The default path's native fallback supplied the successful
+search; this is evidence for the effective native path, not a claim that every backend succeeded.
+
+Current offline suite: 96 tests. Obsolete tests for deleted features were removed; delivery,
+approval, isolated catalog and exact-product safety regressions remain. Product-watch failures
+remain explicit; native research availability does not guarantee structured monitoring of every site.

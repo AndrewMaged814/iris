@@ -1,0 +1,23 @@
+{
+  "shop": {"name": "Circuit Shelf", "currencyCode": "EGP", "myshopifyDomain": "iris-electronics-fixture.myshopify.com"},
+  "products": {
+    "pageInfo": {"hasNextPage": false, "endCursor": null},
+    "nodes": [
+      {
+        "id": "gid://shopify/Product/101", "title": "Model X Phone", "handle": "model-x-phone",
+        "onlineStoreUrl": "https://circuit-shelf.example/products/model-x-phone",
+        "productType": "Phone", "tags": [], "status": "ACTIVE", "vendor": "Circuit Shelf",
+        "createdAt": "2026-10-01T00:00:00Z",
+        "description": "Model X, new sealed condition, local one-year warranty. Includes USB-C cable; charger sold separately.",
+        "options": [{"name": "Storage", "values": ["128 GB", "256 GB"]}, {"name": "Color", "values": ["Black", "Blue"]}],
+        "priceRangeV2": {"minVariantPrice": {"amount": "12000", "currencyCode": "EGP"}, "maxVariantPrice": {"amount": "14000"}},
+        "compareAtPriceRange": {"maxVariantCompareAtPrice": null},
+        "featuredImage": null, "metafields": {"nodes": []},
+        "variants": {"pageInfo": {"hasNextPage": false}, "nodes": [
+          {"id": "gid://shopify/ProductVariant/101", "title": "128 GB / Black", "price": "12000", "compareAtPrice": null, "availableForSale": true},
+          {"id": "gid://shopify/ProductVariant/102", "title": "256 GB / Blue", "price": "14000", "compareAtPrice": null, "availableForSale": true}
+        ]}
+      }
+    ]
+  }
+}

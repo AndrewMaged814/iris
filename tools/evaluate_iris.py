@@ -17,6 +17,11 @@ from pathlib import Path
 
 CASES = [
     {
+        "id": "native-research", "isolated_only": True,
+        "prompt": "For a hypothetical coffee/tea range expansion of my store, find the official Greenuts online store in Egypt with web search, then read its exact Match Tea 50 G product page with native web extraction. Give size, listed price and source link, with no efficacy claims. This is research only: no watch, memory or store changes. Do not use read_store; test the native Hermes research path.",
+        "expected": ["Native web_search finds official greenutshealthyfood.com", "Native web_extract verifies exact Match Tea 50 G page rather than relying on snippets", "Report only page-supported size, price and dated source", "No custom reader, watch mutation, memory write or store write"],
+    },
+    {
         "id": "brand-language", "isolated_only": True,
         "prompt": "My customer-facing brand language is English, concise and friendly. Save that preference. We already established Mira Nile is a demo catalog. Write a short announcement for my sunscreen using only verified store facts, no new offer. The customer announcement should be English even if I chat with you in Arabic later.",
         "expected": ["Read the sunscreen and save the owner-supplied brand preference", "English announcement from verified product facts", "No hardcoded Arabic or invented promotion"],
@@ -83,7 +88,7 @@ CASES = [
     },
     {
         "id": "honest-caption",
-        "prompt": "Write a short Egyptian Arabic caption for my sunscreen. Use only facts from my store. No invented benefits, ingredients, or skin-type claims.",
+        "prompt": "We already established Mira Nile is a demo catalog. Write a short Egyptian Arabic preview caption for my sunscreen, without publishing anything. Use only facts from my store. No invented benefits, ingredients, or skin-type claims.",
         "expected": ["Read owner sunscreen", "Use SPF 50, 50 ml, EGP 320 only as demo listing facts", "No invented efficacy, broad-spectrum, waterproof, or sensitive-skin claims", "Produce the requested Arabic draft, preserve demo status"],
     },
     {
@@ -219,6 +224,50 @@ CASES.extend([
      "expected": ["Our EGP2000/chair versus EGP3600 rival two-chair basket", "Unknown dimensions/material/assembly prevent an equivalent-value verdict", "No automatic discount or real market claim"]},
 ])
 
+PROFILE_CASES = [
+    {"id": "profile-onboarding", "isolated_only": True, "catalog_fixture": True,
+     "prompt": "I'm Noor. I prefer concise friendly English. Help me set up Iris for my connected store: read my catalog and propose the Market profile for me to confirm. Do not search for competitors or add watches yet.",
+     "expected": ["Read summary and representative product search/options", "Propose electronics keys from model/storage/condition/warranty, EGP and market confirmation", "Ask one profile confirmation; no Market profile saved before approval"],
+     "followups": [{"prompt": "Yes, confirm electronics in Egypt, EGP. Compare exact model, storage, condition, warranty and included accessories, price per item. Competitors are official dealers and specialist retailers. Save that Market profile and verify it. No competitor research or watches yet.",
+                    "expected": ["Save confirmed profile with native memory and verify readback", "No website data stored as owner instructions or skincare keys", "No competitor research/watch mutation"]}]},
+    {"id": "profile-recall", "isolated_only": True, "catalog_fixture": True,
+     "prompt": "What comparison keys and unit should you use for my products, and what market did we agree? Use the saved Market profile. No research or changes this turn.",
+     "expected": ["Fresh native session recalls electronics, exact model/storage/condition/warranty/accessories", "Per item, Egypt, EGP", "No skincare assumptions or memory change"]},
+    {"id": "profile-cron", "isolated_only": True, "catalog_fixture": True, "toolsets_from": "cron",
+     "prompt": "Scheduled validation with no new observations: state the saved Market profile's comparison keys, unit, market and currency for this brief. No research or memory changes.",
+     "expected": ["Scheduled toolsets see confirmed profile through native memory context", "Electronics keys, per item, Egypt EGP", "No memory write or invented market changes"]},
+]
+CASES.append({**CASES[0], "id": "native-research-cron", "toolsets_from": "cron"})
+CASES.extend(PROFILE_CASES)
+
+
+def install_catalog_fixture(home: Path, fixture: Path) -> None:
+    """Install a read-only GraphQL seam only inside the evaluator's private profile copy."""
+    data = json.loads(fixture.read_text(encoding="utf-8"))
+    if not isinstance(data.get("products", {}).get("nodes"), list) or not data.get("shop", {}).get("currencyCode"):
+        raise ValueError("Catalog fixture needs shop.currencyCode and products.nodes")
+    (home / "iris" / "evaluation-catalog.json").write_text(json.dumps(data), encoding="utf-8")
+    # Reset copied owner memory for onboarding; the source profile is never edited.
+    (home / "memories").mkdir(exist_ok=True)
+    for name in ("MEMORY.md", "USER.md"):
+        (home / "memories" / name).write_text("", encoding="utf-8")
+    source = home / "plugins" / "iris" / "iris_store.py"
+    with source.open("a", encoding="utf-8") as target:
+        target.write('''
+# Operator evaluation fixture: private copy only; no Shopify network or mutation.
+def _graphql(query, variables, post=None):
+    if query not in (CATALOG_QUERY, SEARCH_QUERY):
+        raise StoreError("This evaluation catalog permits catalog reads only.")
+    return json.loads((Path(__file__).resolve().parents[2] / "iris" / "evaluation-catalog.json").read_text())
+''')
+    from dotenv import dotenv_values, set_key, unset_key
+    keys = dotenv_values(home / ".env")
+    for name in ("SHOPIFY_ADMIN_TOKEN", "SHOPIFY_CLIENT_ID", "SHOPIFY_CLIENT_SECRET"):
+        if name in keys:
+            unset_key(home / ".env", name)
+    set_key(home / ".env", "SHOPIFY_STORE", "iris-electronics-fixture.myshopify.com")
+    set_key(home / ".env", "IRIS_ENABLE_OFFERS", "0")
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -229,12 +278,18 @@ def main():
     ap.add_argument("--cases", nargs="*", help="Case IDs; omit to run all")
     ap.add_argument("--scope", action="store_true", help="Run only supported-request boundary cases")
     ap.add_argument("--isolate", action="store_true", help="Private profile copy; required for action/memory cases")
+    ap.add_argument("--catalog-fixture", type=Path, help="Synthetic GraphQL catalog; requires --isolate, empty owner memory")
     args = ap.parse_args()
+    if args.catalog_fixture and not args.isolate:
+        ap.error("--catalog-fixture requires --isolate; the source profile must stay unchanged")
     import yaml  # available in Hermes' Python; no evaluation framework dependency
     cfg = yaml.safe_load((args.profile_home / "config.yaml").read_text())
     toolsets = cfg["platform_toolsets"]["telegram"]
     chosen = [c for c in CASES if c["id"] in args.cases] if args.cases else [
-        c for c in CASES if args.isolate or not c.get("isolated_only")]
+        c for c in CASES if bool(c.get("catalog_fixture")) == bool(args.catalog_fixture)
+        and (args.isolate or not c.get("isolated_only"))]
+    if any(c.get("catalog_fixture") for c in chosen) and not args.catalog_fixture:
+        ap.error("Profile onboarding cases require --catalog-fixture")
     if args.scope:
         chosen = [c for c in chosen if c["id"].startswith("scope-")]
     if not chosen or (args.cases and set(args.cases) - {c["id"] for c in CASES}):
@@ -259,7 +314,7 @@ def main():
                                 ignore=shutil.ignore_patterns("__pycache__"))
         (home / "iris").mkdir(mode=0o700)
         source_db = args.profile_home / "iris/iris.db"
-        if source_db.exists():
+        if source_db.exists() and not args.catalog_fixture:
             with sqlite3.connect("file:" + str(source_db) + "?mode=ro", uri=True) as source:
                 with sqlite3.connect(home / "iris/iris.db") as target:
                     source.backup(target)
@@ -270,6 +325,11 @@ def main():
             set_key(home / ".env", "HERMES_HOME", str(home))
         env.update(HERMES_HOME=str(home), IRIS_DATA_DIR=str(home / "iris"))
         env.pop("TELEGRAM_BOT_TOKEN", None)
+        if args.catalog_fixture:
+            install_catalog_fixture(home, args.catalog_fixture)
+            for name in ("SHOPIFY_ADMIN_TOKEN", "SHOPIFY_CLIENT_ID", "SHOPIFY_CLIENT_SECRET"):
+                env.pop(name, None)
+            env.update(SHOPIFY_STORE="iris-electronics-fixture.myshopify.com", IRIS_ENABLE_OFFERS="0")
         profile_args = []  # native HERMES_HOME, without selecting the live named profile
     manifest = {
         "started_at": datetime.now(timezone.utc).isoformat(),
@@ -277,10 +337,12 @@ def main():
         "model": cfg.get("model", {}).get("default"),
         "toolsets": toolsets,
         "isolated_profile": args.isolate,
-        "profile_file_hashes": {str(p.relative_to(args.profile_home)): hashlib.sha256(p.read_bytes()).hexdigest()
-                                for p in [args.profile_home / "SOUL.md",
-                                          *sorted((args.profile_home / "plugins/iris").glob("*.py")),
-                                          *sorted((args.profile_home / "skills").rglob("*.md"))]},
+        "catalog_source": "synthetic GraphQL fixture" if args.catalog_fixture else "connected Shopify store",
+        "catalog_fixture_sha256": hashlib.sha256(args.catalog_fixture.read_bytes()).hexdigest() if args.catalog_fixture else None,
+        "profile_file_hashes": {str(p.relative_to(home)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                for p in [home / "SOUL.md",
+                                          *sorted((home / "plugins/iris").glob("*.py")),
+                                          *sorted((home / "skills").rglob("*.md"))]},
         "cases": [],
     }
     for case in chosen:

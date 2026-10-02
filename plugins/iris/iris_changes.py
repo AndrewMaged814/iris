@@ -4,8 +4,8 @@ Price thresholds follow DannylydST/sorftime-seller-agent's monitor (MIT):
 a move of 5% is worth noting, 10% is important.
 
 Signals are data for Iris, never sentences for the owner. Urgent signals are the
-three agreed alert types: a promotion starts, a watched item goes out of stock,
-or a new product appears. Everything else waits for the weekly message.
+two alert types: a listed markdown starts or a watched item goes out of stock.
+Everything else waits for the weekly message.
 """
 from __future__ import annotations
 
@@ -28,10 +28,9 @@ def _signal(kind, product, urgent, **extra):
     return {"kind": kind, "product_key": product["key"], "urgent": urgent, "product": _brief(product), **extra}
 
 
-def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | None = None,
-         partial: bool = False) -> list[dict]:
+def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | None = None) -> list[dict]:
     """Return the signals between two product lists. The first snapshot is a baseline: no signals.
-    A partial read (a sitemap sample) can't show that a product is new or gone, only price and stock changes."""
+    Product watches establish price/stock changes, never catalog additions or removals."""
     if previous is None:
         return []
     focus = focus or []
@@ -42,8 +41,6 @@ def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | No
         relevant = _matches(cur, focus)
         old = before.get(key)
         if old is None:
-            if not partial:
-                signals.append(_signal("new_product", cur, urgent=relevant))
             continue
         if cur.get("on_sale") and not old.get("on_sale"):
             signals.append(_signal("sale_started", cur, urgent=relevant, was_price=old.get("price")))
@@ -58,9 +55,6 @@ def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | No
             signals.append(_signal("out_of_stock", cur, urgent=relevant))
         elif old.get("available") is False and cur.get("available") is True:
             signals.append(_signal("back_in_stock", cur, urgent=False))
-    for key, old in before.items():
-        if key not in now and not partial:
-            signals.append(_signal("removed_product", old, urgent=False))
     return signals
 
 

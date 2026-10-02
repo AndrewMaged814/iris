@@ -18,11 +18,11 @@ class Signals(unittest.TestCase):
     def test_first_snapshot_is_a_baseline(self):
         self.assertEqual(diff(None, [p("a")]), [])
 
-    def test_the_three_urgent_types(self):
+    def test_product_watches_report_markdown_and_stock_only(self):
         before = [p("a"), p("b")]
         after = [p("a", price=80, compare_at=100), p("b", available=False), p("c")]
         self.assertEqual(self.kinds(before, after),
-                         {("sale_started", True), ("out_of_stock", True), ("new_product", True)})
+                         {("sale_started", True), ("out_of_stock", True)})
 
     def test_price_moves_wait_for_the_week(self):
         got = diff([p("a", 100)], [p("a", 112)])
@@ -31,14 +31,15 @@ class Signals(unittest.TestCase):
         self.assertEqual(diff([p("a", 100)], [p("a", 103)]), [])  # under 5% is noise
 
     def test_focus_limits_urgency_to_the_owners_product_types(self):
-        after = [p("x", title="Beard Oil", product_type="Men")]
-        self.assertEqual(self.kinds([], after, focus=["serum"]), {("new_product", False)})
+        before = [p("x", title="Beard Oil", product_type="Men")]
+        after = [p("x", price=80, compare_at=100, title="Beard Oil", product_type="Men")]
+        self.assertEqual(self.kinds(before, after, focus=["serum"]), {("sale_started", False)})
 
     def test_ended_back_and_removed_are_not_urgent(self):
         before = [p("a", 80, 100), p("b", available=False), p("gone")]
         after = [p("a", 100), p("b")]
         self.assertEqual(self.kinds(before, after),
-                         {("sale_ended", False), ("back_in_stock", False), ("removed_product", False)})
+                         {("sale_ended", False), ("back_in_stock", False)})
 
     def test_no_change_no_signal(self):
         items = [p("a"), p("b")]

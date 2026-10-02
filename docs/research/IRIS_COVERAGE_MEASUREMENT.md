@@ -1,3 +1,6 @@
+> Superseded: the owner chose native Hermes research and specific-product watches. Catalog
+> crawling and sitemap sampling described here were removed; this is historical evidence.
+
 # Can Iris read stores outside skincare? Coverage measurement
 
 Date: 2 October 2026. Step 1 of the proof plan in [IRIS_GENERAL_STORE_DESIGN.md](IRIS_GENERAL_STORE_DESIGN.md).
@@ -103,3 +106,35 @@ Access depends on domain, network and current store behavior. Blocks were report
 retrying through disguises or challenges. Samples do not prove catalog-wide price/stock coverage.
 Missing `product_type` stays `other`; option names such as Size/Color cannot safely infer a
 product category. Comparison skills use confirmed profile keys and individual catalog details.
+
+## Retained 30-name repeat — 2 October 2026
+
+The reconstructed addresses, access states, per-request statuses, counts and field completeness
+are retained privately on the operator host as `iris-coverage-20261002.json`. This makes the next probe
+reproducible; the discarded original URLs still prevent an exact before/after claim. Multiple
+plausible domains remain for Joviality, Dr Beauty, Phantom, LDNIO and Oven Heaven; the original
+2B category path is unknown. Current first-party addresses are selected, not silently assumed
+to be the original ones. Every input is a homepage/localized homepage, not an exact-product read.
+
+The native Hermes safe client read sequentially with IrisBot, robots checks, three feed pages,
+three sitemap product-page samples and at least one second between requests. Robots, feeds,
+currency checks and sitemap discovery add requests; retained request lists show the full cost.
+No browser/challenge workarounds or proxy retries were used. A feed result does not imply
+exhaustive coverage beyond the paging cap; page/sitemap output is always a limited sample.
+
+| Category | Readable | Blocked | Robots disallowed | No products | Unreachable |
+| --- | --- | --- | --- | --- | --- |
+| Beauty | 0 | 4 | 0 | 1 | 1 |
+| Fashion | 2 | 3 | 1 | 0 | 0 |
+| Electronics | 2 | 2 | 0 | 2 | 0 |
+| Food | 1 | 4 | 0 | 1 | 0 |
+| Home | 2 | 3 | 0 | 1 | 0 |
+| Total | 7 | 16 | 1 | 5 | 1 |
+
+Phantom returned 39 WooCommerce products with EGP, stock and options. Elia returned one page
+product in IDR, with unknown stock; it remains unsuitable for an Egyptian price comparison
+without currency resolution. Sitemap samples: 2B two products, TV-IT two, Oven Heaven three,
+Coccaro three and Efreshli three. Coccaro had no prices/currency and only two known stock states;
+Efreshli had EGP prices but unknown stock. The other three samples had EGP prices and stock.
+These reads demonstrate honest limitations as well as the fallback; they do not support a
+claim of improved overall live coverage against the lost baseline.

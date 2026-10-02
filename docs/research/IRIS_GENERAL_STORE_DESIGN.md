@@ -1,3 +1,6 @@
+> Superseded on 2 October 2026: native Hermes research and specific-product watches replaced
+> the broad reader plan. See [current handoff](../HANDOFF_ANY_STORE.md).
+
 # Iris for any store: design
 
 Status: category references, Market profile instructions, variant options and reader fallbacks

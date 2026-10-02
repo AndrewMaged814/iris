@@ -24,21 +24,21 @@ version: 1.0.0
    Competitors: roasters, grocers. Market: Egypt, EGP." Owner corrections update this entry.
 4. Suggest competitor stores. Use `web_search` with the main product types and the owner's market
    (for example "coffee beans Egypt online store"). Prefer real online stores (their own website,
-   Jumia, Noon, Amazon.eg) over articles. Check the best 3–5 with `read_store`; keep only the ones that
-   return products. See `references/finding-competitors.md`.
+   Jumia, Noon, Amazon.eg) over articles. Verify relevant official product pages with native
+   `web_extract` or browser reads; a search snippet alone is not evidence. See `references/finding-competitors.md`.
 5. Show the owner the short list: store name, what they sell in the owner's product types, and why it
    is worth watching. Ask which ones to watch. The owner can also send their own links.
-6. For each store the owner approves, call `watchlist` `add` with a short name and `focus` set to
-   the owner's product types that store also sells. Confirm in plain words what you'll watch.
-   Save a one-line note to MEMORY.md: the stores you watch and why each matters to the owner.
+6. Propose specific relevant product pages at the chosen stores. For each product the owner
+   approves, call `watchlist` `add` with its exact link and a short name. Confirm what you'll
+   watch; save a one-line note to MEMORY.md about why these products matter.
 7. Tell the owner how Iris works from now on, in three lines: a message only when something urgent
-   happens (a promotion starts, a watched item runs out, a new product appears), "This week in your
+   happens (a listed markdown starts or a watched item runs out), "This week in your
    market" every Sunday, and screenshots of Instagram or Facebook posts are welcome any time.
    Ask once if the morning check time works for them; if they want another time, tell them the
    operator will change it and save their wish to USER.md.
 
 ## Notes
 
-- If no catalog is readable, use market-watch's product-page/extraction/browser route before
-  excluding the candidate. Report blocked or robots-disallowed access and suggest a screenshot.
+- A store can be useful research evidence even when the structured watch reader cannot monitor it.
+  If adding a watch fails, explain that distinction; offer a screenshot or manual check.
 - Do not add a store the owner didn't approve.

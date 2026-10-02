@@ -14,11 +14,14 @@ from unittest import mock
 from helpers import FakeWeb, fixture
 import iris_feeds as feeds
 
-feeds.PAGE_DELAY_S = 0
-
 
 def shop(products):
-    return {"products": products}
+    return '<script type="application/ld+json">' + json.dumps([
+        {"@type": "Product", "name": p["title"], "sku": str(p["id"]), "category": p["product_type"],
+         "offers": {"price": p["variants"][0]["price"], "priceCurrency": "EGP",
+                    "priceSpecification": {"price": p["variants"][0].get("compare_at_price"), "priceType": "ListPrice"},
+                    "availability": "https://schema.org/" + ("InStock" if p["variants"][0]["available"] else "OutOfStock")}}
+        for p in products]) + '</script>'
 
 
 def item(i, price="100.00", compare=None, available=True, title=None):
@@ -61,12 +64,12 @@ class DailyCheck(unittest.TestCase):
                 db.execute("INSERT INTO deliveries VALUES ('run-1',?)", (status,))
 
     def web(self, products):
-        return FakeWeb({"https://glow.example/products.json": (200, shop(products))})
+        return FakeWeb({"https://glow.example/products/p1": (200, shop(products))})
 
     def add_store(self):
         import iris_watchlist
         wl = iris_watchlist.Watchlist()
-        s = wl.add("Glow Lab", "https://glow.example", kind="shopify", focus=["serum"])
+        s = wl.add("Glow Lab", "https://glow.example/products/p1", kind="shopify", focus=["serum"])
         wl.close()
         return s
 
@@ -116,8 +119,8 @@ class DailyCheck(unittest.TestCase):
         self.native_execution()
         first = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
         self.native_execution("completed", "delivered")
-        next_report = daily.run(get=self.web([item(1, price="80.00", compare="100.00"), item(2)]))
-        self.assertEqual([s["kind"] for s in next_report["urgent"]], ["new_product"])
+        next_report = daily.run(get=self.web([item(1, price="80.00", compare="100.00", available=False)]))
+        self.assertEqual([s["kind"] for s in next_report["urgent"]], ["out_of_stock"])
         self.assertNotEqual(next_report["urgent"][0]["id"], first["urgent"][0]["id"])
 
     def test_failed_model_with_delivered_error_ping_retries_business_alert(self):
@@ -125,18 +128,18 @@ class DailyCheck(unittest.TestCase):
         self.add_store()
         daily.run(get=self.web([item(1)]))
         self.native_execution()
-        first = daily.run(get=self.web([item(1), item(2)]))
+        first = daily.run(get=self.web([item(1, available=False)]))
         self.native_execution("failed", "delivered")
-        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], first["urgent"])
+        self.assertEqual(daily.run(get=self.web([item(1, available=False)]))["urgent"], first["urgent"])
 
     def test_failed_transport_retries_business_alert(self):
         import iris_daily_check as daily
         self.add_store()
         daily.run(get=self.web([item(1)]))
         self.native_execution()
-        first = daily.run(get=self.web([item(1), item(2)]))
+        first = daily.run(get=self.web([item(1, available=False)]))
         self.native_execution("completed", "failed")
-        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], first["urgent"])
+        self.assertEqual(daily.run(get=self.web([item(1, available=False)]))["urgent"], first["urgent"])
 
     def test_active_or_uncertain_send_is_held_without_consuming_facts(self):
         import iris_daily_check as daily
@@ -144,10 +147,10 @@ class DailyCheck(unittest.TestCase):
         self.add_store()
         daily.run(get=self.web([item(1)]))
         self.native_execution()
-        first = daily.run(get=self.web([item(1), item(2)]))
-        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        first = daily.run(get=self.web([item(1, available=False)]))
+        self.assertEqual(daily.run(get=self.web([item(1, available=False)]))["urgent"], [])
         self.native_execution("unknown", "unknown")
-        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        self.assertEqual(daily.run(get=self.web([item(1, available=False)]))["urgent"], [])
         wl = Watchlist()
         self.assertEqual(wl.signals(days=None, unreported_only=True)[0]["id"], first["urgent"][0]["id"])
         wl.close()
@@ -158,13 +161,13 @@ class DailyCheck(unittest.TestCase):
         self.add_store()
         daily.run(get=self.web([item(1)]))
         self.native_execution()
-        daily.run(get=self.web([item(1), item(2)]))
+        daily.run(get=self.web([item(1, available=False)]))
         self.native_execution("completed", "queued")
         self.queue_delivery("pending")
-        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        self.assertEqual(daily.run(get=self.web([item(1, available=False)]))["urgent"], [])
         with closing(sqlite3.connect(self.home / "cron/deliveries.db")) as db, db:
             db.execute("UPDATE deliveries SET status='delivered'")
-        self.assertEqual(daily.run(get=self.web([item(1), item(2)]))["urgent"], [])
+        self.assertEqual(daily.run(get=self.web([item(1, available=False)]))["urgent"], [])
         wl = Watchlist()
         self.assertEqual(wl.signals(days=None, unreported_only=True), [])
         wl.close()
@@ -175,10 +178,10 @@ class DailyCheck(unittest.TestCase):
         self.add_store()
         daily.run(get=self.web([item(1)]))
         self.native_execution()
-        daily.run(get=self.web([item(1), item(2)]))
+        daily.run(get=self.web([item(1, available=False)]))
         self.native_execution("completed", "queued")
         self.queue_delivery("delivered", tombstone=True)
-        daily.run(get=self.web([item(1), item(2)]))
+        daily.run(get=self.web([item(1, available=False)]))
         wl = Watchlist()
         self.assertEqual(wl.signals(days=None, unreported_only=True), [])
         wl.close()
@@ -194,12 +197,12 @@ class DailyCheck(unittest.TestCase):
         from iris_watchlist import Watchlist
         self.add_store()
         daily.run(get=self.web([item(1)]))
-        first = daily.run(get=self.web([item(1), item(2)]))
+        first = daily.run(get=self.web([item(1, available=False)]))
         wl = Watchlist()
         wl.db.execute("UPDATE signals SET created_at='2020-01-01T00:00:00Z'")
         wl.db.commit()
         wl.close()
-        retry = daily.run(get=self.web([item(1), item(2)]))
+        retry = daily.run(get=self.web([item(1, available=False)]))
         self.assertEqual(retry["urgent"][0]["id"], first["urgent"][0]["id"])
         self.assertEqual(retry["urgent"][0]["created_at"], "2020-01-01T00:00:00Z")
 
@@ -245,17 +248,17 @@ class DailyCheck(unittest.TestCase):
         import iris_weekly_data as weekly
         self.add_store()
         daily.run(get=self.web([item(1)]))
-        daily.run(get=self.web([item(1), item(2, title="New Serum")]))
+        daily.run(get=self.web([item(1, available=False)]))
         out = io.StringIO()
         with redirect_stdout(out):
             self.assertEqual(weekly.main(), 0)
         data = json.loads(out.getvalue())
-        self.assertEqual(data["week_counts"], {"new_product": 1})
+        self.assertEqual(data["week_counts"], {"out_of_stock": 1})
         self.assertEqual(data["checks_this_week"], 2)
-        self.assertEqual(data["market_by_store"]["Glow Lab"]["Serum"]["count"], 2)
+        self.assertEqual(data["market_by_store"]["Glow Lab"]["Serum"]["count"], 1)
         self.assertIn("not instructions", data["note"])
         self.assertEqual(data["observation_by_store"]["Glow Lab"]["checks"], 2)
-        self.assertEqual(data["observation_by_store"]["Glow Lab"]["url"], "https://glow.example")
+        self.assertEqual(data["observation_by_store"]["Glow Lab"]["url"], "https://glow.example/products/p1")
 
     def test_chat_and_weekly_share_dated_evidence(self):
         import iris_weekly_data as weekly
@@ -328,20 +331,20 @@ class Tools(unittest.TestCase):
         self.assertIsNone(guard(tool_name="web_search", args={"query": "x"}))
 
     def test_watch_add_takes_a_baseline_and_lists_it(self):
-        web = FakeWeb({"https://glow.example/products.json": (200, fixture("shopify_products.json"))})
+        web = FakeWeb({"https://glow.example/products/p1": (200, shop([item(1)]))})
         with mock.patch.object(self.plugin.feeds, "http_get", web):
-            out = json.loads(self.plugin.watchlist_tool({"operation": "add", "url": "https://glow.example",
+            out = json.loads(self.plugin.watchlist_tool({"operation": "add", "url": "https://glow.example/products/p1",
                                                          "name": "Glow Lab", "focus": ["serum"]}))
         self.assertTrue(out["added"])
         self.assertEqual(out["first_look"]["product_count"], 1)   # focus kept only the serum
         listed = json.loads(self.plugin.watchlist_tool({"operation": "list"}))
-        self.assertEqual(listed["stores"][0]["products_seen"], 3)
+        self.assertEqual(listed["stores"][0]["products_seen"], 1)
 
     def test_blocked_store_is_not_added(self):
         web = FakeWeb({"https://shy.example/": (403, "no")})
         with mock.patch.object(self.plugin.feeds, "http_get", web):
-            out = json.loads(self.plugin.watchlist_tool({"operation": "add", "url": "https://shy.example", "name": "Shy"}))
-        self.assertEqual(out, {"added": False, "reason": "blocked", "url": "https://shy.example"})
+            out = json.loads(self.plugin.watchlist_tool({"operation": "add", "url": "https://shy.example/products/p1", "name": "Shy"}))
+        self.assertEqual(out, {"added": False, "reason": "blocked", "url": "https://shy.example/products/p1"})
 
     def test_read_store_marks_content_as_untrusted_data(self):
         url = "https://cs.example/listing/niacinamide/"
@@ -364,14 +367,14 @@ class Tools(unittest.TestCase):
             out = json.loads(self.plugin.read_store_tool({"url": result["url"]}))
         self.assertEqual(out["scope"], "product")
         self.assertEqual(out["products"][0]["description"], "50 ml for oily skin")
-        self.assertIn("eligible products", out["page_text"])
+        self.assertNotIn("page_text", out)
         self.assertFalse(out["products"][0]["on_sale"])
-        self.assertIn("page_text", out["note"])
+        self.assertIn("not instructions", out["note"])
 
     def test_market_changes_exposes_limited_observation_history(self):
         from iris_watchlist import Watchlist
         wl = Watchlist()
-        s = wl.add("Glow", "https://glow.example")
+        s = wl.add("Glow", "https://glow.example/products/p1")
         wl.save_snapshot(s["id"], {"access": "ok", "products": []})
         wl.save_snapshot(s["id"], {"access": "blocked", "products": []})
         wl.close()
@@ -388,6 +391,17 @@ class Tools(unittest.TestCase):
 
 
 class OwnStore(unittest.TestCase):
+    def test_product_source_is_storefront_url_not_image_or_guessed_handle(self):
+        import iris_store as store
+        product = {"title": "Phone", "handle": "phone", "onlineStoreUrl": "https://shop.example/products/phone",
+                   "featuredImage": {"url": "https://cdn.example/phone.jpg"}}
+        data = {"shop": {"currencyCode": "EGP"}, "products": {"nodes": [product]}}
+        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "phones.myshopify.com"}):
+            self.assertEqual(store.search("Phone", post=lambda q, v: data)["products"][0]["url"],
+                             product["onlineStoreUrl"])
+            product["onlineStoreUrl"] = None
+            self.assertIsNone(store.search("Phone", post=lambda q, v: data)["products"][0]["url"])
+
     def test_review_exposes_photo_gap_and_truncated_stock_without_inventing_sales(self):
         import iris_store as store
         product = {"title": "Sunscreen", "description": "50 ml", "featuredImage": None,
@@ -521,6 +535,42 @@ class ProfileIsolation(unittest.TestCase):
             self.assertEqual(self.iris_store._token("standalone.myshopify.com"), "standalone-token")
 
 
+class CatalogEvaluation(unittest.TestCase):
+    def setUp(self):
+        from helpers import ROOT
+        self.root = ROOT
+        spec = importlib.util.spec_from_file_location("evaluate_iris", ROOT / "tools/evaluate_iris.py")
+        self.evaluator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.evaluator)
+
+    def test_fixture_cannot_run_against_source_profile(self):
+        with mock.patch.object(sys, "argv", ["evaluate", "--profile-home", "unused", "--output", "unused",
+                                               "--catalog-fixture", "unused"]), mock.patch("sys.stderr", io.StringIO()):
+            with self.assertRaises(SystemExit) as error:
+                self.evaluator.main()
+        self.assertEqual(error.exception.code, 2)
+
+    def test_private_catalog_fixture_keeps_reads_and_denies_offer_queries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp)
+            (home / "iris").mkdir()
+            source = home / "plugins/iris/iris_store.py"
+            source.parent.mkdir(parents=True)
+            source.write_text((self.root / "plugins/iris/iris_store.py").read_text(encoding="utf-8"), encoding="utf-8")
+            (home / ".env").write_text("SHOPIFY_ADMIN_TOKEN='fixture-old-token'\n", encoding="utf-8")
+            self.evaluator.install_catalog_fixture(home, self.root / "tests/fixtures/own_electronics_catalog.json")
+            spec = importlib.util.spec_from_file_location("evaluation_fixture_store", source)
+            store = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(store)
+            self.assertEqual(store.catalog()["shop"], "Circuit Shelf")
+            product = store.search("Model X")["products"][0]
+            self.assertEqual(product["options"][0]["name"], "Storage")
+            with self.assertRaises(store.StoreError):
+                store._graphql("mutation CreateDiscount", {})
+            self.assertNotIn("fixture-old-token", (home / ".env").read_text())
+            self.assertEqual((home / "memories/MEMORY.md").read_text(), "")
+
+
 class Doctor(unittest.TestCase):
     def setUp(self):
         from helpers import ROOT
@@ -564,10 +614,6 @@ class Doctor(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn("MISSING browser user agent", output)
 
-    def test_optional_monitor_requires_both_settings(self):
-        result, output = self.run_doctor("CHANGEDETECTION_URL='http://localhost:5000'\n")
-        self.assertEqual(result, 1)
-        self.assertIn("MISSING optional product monitor credentials", output)
 
     @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
     def test_dotenv_empty_quotes_and_bare_keys_are_missing(self):
@@ -590,106 +636,6 @@ class Doctor(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn("run the doctor with Hermes' Python", output)
         self.assertIn("Not ready yet", output)
-
-
-class FakeMonitor:
-    """A changedetection.io stand-in: records requests and answers like its REST API."""
-    def __init__(self, watch=None, fail=False):
-        self.requests, self.watch, self.fail = [], watch or {}, fail
-
-    def __call__(self, req, timeout=None):
-        body = json.loads(req.data) if req.data else None
-        self.requests.append((req.get_method(), req.full_url, dict(req.header_items()), body))
-        if self.fail:
-            raise OSError("connection refused")
-        answer = {"uuid": "w-1"} if req.get_method() == "POST" else (self.watch if req.get_method() == "GET" else "")
-        return io.BytesIO(json.dumps(answer).encode() if answer != "" else b"")
-
-
-class Monitor(unittest.TestCase):
-    def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
-        os.environ.update(IRIS_DATA_DIR=self.tmp.name, CHANGEDETECTION_URL="http://127.0.0.1:5000/",
-                          CHANGEDETECTION_API_KEY="k-123")
-        import iris_monitor
-        self.monitor = iris_monitor
-
-    def tearDown(self):
-        self.tmp.cleanup()
-        for key in ("IRIS_DATA_DIR", "CHANGEDETECTION_URL", "CHANGEDETECTION_API_KEY"):
-            os.environ.pop(key, None)
-
-    def test_watch_asks_for_daily_price_and_stock_with_iris_user_agent(self):
-        fake = FakeMonitor()
-        self.assertEqual(self.monitor.watch("https://rival.example/product/lamp/", "Rival lamp", opener=fake), "w-1")
-        method, url, headers, body = fake.requests[0]
-        self.assertEqual((method, url), ("POST", "http://127.0.0.1:5000/api/v1/watch"))
-        self.assertEqual(headers.get("X-api-key"), "k-123")
-        self.assertEqual((body["processor"], body["time_between_check"], body["time_between_check_use_default"]),
-                         ("restock_diff", {"days": 1}, False))
-        self.assertEqual(body["headers"], {"User-Agent": feeds.USER_AGENT})
-        self.assertNotIn("proxy", body)
-
-    def test_reading_becomes_an_iris_product_or_an_error(self):
-        fake = FakeMonitor({"last_checked": 1759400000, "last_error": False,
-                            "restock": {"price": "1250.0", "currency": "EGP", "in_stock": False, "last_price": 1400}})
-        p = self.monitor.product("w-1", "https://rival.example/product/lamp/", "Lamp", key="page:x#Lamp", opener=fake)
-        self.assertEqual((p["key"], p["price"], p["currency"], p["available"]), ("page:x#Lamp", 1250.0, "EGP", False))
-        for watch in ({"last_error": "403 Forbidden", "restock": {}}, {"last_error": False, "restock": {}}):
-            with self.assertRaises(self.monitor.MonitorError):
-                self.monitor.product("w-1", "https://rival.example/p", "Lamp", opener=FakeMonitor(watch))
-        with self.assertRaises(self.monitor.MonitorError):
-            self.monitor.product("w-1", "https://rival.example/p", "Lamp", opener=FakeMonitor(fail=True))
-
-    def test_current_api_reads_cached_raw_page_without_fetching_the_store(self):
-        page = '<script type="application/ld+json">' + json.dumps({
-            "@type": "Product", "name": "Lamp", "offers": {
-                "@type": "Offer", "price": "1250", "priceCurrency": "EGP",
-                "availability": "https://schema.org/OutOfStock"}}) + '</script>'
-        metadata = FakeMonitor({"last_checked": 1759400000, "last_error": False})
-
-        def api(req, timeout=None):
-            if "history/latest?html=1" in req.full_url:
-                self.assertEqual(req.get_header("X-api-key"), "k-123")
-                return io.BytesIO(page.encode())
-            return metadata(req, timeout)
-
-        product = self.monitor.product("w-1", "https://rival.example/product/lamp/", "Lamp", opener=api)
-        self.assertEqual((product["price"], product["currency"], product["available"]), (1250, "EGP", False))
-        self.assertIsNotNone(product["checked_at"])
-
-    def test_current_api_rejects_a_cached_listing_page(self):
-        page = '<script type="application/ld+json">' + json.dumps([
-            {"@type": "Product", "name": name, "offers": {"price": 10, "priceCurrency": "EGP"}}
-            for name in ("Lamp", "Chair")]) + '</script>'
-
-        def api(req, timeout=None):
-            body = page if "history/latest" in req.full_url else json.dumps({"last_checked": 1759400000})
-            return io.BytesIO(body.encode())
-
-        with self.assertRaises(self.monitor.MonitorError):
-            self.monitor.product("w-1", "https://rival.example/product/lamp/", "Lamp", opener=api)
-
-    def test_daily_check_uses_the_monitor_reading_and_falls_back_to_iris(self):
-        import iris_daily_check as daily
-        import iris_watchlist
-        wl = iris_watchlist.Watchlist()
-        s = wl.add("Rival lamp", "https://rival.example/product/lamp/", kind="page")
-        wl.save_snapshot(s["id"], {"access": "ok", "source": "page", "products": [
-            {"key": "page:lamp#Lamp", "title": "Lamp", "price": 1400.0, "available": True, "on_sale": False}]})
-        wl.set_monitor(s["id"], "w-1")
-        store = wl.find(s["url"])
-        reading = {"key": "page:lamp#Lamp", "title": "Lamp", "url": s["url"], "price": 1250.0,
-                   "available": False, "checked_at": "2026-10-02T06:00:00Z"}
-        with mock.patch.object(daily.iris_monitor, "product", lambda *a, **k: dict(reading)):
-            result = daily._monitored(wl, store)
-        self.assertEqual((result["source"], result["scope"], result["products"][0]["key"]),
-                         ("changedetection", "product", "page:lamp#Lamp"))
-        def down(*a, **k):
-            raise daily.iris_monitor.MonitorError("unreachable")
-        with mock.patch.object(daily.iris_monitor, "product", down):
-            self.assertIsNone(daily._monitored(wl, store))  # Iris reads the page herself instead
-        wl.close()
 
 
 if __name__ == "__main__":

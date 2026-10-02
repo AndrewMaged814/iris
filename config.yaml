@@ -25,6 +25,7 @@ platform_toolsets:
     - no_mcp
   cron:              # no memory here: scheduled runs read other websites, so they can't write memory
     - iris
+    - web            # native research for the morning offer check and current evidence
     - iris-skill-read
     - no_mcp
 known_plugin_toolsets:
@@ -50,11 +51,8 @@ tools:
   tool_search:
     enabled: false
 
-# Free, self-hosted competitor search: SearXNG at SEARXNG_URL (see docs/SETUP.md). Hermes uses
-# this exact backend with no fallback, so search fails visibly if SearXNG is down. web_extract is
-# not affected and keeps Hermes' own backend selection.
-web:
-  search_backend: searxng
+# Research uses Hermes's native provider selection, extraction, cache and fallback.
+# Configure the profile through `hermes -p iris tools`; Iris does not pin a search service.
 
 # Hermes's own headless Chromium on this host: no cloud browser, no Camofox fingerprint spoofing,
 # no Browser Use code execution. AGENT_BROWSER_ARGS in .env sets Iris's honest user agent.
