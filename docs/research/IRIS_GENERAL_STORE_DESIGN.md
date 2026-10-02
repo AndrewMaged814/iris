@@ -128,6 +128,8 @@ offer currency list in `iris_offers.py` is already multi-currency.
 1. **Coverage measurement (read-only, before any code).** For each of 5 categories, 5 real Egyptian
    competitor stores: record whether `read_store` returns products, prices, options and stock.
    Result: a table in `docs/research/` saying which categories Iris can cover today.
+   **Done:** [IRIS_COVERAGE_MEASUREMENT.md](IRIS_COVERAGE_MEASUREMENT.md). Coverage follows the
+   store platform, not the category; its reader fixes join step 5 below.
 2. **Offline tests.** Add one non-beauty fixture catalog (e.g. electronics, Shopify JSON with
    Storage/Color options) and test that option names survive the feed reader. No network.
 3. **Evaluation cases.** Keep every Mira Nile case. Add a few cross-category cases that check the
