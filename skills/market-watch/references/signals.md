@@ -1,14 +1,16 @@
-# Signals and moves
+# Evaluate a signal
 
-| Change | What it can mean for the owner | Moves to offer (pick one) |
+These are evidence checks, not automatic recommendations. Use Choose the response in the
+market-watch skill to decide whether the owner should act.
+
+| Observation | Verify before advice | What the evidence can support |
 | --- | --- | --- |
-| A promotion starts in the owner's product type | Customers compare offers this week | Hold price and post about your product's strength; a small bundle instead of a discount; time your own offer for after theirs ends |
-| A promotion ends | Their price goes back up | Remind your customers now; a short "still available" post |
-| A watched item runs out | Their customers are looking elsewhere | Post about your similar product; check your own stock; a WhatsApp broadcast to past buyers |
-| A new product in the owner's types | Where the market is moving | Note it for the weekly message; if the owner has a similar product, a post about it; if not, just inform |
-| Price moves of 10% or more | A pricing decision by them | Neutral note in the weekly message; mention where the owner sits in the range |
-| The same wording on many new listings ("recycled material", "two-year warranty") | Messaging that customers now expect | If it's true for the owner's product, add it to their description or next post |
-| A page selling the owner's own product with wrong details | Customers may get the wrong idea | Tell the owner what you saw and where; offer a short customer reply. Stay neutral about the seller |
+| Promotion starts or ends | Eligible product, quantity, dates, basket price; own stock and contribution for an offer | Compare the actual basket; accurate positioning or a bounded offer only when justified |
+| Watched item runs out | Comparable standalone variant, fresh availability, own available stock | A small availability-positioning test; demand transfer remains unknown |
+| Listed price changes | Currency, matching variant and quantities, previous observation | A changed price position; no automatic need to match or discount |
+| New product found during research | Actual listing and comparison attributes; observation history if claiming newness | A current alternative, not proof of a market trend; product watches do not discover new listings |
+| Similar wording across listings | Independent sources and truth for the owner's product | A possible messaging hypothesis, not established customer expectations |
+| Seller lists the owner's product inaccurately | Exact product and specific conflicting fact | Correct the owner's own factual copy or prepare a requested reply; no contacting the seller |
 
-Never suggest copying another store's photos or text. Never suggest the owner cut price just because
-someone else did; show the range and let them decide.
+Keep another store's photos and wording their own. An unsupported opportunity should become
+a narrower question or a reasoned hold, not a generic caption or broadcast recommendation.

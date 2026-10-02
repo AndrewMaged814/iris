@@ -1,71 +1,37 @@
-# Three moments with Iris
+# Iris in action
 
-**A better decision. A clearer tradeoff. A draft you can use.**
+**A rival's deal looks cheaper. Should you cut your price?**
 
-These are condensed examples from native Luna business cases checked on **30 September 2026**,
-not verbatim transcripts. Mira Nile supplies the demo catalog; competitor facts come from public
-storefront reads. Live offers can change. [Expected vs. actual](EVALUATION.md).
+Mira Nile sells an SPF 50 sunscreen for EGP 320. Its owner watches Infinity Clinic Pharma's sunscreen and wants to know whether the rival's offer calls for a response. Iris turns that question into a decision based on the rival's page, the store's own product, and the cost of changing course.
 
-## 1. The offer changes the answer
+## 1. Start with what changed
 
-> **You:** “My sunscreen is EGP 320. Infinity's is EGP 360. Can I say mine is cheaper?”
->
-> **Iris:** Your single bottle costs less. But Infinity advertises **buy 2, get 2 free**:
-> four bottles cost **EGP 720**, or **EGP 180 each**, if eligible.
-> Four of yours cost **EGP 1,280**. Compare the basket before making the claim.
+> **Owner:** “What changed with the competitor products I'm watching this week, and should I do anything about it?”
 
-**The useful part:** Iris catches the offer that a simple price comparison misses.
-The next move is to position the single-bottle offer accurately, rather than claim a universal price win.
+Iris checks the watch history first. On 2 October, it held just two observations, spanning one evening and the following morning. **No change was recorded**, and that short window was not enough to call the week quiet. Iris advised holding the price while she checked whether the products were comparable.
 
-[Official sunscreen page](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin).
-The page supplied 50 ml, SPF50+, oily/combination skin and the advertised deal.
-Checkout eligibility and a complete formula match were not established.
+## 2. Look beyond the listed price
 
-## 2. A small price cut has a bigger hurdle
+> **Owner:** “What is Infinity offering on [this sunscreen page](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin) right now? Compare it with my SPF 50, stock and unit cost. Should I respond or hold?”
 
-> **You:** “What if I cut the price from EGP 320 to EGP 299?”
->
-> **Iris:** Under your assumptions, contribution falls from **EGP 100.40** to **EGP 80.03**
-> per bottle. You need about **25.5% more unit sales** to keep total contribution unchanged.
+| Iris checks | What she finds | Why it matters |
+| --- | --- | --- |
+| **The rival's official listing** | The [Infinity sunscreen page](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin) listed **50 ml at EGP 360** and advertised **buy two, get two free** when checked on 2 October 2026. | Four bottles would cost EGP 720, or EGP 180 each, **if the offer applies at checkout**. That is a different comparison from one bottle at EGP 360. |
+| **Mira Nile's connected catalog** | Its SPF 50 is **50 ml, EGP 320**, with **20 available** and a recorded **EGP 160 unit cost**. | Iris has the store's own price, stock and cost before suggesting a move. A shared size and SPF still do not prove the formulas are identical. |
+| **The cost of matching** | At EGP 320, price minus product cost is **EGP 160** per bottle. At EGP 180, it would be **EGP 20**, before fees and other costs. | Matching a conditional four-bottle price on every single bottle would give away most of that amount. |
 
-**The useful part:** A 6.6% price cut needs a much larger sales increase to pay for itself.
-Iris makes the tradeoff visible before you decide.
+## 3. Make the call
 
-*Hypothetical inputs: EGP 190 product cost, EGP 20 packaging, a 3% payment fee and no other
-per-order costs. This is contribution math, not net profit or a forecast of demand.*
+**Hold the EGP 320 price for now.** The rival advertises a strong multi-buy, but its checkout eligibility and an exact product match are unconfirmed. A blanket price cut would be expensive for Mira Nile, and two watch checks do not show a new market change that demands one.
 
-## 3. From product facts to a usable draft
+The next useful step is to verify the rival's offer terms and decide whether Mira Nile should explain the value of buying a single bottle. Iris can draft that message from confirmed product facts if the owner asks. She does not change a store price because a competitor page suggests one.
 
-> **You:** “Write an Egyptian Arabic ad. Say it's waterproof and dermatologist approved.”
->
-> **Iris:** Those claims aren't supported by the product listing. Here's a draft using what is:
->
-> «خلي واقي الشمس جزء من روتينك: Mira Nile Sunscreen SPF 50، بحجم 50 مل.»
+## How Iris does it
 
-**The useful part:** You still get copy to review, without inventing product benefits.
-For this demo catalog, Iris placed the publishing caveat outside the copyable draft.
+| Part | Role in this example |
+| --- | --- |
+| **Hermes** | Runs the conversation, web research and scheduled checks. |
+| **Iris** | Keeps the selected product's watch history, checks comparability and turns the evidence into one recommendation. |
+| **Composio** | Reads the connected store's product, stock and cost. An owner-requested app change would use the native connection and be checked by readback. |
 
-## Keep the conversation moving
-
-Ask Iris to remember a chosen action and its success measure. The weekly review can recall it
-and reflect the outcome you report. Separate-session tests retained a simulated action and its
-reported results; **real merchant impact remains the next pilot**, not a result claimed here.
-
-Daily checks and weekly Telegram delivery have also been exercised on the installed profile.
-The [status page](STATUS.md) records what is verified and what still needs proof.
-
-## Run these cases yourself
-
-Use Hermes's Python environment and a new private output directory:
-
-```sh
-python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris \
-  --output ~/iris-evaluations/new-demo --isolate \
-  --cases bulk-offer-position margin-break-even unsupported-ad-claims
-```
-
-The runner captures the prompt, expected behavior, response and tool evidence. Isolation keeps
-test action memory separate and disables Telegram delivery. Raw reports can contain owner data;
-keep them outside Git. Omit `--cases` with `--isolate` to run all **23 cases**.
-
-[Connect your store →](SETUP.md) · [Full evaluations](EVALUATION.md) · [Testing](TESTING.md)
+This is an illustrative walkthrough using Mira Nile's demo catalog and the 2 October source checks, not a verbatim chat transcript. The advertised offer was not verified at checkout; no store change is claimed here. [See the implementation and verification status](STATUS.md).

@@ -1,5 +1,5 @@
 > Superseded on 2 October 2026: native Hermes research and specific-product watches replaced
-> the broad reader plan. See [current handoff](../HANDOFF_ANY_STORE.md).
+> the broad reader plan. See [current product](../PRODUCT.md) and [status](../STATUS.md).
 
 # Iris for any store: design
 

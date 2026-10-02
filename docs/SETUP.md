@@ -6,7 +6,7 @@ Set up one Hermes profile for one store owner, then talk to Iris in Telegram.
 
 - [Hermes](https://github.com/NousResearch/hermes-agent) with profile distributions and a model provider.
 - A Telegram bot token and the owner's numeric Telegram ID.
-- A Shopify app installed on the store, with **`read_products`** access.
+- A Composio account and an app containing the owner's product information.
 - Access to this repository. Iris is currently private.
 
 The tested installation uses Hermes commit `c1488ac` and Luna through Azure Foundry.
@@ -24,20 +24,27 @@ hermes -p iris setup
 Choose your model and configure Telegram through Hermes. Keep the bot token private.
 If Iris is already installed, use the verification steps below rather than reinstalling.
 
-## 2. Connect Shopify and authorize the owner
+## 2. Authorize the owner and connect Composio
 
-Use [`.env.EXAMPLE`](../.env.EXAMPLE) as the checklist for the profile's `.env`:
+Use [`.env.EXAMPLE`](../.env.EXAMPLE) for the Telegram bot token, allowed owner ID and browser
+user agent. There are no Iris-specific Shopify credentials or app API clients.
 
-| Setting | Value |
-| --- | --- |
-| `TELEGRAM_BOT_TOKEN` | The bot token from BotFather |
-| `TELEGRAM_ALLOWED_USERS` | The owner's numeric Telegram ID |
-| `SHOPIFY_STORE` | The store's `your-store.myshopify.com` address |
-| `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` | Installed Shopify app credentials |
-| `SHOPIFY_ADMIN_TOKEN` | Alternative to the client-credential pair |
+Hermes connects to `https://connect.composio.dev/mcp` with native OAuth. Enable the shipped
+`mcp_servers.composio` entry and authenticate with `hermes -p iris mcp login composio`.
+On a remote host, use Hermes's SSH callback forwarding. Keep tokens private in the profile.
+Telegram and cron select the native server toolset by its name, `composio`.
 
-Never commit real credentials. This version uses operator-configured product access;
-a merchant OAuth onboarding service is not included. [Shopify background](research/SHOPIFY_DEV_APP.md).
+Ask Iris to connect the app where your products live. Authorize the link in Telegram. Iris
+verifies the connection, discovers and reads candidate sources, and confirms the catalog and
+ambiguous fields with you. She saves its location and field meanings in Hermes memory.
+Connecting another app later follows the same process. Missing facts stay unknown.
+
+The owner-authorized demo exposes connected app reads and writes directly through Composio.
+There is no custom action allowlist, catalog adapter, Shopify fallback, offer ledger or native
+discount confirmation bridge. Iris uses requested terms and readback; this is agent instruction,
+not an enforced discount policy. Scheduled market checks are instructed to read apps only.
+Supported operations depend on the toolkit and authorized account; connecting an app does not
+prove every operation works. No Composio developer API key is needed for this Connect setup.
 
 ### Research: reuse Hermes
 
@@ -68,6 +75,11 @@ python -m pip install 'extruct>=0.18,<1' 'price-parser>=0.5,<1'
 ```
 
 ### Browser for JavaScript product pages
+
+The current Iris profile temporarily excludes the local browser toolset after navigation and
+daemon failures. Use native extraction or screenshots while it is disabled. The preparation
+notes below describe the dormant setup, not a required step or a verified repair. Re-enable
+only after testing bounded successful navigation and failure recovery on the actual host.
 
 Iris uses Hermes's local browser in chat. The tested `c1488ac` has no `hermes pm` command;
 with Node.js/npx available, prepare the native CLI and Playwright cache:
@@ -141,35 +153,14 @@ When reusing a previously deleted profile name on the tested Hermes revision, cr
 home first with `hermes profile create iris --no-skills --no-alias`. Installation with `--force`
 is only for that empty profile, before configuring credentials or the model.
 
-## Optional response offers
+## Migrating an existing profile
 
-Catalog reading needs only `read_products`. Enable Iris's first store action separately:
+Back up runtime files and private configuration first. Remove `iris_store.py`, `iris_offers.py`
+and stale compiled copies from the deployed plugin. Remove `SHOPIFY_*` and `IRIS_ENABLE_OFFERS`
+settings and the old token cache from the active profile after keeping a private backup.
+Preserve watch/history databases, owner memories, native MCP authorization and message history.
+Update existing scheduled prompts to read the confirmed connected catalog; do not recreate jobs.
+Refresh frozen instructions through Hermes and restart the native gateway. Verify Composio
+again after restart and read a real catalog before claiming catalog migration is complete.
 
-1. In the installed Shopify app, add `write_discounts` (includes discount reads).
-   Release/install the app's updated permissions. Refresh its token if the cached grant still has
-   the old scopes. Existing `read_products` covers costs and aggregate variant stock; no inventory,
-   orders, customers or product-write access is added. For analysis alone, use `read_discounts`.
-2. In Shopify, enter the selected variant's unit cost in store currency. Enable inventory tracking,
-   supply its actual available stock and disable selling when out of stock. The first slice needs
-   tax-exclusive pricing and no other active/scheduled discount; existing markdowns also block it.
-   Offer arithmetic currently supports EGP, USD, EUR, GBP, CAD and AUD; catalog reads are unchanged.
-3. Set `IRIS_ENABLE_OFFERS=1` in the profile's private `.env` and reload Hermes gracefully.
-   Keep `TELEGRAM_ALLOWED_USERS` set to the single owner's numeric ID. Preserve provider settings.
-4. Ask Iris to assess a market response. Supply variable payment fees, packaging/shipping subsidy
-   per unit and the minimum contribution margin. Review the code, variant, percentage, start/end,
-   redemption limit and assumptions. Creation requires **Approve** on the fresh native Telegram
-   prompt, even if a prior chat message said yes. **Cancel**, timeout or changed facts means no write.
-5. Iris verifies the saved Shopify configuration and offers copy in your chosen brand language.
-   Readback does not test checkout eligibility. To stop the code, ask Iris and approve its separate
-   deactivation prompt. Past orders remain unchanged.
-
-The native approval bridge is tested against Hermes `c1488ac`: it uses the live gateway runner's
-clarification primitive with a unique question ID. If this API changes or the owner/session cannot
-be established, execution fails closed. Revalidate it after upgrading Hermes. Cron, CLI evaluation,
-group chats and other users cannot execute offers, even with the enable flag set.
-
-An uncertain write is not retried. Ask for its status to reconcile the exact code and terms;
-investigate unresolved cases in Shopify. Keep a newly prepared proposal separate from the original.
-No automatic campaign publishing, base-price editing or customer-data access is included.
-
-[Try the demo cases →](DEMO.md) · [Current deployment](STATUS.md) · [Testing](TESTING.md)
+[Current deployment](STATUS.md) · [Testing](TESTING.md)

@@ -1,13 +1,12 @@
 name: iris
 version: 1.1.0
-description: "Market intelligence and owner-approved response offers for one Shopify store"
+description: "Competitor watches, history and change detection for one owner"
 author: Andrew Maged
 requires_hermes: ">=0.21.3"
 python_dependencies:      # product data from any store page (Zyte, BSD); consent at plugin install
   - "extruct>=0.18,<0.19"
   - "price-parser>=0.5,<0.6"
 provides_tools:
-  - my_store
   - read_store
   - watchlist
   - market_changes

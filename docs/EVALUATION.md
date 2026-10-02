@@ -1,3 +1,5 @@
+> Historical results from the earlier Shopify runtime. These do not verify the current Composio integration or imply its old offer controls remain. See [current status](STATUS.md).
+
 # Business cases: expected versus actual
 
 Manual review on 30 September 2026, with the installed Luna provider and native Hermes runtime.

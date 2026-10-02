@@ -1,51 +1,56 @@
 <p align="center">
-  <img src="assets/iris-logo.png" alt="Iris — AI growth scout" width="180">
+  <img src="assets/iris-logo.png" alt="Iris mascot" width="160">
 </p>
 
 <h1 align="center">Iris</h1>
-<p align="center"><strong>Your market moves. Move smarter.</strong></p>
-<p align="center">Your AI growth scout. Iris watches your market, spots opportunities for your store,<br>and brings your next move to Telegram.</p>
+<p align="center"><strong>Your AI market analyst</strong></p>
+<p align="center">Iris watches the competitor products you choose. She investigates new prices, offers, and stock changes,<br>checks them against your own products and costs, and recommends your next move. Then she can help you make it.</p>
 
 <p align="center">
+  <a href="https://t.me/IrisMarketWatcherBot"><strong>Try Iris on Telegram</strong></a> ·
   <a href="docs/DEMO.md">See Iris in action</a> ·
-  <a href="docs/SETUP.md">Connect your store</a> ·
-  <a href="#architecture">Architecture</a> ·
-  <a href="docs/EVALUATION.md">Business cases</a>
+  <a href="docs/SETUP.md">Set up Iris</a> ·
+  <a href="#architecture">See the architecture</a>
 </p>
 
-<p align="center">Built on <a href="https://github.com/NousResearch/hermes-agent">Hermes</a> · Shopify · Telegram · English & Egyptian Arabic</p>
+## Why a store owner would use Iris
 
-## From a competitor move to your next move
+- **Know what a discount would cost you.** Using the costs you provide, Iris shows how much is left from each sale after a price cut and how many extra sales it would take to break even. If the numbers do not support the cut, Iris recommends keeping your price.
+- **Stop checking competitor pages yourself.** Pick the products you care about. Iris checks their prices and stock each day, investigates relevant offers, alerts you to meaningful changes and summarizes the week.
+- **See how a decision comes together.** The [sunscreen example](docs/DEMO.md) shows Iris checking a rival's offer against watch history, your product data and the cost of matching its price.
 
-A competitor's price is only part of the story. Iris connects prices, promotions and availability
-to **your products**, helps you weigh the decision, and drafts the next step when you ask.
+## From market signal to next move
 
-> **You:** “Can I say my sunscreen is cheaper than Infinity's?”
->
-> **Iris:** One bottle: yours **EGP 320**, theirs **EGP 360**.
-> But their advertised **buy 2, get 2** deal makes four bottles **EGP 720**,
-> versus your **EGP 1,280**, if the offer applies.
->
-> **The decision:** A lower single-bottle price doesn't support an unqualified “cheaper” claim.
-
-## What you can do with Iris
-
-| Bring Iris a question | Get something you can use |
+| When you ask… | Iris helps you… |
 | --- | --- |
-| **“What's changed in my market?”** | Relevant price, markdown and stock changes, connected to your products |
-| **“Should I lower my price?”** | Product and offer comparisons, plus margin math from your cost inputs |
-| **“What should I improve?”** | One useful product-listing fix based on its photos and catalog details |
-| **“Write it in Egyptian Arabic.”** | A caption, product line or reply using the facts your store supplies |
-| **“Let's do this. Remember it.”** | A saved chosen action and a weekly review of what you report happened |
-| **“Prepare a response offer.”** | A margin-checked code proposal; exact owner approval before creation and Shopify readback |
+| **“What changed?”** | Watch selected rival product pages for price, offer, and availability changes. Quiet checks stay quiet; useful changes reach you in Telegram. |
+| **“Does it matter to my store?”** | Compare the rival's product with yours, account for offers, stock, costs, and missing facts, then weigh acting against holding course. |
+| **“What should I do?”** | Get one clear recommendation, a supported product or campaign draft in English or Egyptian Arabic, or a weekly review of the action you chose. |
+| **“Can you make that change?”** | Ask Iris to use a connected app through Composio. She discovers the available operation, resolves the exact terms with you, and checks the result by reading it back. |
 
-Iris checks daily and brings a weekly brief. Quiet daily checks stay quiet.
-You choose the competitors and the actions. Optional response codes require fresh approval in
-Telegram; base prices stay unchanged and announcement publishing stays with you.
+You choose what to watch and what to do. Iris does not treat a competitor's move as an automatic reason to discount. If a page blocks access or a material fact is missing, she says so.
 
-## Quick start
+## How it works
 
-You'll need Hermes, a model provider, a Telegram bot and a Shopify product connection.
+- **[Hermes](https://github.com/NousResearch/hermes-agent)** runs the agent: Telegram conversations, model, memory, web research, vision, scheduled checks, and delivery.
+- **[Composio](https://composio.dev/)** connects the apps where your product facts live. Iris uses Hermes's native Composio tools for owner-requested reads and writes, with no custom app client or credential store.
+- **Iris** supplies the business judgment. Her skills turn evidence into owner-facing advice; her three tools read selected rival product pages, manage the watchlist, and retrieve saved changes. Three small scripts prepare daily and weekly check data and set up the schedules.
+
+The catalog source can be any supported connected app. Iris confirms the source and field meanings with you. She keeps snapshots only for selected competitor products in local SQLite, so a current listing does not become a made-up trend. Scheduled market checks read connected apps; they do not make app changes.
+
+## Architecture
+
+<p align="center">
+  <img src="assets/architecture.png" alt="Iris architecture: an SME owner talks through Telegram to a Hermes agent running the Iris profile. Iris investigates competitor pages with Hermes web research, reads the owner's catalog and requested app actions through Composio, and compares selected product changes in local watch history. The owner chooses a move and reviews the outcome." width="100%">
+</p>
+
+The diagram is available as an [editable SVG](assets/architecture.svg). The PNG is exported at **2400 × 1380** for a readable full-width view.
+
+## Try Iris
+
+**[Open the Iris bot on Telegram →](https://t.me/IrisMarketWatcherBot)** to try the shared demo with Mira Nile, the example store in this README.
+
+To use Iris with your own store, run your own profile. You need Hermes, a model provider, a Telegram bot, and a Composio connection to the app that holds your product information. The repository currently requires access.
 
 ```sh
 git clone https://github.com/AndrewMaged814/iris.git
@@ -54,55 +59,14 @@ hermes profile install . --name iris
 hermes -p iris setup
 ```
 
-Then connect your catalog and Telegram, and enable the daily and weekly checks.
-**[Follow the setup guide →](docs/SETUP.md)** The repository currently requires access.
+Then connect your catalog, confirm its fields, and enable the three scheduled checks. [Follow the setup guide](docs/SETUP.md).
 
-## Architecture
+## What is verified
 
-Iris supplies the business judgment, skills and tools. Hermes supplies the agent runtime.
+The current version passes **59 offline tests**. The live Hermes profile has authenticated to Composio and read a connected spreadsheet; connected-app writes and real merchant outcomes still need live verification. [Current status](docs/STATUS.md) · [Testing guide](docs/TESTING.md).
 
-![Iris architecture: Telegram connects to Hermes, which runs Iris and scheduled checks; Iris reads Shopify, competitor storefronts and saved market evidence.](assets/architecture.png)
+<sub>Iris is a hackathon project and an active demo, not a measured claim of sales growth.</sub>
 
-The four tools read your catalog, inspect competitors, manage the watchlist and retrieve changes.
-The own-store tool also handles bounded response codes when offer access is enabled.
-Hermes supplies native search, extraction, cache/fallback and browser reads for research.
-Iris records price/stock history only for owner-selected product pages; it does not crawl catalogs
-or sitemaps. Hermes supplies chat-only browser reads for JavaScript pages. Comparisons use
-an owner-confirmed Market profile and category references for beauty, fashion, electronics,
-food, home and other categories. Mira Nile remains the skincare demo.
-Saved observations distinguish today's listings from changes recorded over time.
+## License
 
-## Project structure
-
-```text
-iris/
-├── SOUL.md             Iris's voice and business judgment
-├── config.yaml         Hermes profile settings
-├── plugins/iris/        Four tools, product readers and market evidence
-├── skills/             Setup, market watch, weekly brief and drafting
-├── scripts/            Daily checks, weekly data and schedule setup
-├── tools/              Connection doctor, validator and business evaluator
-├── tests/              Offline regression tests
-├── docs/               Demo, setup, evaluations and product direction
-└── assets/             Iris mascot and its creation prompt
-```
-
-## Proof & next steps
-
-**96 offline tests.** Reusable business cases cover Mira Nile and isolated category onboarding.
-Native Hermes research verifies official product pages. Earlier Telegram/scheduled delivery
-evidence is retained separately; the simplified candidate still needs live transport checks.
-[Expected vs. actual](docs/EVALUATION.md) · [Deployment status](docs/STATUS.md)
-
-- **Next:** enable the narrow offer permissions and verify the approved-create-stop flow through
-  Telegram, then measure a real merchant pilot.
-- Improve promotion coverage and weekly follow-up from the cases that expose gaps.
-
-[Product direction](docs/PRODUCT.md) · [Testing guide](docs/TESTING.md)
-
-## Contributing & license
-
-Review [AGENTS.md](AGENTS.md), then run `python3 -m unittest discover -s tests` and
-`python3 tools/validate_repo.py` before proposing a change. Business-case failures are especially useful.
-
-[License](LICENSE) · [Third-party credits](NOTICE) · [Logo & prompt](assets/README.md)
+Iris is [MIT licensed](LICENSE). See the [third-party notices](NOTICE) and [mascot credit](assets/README.md).

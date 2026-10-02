@@ -5,7 +5,7 @@
 - skill bodies stay under 200 lines and linked references exist
 - no secrets or private paths in tracked files
 - no model or provider pinned in config.yaml
-- exactly the four agreed tools are registered
+- exactly the three agreed history tools are registered
 """
 import re
 import subprocess
@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SECRET = re.compile(r"(shpat_|shpss_)[A-Za-z0-9]{8,}|\b\d{8,10}:[A-Za-z0-9_-]{30,}\b|-----BEGIN [A-Z ]*PRIVATE KEY|/home/[a-z]+/")
-TOOLS = {"my_store", "read_store", "watchlist", "market_changes"}
+TOOLS = {"read_store", "watchlist", "market_changes"}
 
 
 def tracked() -> list[Path]:
@@ -58,7 +58,7 @@ def main() -> int:
     plugin = (ROOT / "plugins" / "iris" / "__init__.py").read_text()
     handlers = set(re.findall(r'"(\w+)": \w+_tool', plugin))
     if handlers != TOOLS:
-        problems.append(f"plugin tools {sorted(handlers)} differ from the agreed four")
+        problems.append(f"plugin tools {sorted(handlers)} differ from the agreed three")
     for p in problems:
         print("FAIL", p)
     print("ok" if not problems else f"{len(problems)} problem(s)")

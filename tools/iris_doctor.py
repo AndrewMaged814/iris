@@ -3,8 +3,8 @@
 
     python3 tools/iris_doctor.py --profile-home ~/.hermes/profiles/iris [--live]
 
-Without --live it checks files and settings only. With --live it also reads the owner's store
-and each watched store once. It prints what's ready and what's missing, in plain words.
+Without --live it checks files and settings only. With --live it checks native Composio discovery
+and reads each watched product once. It prints what's ready and what's missing, in plain words.
 """
 import argparse
 import importlib
@@ -44,10 +44,14 @@ def main() -> int:
     print("Settings")
     good &= check("Telegram bot token", bool(env.get("TELEGRAM_BOT_TOKEN")), "set TELEGRAM_BOT_TOKEN in .env")
     good &= check("only the owner can talk to Iris", bool(env.get("TELEGRAM_ALLOWED_USERS")), "set TELEGRAM_ALLOWED_USERS")
-    good &= check("store address", (env.get("SHOPIFY_STORE") or "").endswith(".myshopify.com"), "set SHOPIFY_STORE")
-    good &= check("store credentials", bool(env.get("SHOPIFY_ADMIN_TOKEN") or
-                                             (env.get("SHOPIFY_CLIENT_ID") and env.get("SHOPIFY_CLIENT_SECRET"))),
-                  "set the Shopify app credentials")
+    import yaml
+    try:
+        cfg = yaml.safe_load((home / "config.yaml").read_text()) or {}
+    except (OSError, yaml.YAMLError):
+        cfg = {}
+    composio = cfg.get("mcp_servers", {}).get("composio", {})
+    good &= check("Composio enabled", composio.get("enabled") is True,
+                  "authorize with Hermes mcp login composio and enable the server")
     good &= check("browser user agent", any(arg.strip().startswith("--user-agent=IrisBot")
                   for arg in env.get("AGENT_BROWSER_ARGS", "").split(",")),
                   "set AGENT_BROWSER_ARGS with --user-agent=IrisBot/1.0; see docs/SETUP.md")
@@ -67,18 +71,20 @@ def main() -> int:
         check("Hermes safe web client importable", False,
               "run the doctor with Hermes' Python; Iris falls back to a basic address check without it")
     if a.live:
-        os.environ.update({k: v for k, v in env.items() if k.startswith(("SHOPIFY_",))})
+        os.environ["HERMES_HOME"] = str(home.resolve())
         os.environ.setdefault("IRIS_DATA_DIR", str(home / "iris"))
         sys.path.insert(0, str(home / "plugins" / "iris"))
         import iris_feeds
-        import iris_store
         from iris_watchlist import Watchlist
         print("Live")
         try:
-            cat = iris_store.catalog(max_pages=1)
-            check(f"own store readable ({cat['shop']}, {cat['product_count']} products)", True)
-        except iris_store.StoreError as exc:
-            good &= check("own store readable", False, str(exc))
+            from tools.mcp_tool_discovery import discover_mcp_tools
+            registered = discover_mcp_tools(["composio"])
+            good &= check("native Composio tools available", bool(registered),
+                          "check native MCP authentication; verify catalog reads in Telegram")
+        except Exception:
+            good &= check("native Composio tools available", False,
+                          "run Hermes mcp test composio for native diagnostics")
         wl = Watchlist()
         for s in wl.stores():
             r = iris_feeds.read_store(s["url"], kind=s["kind"])

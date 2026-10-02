@@ -10,24 +10,22 @@ cron:
   wrap_response: false
 
 # Tools Iris may use in chat and in scheduled runs. Terminal, files, messaging and cron scheduling
-# stay off. The browser is chat-only and read-only: the Iris plugin's pre_tool_call guard blocks
-# clicks, typing, consoles and the vault, and robots.txt-disallowed or private addresses.
-# Fixed offer writes require the live owner's private Telegram approval;
-# scheduled runs can read/propose but cannot execute them.
+# stay off. Local browser calls are temporarily excluded after navigation/daemon failures.
+# Native web extraction and vision remain available; the browser guard remains for later recovery.
+# Connected app actions use native Composio; scheduled market checks only read apps.
 platform_toolsets:
   telegram:
     - iris
     - web             # native web_search + web_extract for discovery and linked page evidence
-    - browser         # renders pages that only show products after JavaScript runs
     - vision          # reading screenshots
     - memory          # Hermes' built-in memory: USER.md (the owner) and MEMORY.md (Iris's notes)
     - iris-skill-read
-    - no_mcp
+    - composio
   cron:              # no memory here: scheduled runs read other websites, so they can't write memory
     - iris
     - web            # native research for the morning offer check and current evidence
     - iris-skill-read
-    - no_mcp
+    - composio
 known_plugin_toolsets:
   telegram: [iris]
   cron: [iris]
@@ -51,10 +49,26 @@ tools:
   tool_search:
     enabled: false
 
+# Enable after native Hermes OAuth login; credentials remain in the profile token store.
+mcp_servers:
+  composio:
+    enabled: false
+    url: https://connect.composio.dev/mcp
+    auth: oauth
+    tools:
+      include:
+        - COMPOSIO_SEARCH_TOOLS
+        - COMPOSIO_GET_TOOL_SCHEMAS
+        - COMPOSIO_MANAGE_CONNECTIONS
+        - COMPOSIO_WAIT_FOR_CONNECTIONS
+        - COMPOSIO_MULTI_EXECUTE_TOOL
+      prompts: false
+      resources: false
+
 # Research uses Hermes's native provider selection, extraction, cache and fallback.
 # Configure the profile through `hermes -p iris tools`; Iris does not pin a search service.
 
-# Hermes's own headless Chromium on this host: no cloud browser, no Camofox fingerprint spoofing,
+# Dormant local browser settings for recovery: no cloud browser, no Camofox fingerprint spoofing,
 # no Browser Use code execution. AGENT_BROWSER_ARGS in .env sets Iris's honest user agent.
 browser:
   cloud_provider: local
@@ -70,4 +84,7 @@ display:
   interim_assistant_messages: true
   platforms:
     telegram:
-      tool_progress: "off"   # owners never see tool names; Iris writes her own progress lines
+      tool_progress: "all"
+      tool_progress_grouping: "accumulate"  # native editable activity bubble
+      tool_preview_length: 0                # activity names without argument previews
+      cleanup_progress: true               # remove activity after successful final delivery

@@ -1,6 +1,6 @@
 name: iris
 version: 1.1.0
-description: "Your AI growth scout. Iris watches your market, spots opportunities for your store, and brings your next move to Telegram."
+description: "Your AI market analyst in Telegram. Iris watches the competitor products you choose. She investigates new prices, offers, and stock changes, checks them against your own products and costs, and recommends your next move. Then she can help you make it."
 author: "Andrew Maged"
 hermes_requires: ">=0.21.3"
 repository: "https://github.com/AndrewMaged814/iris"
@@ -12,5 +12,5 @@ distribution_owned:
   - plugins
   - scripts
 notes:
-  - "One profile per store. Store credentials, the owner's Telegram ID and Iris's data stay on the host."
-  - "Run scripts/setup_jobs.sh once after install to create the daily check and the weekly message."
+  - "One profile per store. Composio authorization, the owner's Telegram ID and Iris's data stay on the host."
+  - "Run scripts/setup_jobs.sh once after install to create the daily watch, morning offer check and weekly brief."

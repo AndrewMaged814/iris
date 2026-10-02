@@ -1,68 +1,23 @@
-# Iris's promise
+# Product
 
-**Know what changed. Understand why it matters. Turn it into your next move.**
+Iris scouts the owner's market, compares sourced competitor evidence with their confirmed
+product catalog, and brings one useful next move to Telegram. Hermes supplies the agent,
+Telegram, memory, research and schedules. Composio supplies connected app authorization and
+operations. Iris owns competitor watch history and change detection.
 
-Iris is an AI growth scout for a Shopify store owner. She brings competitor intelligence,
-product comparisons and useful drafts into the place the owner already talks: Telegram.
-English and Egyptian Arabic are supported.
+The catalog can live in any supported connected app. Iris confirms the source and field meanings
+with the owner; missing cost, currency or stock stays unknown. There are no per-app Iris clients.
 
-The next version completes that promise with an owner-approved response offer in Shopify.
-Every action starts with relevant market evidence and a decision for the owner's products.
-Standalone product-page editing is not the feature direction; a listing correction can support
-a specific market response when the evidence calls for it.
+Recommendations compare a feasible response with holding course. Iris reads the stock, costs
+and other confirmed business facts that could change that decision, then leads with one priority,
+the decisive tradeoff and a proposed measure. A missing material input prompts one question;
+a competitor's move alone does not justify a discount or imply demand. The shared decision
+process lives in `skills/market-watch/SKILL.md` and is used by alerts, weekly briefs and offers.
 
-## The owner journey
+The demo allows owner-requested connected app reads and writes. For an offer, Iris discovers
+supported operations, resolves exact terms, executes the owner's request and verifies readback.
+The removed Shopify offer bridge no longer enforces native confirmation, margin limits or expiry.
+These must not be described as guaranteed runtime controls. Scheduled checks only read apps.
 
-1. **Know the store.** Read the catalog and agree which competitors matter.
-2. **Watch the market.** Check daily; establish a baseline and record relevant changes.
-3. **Make a decision.** Connect the evidence to the owner's products and one feasible move.
-4. **Make it usable.** Draft the caption or product line, or review a listing, when asked.
-5. **Close the loop.** Remember the owner's chosen action; review the reported result in the weekly brief.
-
-Hermes supplies memory, scheduling, vision and delivery. The offer workflow extends the existing
-own-store tool; live creation stays disabled until the operator grants the narrow permissions
-and the store has the required cost and inventory facts.
-
-## What comes next
-
-The next milestone is **one relevant market opportunity leading to one approved response offer
-created and verified in Shopify, followed by an announcement in the owner's brand language
-and a remembered review.** An explicit language request overrides the saved preference.
-
-Start with one product-specific discount code, with an explicit value, start/end time and usage
-limit. Check product costs, stock and existing offers before proposing it; missing facts need
-owner input. Keeping the current offer is a valid decision. Review the exact terms in Telegram
-before execution, then re-read Shopify to verify creation. Provide a way to deactivate the code.
-Storefront content cannot authorize a write; scheduled discovery runs cannot execute offers.
-
-Shopify's [code-discount API](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBasicCreate)
-requires `write_discounts`, which includes verification reads. Existing `read_products` covers
-cost and aggregate stock reads. The installed connection currently has only `read_products`. The first slice
-requires Shopify unit costs, tracked positive stock, overselling disabled, tax-exclusive prices
-and no other active/scheduled store discount. Each proposal expires after 30 minutes. Limits are
-1–30% off, 1–100 redemptions and a duration of up to seven days. Redemptions are not a unit/spend cap.
-Native Telegram confirmation shows the canonical terms; fresh reads before and after creation
-prevent stale approvals and unsupported success claims. [Enable the workflow](SETUP.md#optional-response-offers).
-
-| What to learn | Evidence |
-| --- | --- |
-| Did Iris surface something useful? | Fresh competitor evidence, a relevant owner product and an accepted move |
-| Did she save work? | Manual versus Iris-assisted time for the same task, with date and method |
-| Was the action created and used? | Verified Shopify offer terms, owner confirmation and available outcome evidence |
-| What happened afterward? | Owner-reported period and outcome; costs and a comparison before profit or uplift claims |
-| Did the whole flow work? | Actual Telegram exchange, delivery and remembered follow-up |
-
-Do not collect customer-level data for this pilot. Demo catalogs and simulated reports demonstrate
-workflow behavior; they do not establish real sales impact. [Current proof](STATUS.md).
-
-## Improve from the cases
-
-Prioritize gaps that appear in owner conversations and [business evaluations](EVALUATION.md):
-page-only promotion coverage, product and bundle matching, and dependable weekly action follow-up.
-Keep four business tools and three business scripts; build on Hermes's existing capabilities.
-
-Sales analytics, general store editing, base-price changes, automatic campaign publishing,
-multi-buy/bundle creation and a broader CRM are outside this first slice.
-Add new access only when the pilot needs it and the owner authorizes it.
-
-[See Iris in action →](DEMO.md) · [Feature research](research/IRIS_FEATURE_PRIOR_ART.md) · [Business impact](research/BUSINESS_IMPACT.md)
+Done means a sourced observation, a relevant comparison, a requested draft or verified app action,
+and an honest weekly review. Claims of sales impact require measured owner-reported outcomes.

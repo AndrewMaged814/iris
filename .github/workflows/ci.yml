@@ -8,7 +8,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python3 -m pip install "extruct>=0.18,<0.19" "price-parser>=0.5,<0.6" python-dotenv
+      - run: python3 -m pip install "extruct>=0.18,<0.19" "price-parser>=0.5,<0.6" python-dotenv PyYAML
       - run: python3 tools/validate_repo.py
       - run: bash -n scripts/setup_jobs.sh
       - run: python3 -m unittest discover -s tests -v

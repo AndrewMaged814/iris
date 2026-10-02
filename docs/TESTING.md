@@ -1,68 +1,51 @@
-# Test Iris
+# Testing
 
-Run offline checks with the declared reader dependencies and python-dotenv installed:
+Run the offline contracts with `python -m unittest discover -s tests` and repository checks
+with `python tools/validate_repo.py`. Tests cover structured product reads, watch persistence,
+change detection, native delivery reconciliation, profile-scoped storage and the three-tool
+plugin. They do not contact connected apps.
 
-```sh
-python3 tools/validate_repo.py
-bash -n scripts/setup_jobs.sh
-python3 -m unittest discover -s tests
-```
+For live proof, use Hermes's native `mcp test composio`, verify the actual registered tool
+inventory, discover a connected source and read a small range. Repeat in a fresh process after
+a gateway restart to check persistent authentication. Then verify in the owner's Telegram chat.
+Connecting an account alone does not select a catalog or prove its write operations.
 
-The current suite has 96 tests and needs no network. It covers product-watch prices/stock,
-blocked/private/robots access, ambiguous pages and homepage rejection, snapshot history,
-delivery retries/receipts and fresh native owner approval for response codes.
-Catalog feeds, sitemap samples and external monitor tests were removed with those features.
+`tools/evaluate_iris.py` runs native Hermes evaluation prompts, optionally in a private profile
+copy. It has no custom Shopify transport or synthetic GraphQL injection. Evaluation cases are
+behavioral checks, not automatic assertions. Keep output private; it can contain owner data.
+Never use an evaluation prompt to execute a write in a real connected account.
 
-## Native research
+## Recommendation checks
 
-Configure the same working Hermes web provider as your default profile (`hermes -p iris tools`).
-On an upgraded profile remove the retired `web.search_backend: searxng` pin and Iris-only
-`SEARXNG_URL`. Check native search and extraction with a real question, not just HTTP200.
-Iris keeps browser reads and store writes restricted; copying default research settings does
-not mean copying unrestricted tools or private owner memory.
-
-Run native cases in a private copy with the installed Hermes Python:
+Four hypothetical cases exercise the recommendation process using supplied business facts:
+`recommendation-hold`, `recommendation-opportunity`, `recommendation-missing-fact`, and
+`recommendation-cron-hold`. Run with the installed Hermes Python and a new private directory:
 
 ```sh
-python3 tools/evaluate_iris.py --profile-home "$CANDIDATE_HOME" \
-  --hermes hermes --output "$PRIVATE_RESULTS" --isolate \
-  --cases native-research exact-product honest-caption
+python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris \
+  --output ~/iris-evaluations/recommendations --isolate \
+  --cases recommendation-hold recommendation-opportunity recommendation-missing-fact recommendation-cron-hold
 ```
 
-Output must be a new directory. Review actual tool records, sources and replies. Raw results
-can contain owner data; keep them private. Isolation removes Telegram delivery and protects
-source memory/database. Read-only research does not publish a message or mutate Shopify.
-Native research should use web_search/web_extract, not the structured watch reader.
+Review answers AND tool traces: correct contribution math, a choice grounded in stock and goal,
+a measurable bounded test when warranted, one direct question for a missing stock count, and
+no app research/writes for these supplied-fact exercises. Exit zero means execution completed,
+not that these behavioral criteria passed. These cases do not verify real connected-data joins,
+proactive Telegram delivery, app execution or merchant value. Test the live conversation separately.
 
-## Onboarding without a merchant store
+`recommendation-connected` exercises native connected catalog reads and current watched-product
+evidence; check that own-product verification/citations trigger no storefront browser visit and
+that the answer has a verdict, short evidence bullets and next step. It can read the connected
+account, so keep all evidence private and review tool calls for writes. Copy watch history into
+any candidate profile before using `--isolate`; an empty watch database changes the research task.
+`recommendation-conflicting-offer` is a supplied-fact case for conflicting single-price/multi-buy
+readings and uncertain eligibility. Neither case automatically asserts a behavioral pass.
 
-```sh
-python3 tools/evaluate_iris.py --profile-home "$CANDIDATE_HOME" \
-  --hermes hermes --output "$PRIVATE_RESULTS" --isolate \
-  --catalog-fixture tests/fixtures/own_electronics_catalog.json
-```
+## Campaign evidence checks
 
-The fixture replaces GraphQL catalog reads only in the private profile, rejects other queries,
-removes Shopify credentials, disables offers, starts empty owner memory and omits the watch
-DB. Review setup confirmation, native Market profile readback, new-session and cron-toolset
-recall. This is synthetic context proof, not Shopify access, Telegram transport or cron delivery.
-
-## Owner Telegram and scheduled proof
-
-1. Run `tools/iris_doctor.py --profile-home <candidate-home> --live` with Hermes's Python.
-2. In the actual owner chat confirm the Market profile and ask one sourced competitor question.
-   Check that native research works and browser actions remain blocked.
-3. Approve one exact relevant product page to watch. A homepage should be rejected. If structured
-   price/stock is missing, Iris explains the monitoring limit; native manual research may still work.
-4. Read the baseline, then repeat with the same price/stock: no change alert. Change that product's
-   supported structured price/stock on a controlled test page: one relevant alert, no duplicate
-   after confirmed delivery. No full-store new-product alert is expected.
-5. Check the actual scheduled offer job can use native web extraction, keeps advertised conditions
-   explicit and stays silent when nothing relevant changed. Verify delivery and chat continuity.
-6. For response codes, review exact proposal terms in the owner's native controls and verify
-   create/readback/deactivate. A CLI, scheduled task or website cannot supply owner approval.
-
-Do not replace legacy broad watches or delete their history silently. Ask the owner to choose
-specific products. A fresh watch starts a baseline; old catalog snapshots do not prove that
-new product-only monitoring covers the entire store. External monitor services/watches need
-operator cleanup separately; code removal does not stop them.
+Run `campaign-promotion`, `campaign-clearance`, and `campaign-conflict-followup` with `--isolate`
+using the same evaluator. These supplied-fact cases check ordinary discounts versus explicitly
+named clearance, campaign scope, and unresolved price evidence across a resumed native session.
+Review each turn and tool trace: no unsupported clearance claim, no certainty from a repeated
+conflicting extraction, and no external reads or writes. They do not verify live page selection
+or extraction accuracy; exercise those separately in the owner's chat.

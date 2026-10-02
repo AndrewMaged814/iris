@@ -294,12 +294,15 @@ class Tools(unittest.TestCase):
         self.tmp.cleanup()
         os.environ.pop("IRIS_DATA_DIR", None)
 
-    def test_registers_exactly_four_tools_in_one_toolset(self):
+    def test_registers_exactly_three_history_tools_in_one_toolset(self):
         registered = []
 
         class Ctx:
             def register_tool(self, **kw):
                 registered.append((kw["name"], kw["toolset"], kw["schema"]["name"]))
+
+            def register_system_prompt_section(self, id, content, **kw):
+                self_identities.append((id, content))
 
             def register_redaction_patterns(self, patterns):
                 return len(patterns)
@@ -308,10 +311,40 @@ class Tools(unittest.TestCase):
                 hooks.append((event, callback))
 
         hooks = []
+        self_identities = []
         self.plugin.register(Ctx())
         self.assertEqual(sorted(registered), sorted([(n, "iris", n) for n in
-                                                     ("my_store", "read_store", "watchlist", "market_changes")]))
+                                                     ("read_store", "watchlist", "market_changes")]))
         self.assertEqual(hooks, [("pre_tool_call", self.plugin.browser_guard)])
+        self.assertEqual(self_identities, [("iris.speaker", self.plugin.speaker_context)])
+
+    def test_sender_identity_uses_id_not_a_matching_display_name(self):
+        session = {"HERMES_SESSION_PLATFORM": "telegram", "HERMES_SESSION_CHAT_TYPE": "dm",
+                   "HERMES_SESSION_USER_ID": "owner-id", "HERMES_SESSION_USER_NAME": "Andrew"}
+        context = types.ModuleType("gateway.session_context")
+        context.get_session_env = session.get
+        secret = types.ModuleType("agent.secret_scope")
+        secret.get_secret = lambda key, default=None: "owner-id" if key == "TELEGRAM_ALLOWED_USERS" else default
+        with mock.patch.dict(sys.modules, {"gateway.session_context": context, "agent.secret_scope": secret}):
+            self.assertIn("configured Iris owner", self.plugin.speaker_context({}))
+            session["HERMES_SESSION_USER_ID"] = "visitor-id"
+            self.assertIn("public demo visitor", self.plugin.speaker_context({}))
+            session["HERMES_SESSION_CHAT_TYPE"] = "group"
+            self.assertIn("Multiple speakers", self.plugin.speaker_context({}))
+            session["HERMES_SESSION_PLATFORM"] = "local"
+            self.assertEqual(self.plugin.speaker_context({}), "")
+
+    def test_composio_demo_allows_connected_app_reads_and_writes(self):
+        guard = self.plugin.browser_guard
+        for slug in ("GOOGLESHEETS_SEARCH_SPREADSHEETS", "REDDIT_SEARCH_ACROSS_SUBREDDITS",
+                     "REDDIT_POST_REDDIT_COMMENT", "GOOGLESHEETS_BATCH_UPDATE",
+                     "GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE"):
+            with self.subTest(slug=slug):
+                self.assertIsNone(guard("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+                                        {"tools": [{"tool_slug": slug, "arguments": {}}],
+                                         "sync_response_to_workbench": False}))
+        self.assertIsNone(guard("mcp__composio__COMPOSIO_MANAGE_CONNECTIONS",
+                                {"toolkits": [{"name": "googlesheets", "action": "rename"}]}))
 
     def test_browser_guard_allows_reading_public_pages_only(self):
         guard = self.plugin.browser_guard
@@ -384,78 +417,6 @@ class Tools(unittest.TestCase):
         self.assertEqual(coverage["first_checked"], coverage["last_checked"])
         self.assertEqual(out["signals"], [])
 
-    def test_my_store_errors_are_plain_words(self):
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": ""}):
-            out = json.loads(self.plugin.my_store_tool({"operation": "summary"}))
-        self.assertIn("not set up", out["error"])
-
-
-class OwnStore(unittest.TestCase):
-    def test_product_source_is_storefront_url_not_image_or_guessed_handle(self):
-        import iris_store as store
-        product = {"title": "Phone", "handle": "phone", "onlineStoreUrl": "https://shop.example/products/phone",
-                   "featuredImage": {"url": "https://cdn.example/phone.jpg"}}
-        data = {"shop": {"currencyCode": "EGP"}, "products": {"nodes": [product]}}
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "phones.myshopify.com"}):
-            self.assertEqual(store.search("Phone", post=lambda q, v: data)["products"][0]["url"],
-                             product["onlineStoreUrl"])
-            product["onlineStoreUrl"] = None
-            self.assertIsNone(store.search("Phone", post=lambda q, v: data)["products"][0]["url"])
-
-    def test_review_exposes_photo_gap_and_truncated_stock_without_inventing_sales(self):
-        import iris_store as store
-        product = {"title": "Sunscreen", "description": "50 ml", "featuredImage": None,
-                   "variants": {"pageInfo": {"hasNextPage": True},
-                                "nodes": [{"title": "50 ml", "price": None, "availableForSale": False}]}}
-        data = {"shop": {"currencyCode": "EGP"}, "products": {"nodes": [product]}}
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
-            result = store.review("Sunscreen", post=lambda q, v: data)
-        checks = result["products"][0]["checks"]
-        self.assertFalse(checks["has_product_image"])
-        self.assertEqual(checks["variants_missing_price"], ["50 ml"])
-        self.assertTrue(checks["availability_unknown"])
-        self.assertNotIn("lost_sales", checks)
-        self.assertIn("catalog_metadata", result["review_scope"])
-        product["variants"]["nodes"] = []
-        product["variants"]["pageInfo"]["hasNextPage"] = False
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
-            empty = store.review("Sunscreen", post=lambda q, v: data)
-        self.assertTrue(empty["products"][0]["checks"]["availability_unknown"])
-
-    def test_review_can_verify_image_and_price_correction(self):
-        import iris_store as store
-        product = {"title": "Sunscreen", "description": "50 ml", "featuredImage":
-                   {"url": "https://cdn.example/sunscreen.jpg", "altText": "Sunscreen bottle"},
-                   "variants": {"pageInfo": {"hasNextPage": False},
-                                "nodes": [{"title": "50 ml", "price": "320", "availableForSale": True}]}}
-        data = {"shop": {"currencyCode": "EGP"}, "products": {"nodes": [product]}}
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
-            checks = store.review("Sunscreen", post=lambda q, v: data)["products"][0]["checks"]
-        self.assertTrue(checks["has_product_image"])
-        self.assertTrue(checks["has_image_alt_text"])
-        self.assertEqual(checks["variants_missing_price"], [])
-        self.assertFalse(checks["availability_unknown"])
-
-    def test_catalog_groups_by_type(self):
-        import iris_store as store
-        page = {"shop": {"name": "Mira Nile", "currencyCode": "EGP"}, "products": {
-            "pageInfo": {"hasNextPage": False},
-            "nodes": [{"title": "Rose Serum", "handle": "rose", "productType": "Serum", "tags": ["iris-demo"],
-                       "priceRangeV2": {"minVariantPrice": {"amount": "520.0"}, "maxVariantPrice": {"amount": "780.0"}},
-                       "compareAtPriceRange": {"maxVariantCompareAtPrice": None}, "createdAt": "2026-06-01"}]}}
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "mira-nile.myshopify.com"}):
-            out = store.catalog(post=lambda q, v: page)
-        self.assertEqual(out["by_type"]["Serum"]["price_min"], 520.0)
-        self.assertEqual(out["currency"], "EGP")
-        self.assertEqual(out["by_type"]["Serum"]["products"][0]["tags"], ["iris-demo"])
-
-    def test_store_address_must_be_myshopify(self):
-        import iris_store as store
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "evil.example.com"}):
-            with self.assertRaises(store.StoreError):
-                store.search("serum", post=lambda q, v: {})
-
-
 class ProfileIsolation(unittest.TestCase):
     def setUp(self):
         from helpers import ROOT
@@ -473,103 +434,27 @@ class ProfileIsolation(unittest.TestCase):
         patcher = mock.patch.dict(sys.modules, modules)
         patcher.start()
         self.addCleanup(patcher.stop)
-        for name in ("iris_store", "iris_watchlist"):
+        for name in ("iris_watchlist",):
             spec = importlib.util.spec_from_file_location(f"scoped_{name}", ROOT / "plugins" / "iris" / f"{name}.py")
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             setattr(self, name, module)
 
-    def test_missing_scoped_credentials_cannot_borrow_process_values(self):
-        other_profile = {"SHOPIFY_STORE": "other.myshopify.com", "SHOPIFY_ADMIN_TOKEN": "other-token",
-                         "SHOPIFY_CLIENT_ID": "other-id", "SHOPIFY_CLIENT_SECRET": "other-secret"}
-        with mock.patch.dict(os.environ, other_profile):
-            with self.assertRaises(self.iris_store.StoreError):
-                self.iris_store._store()
-            with self.assertRaises(self.iris_store.StoreError):
-                self.iris_store._token("active.myshopify.com")
-            self.scope.update({name: "" for name in other_profile})
-            with self.assertRaises(self.iris_store.StoreError):
-                self.iris_store._store()
-            with self.assertRaises(self.iris_store.StoreError):
-                self.iris_store._token("active.myshopify.com")
-
-    def test_store_token_and_api_version_follow_each_request_scope(self):
-        response = mock.MagicMock()
-        response.__enter__.return_value.read.return_value = b'{"data": {"shop": {"name": "Scoped"}}}'
-        with mock.patch.object(self.iris_store.urllib.request, "urlopen", return_value=response) as fetch:
-            for name, version in (("first", "2026-07"), ("second", "2026-10")):
-                self.scope.update({"SHOPIFY_STORE": f"{name}.myshopify.com", "SHOPIFY_ADMIN_TOKEN": name,
-                                   "SHOPIFY_API_VERSION": version})
-                self.iris_store._graphql("query { shop { name } }", {})
-                request = fetch.call_args.args[0]
-                self.assertEqual(request.full_url, f"https://{name}.myshopify.com/admin/api/{version}/graphql.json")
-                self.assertEqual(request.get_header("X-shopify-access-token"), name)
-
-    def test_data_and_token_cache_use_context_home_over_process_home(self):
+    def test_data_uses_context_home_over_process_home(self):
         with mock.patch.dict(os.environ, {"HERMES_HOME": "other-profile", "IRIS_DATA_DIR": "other-data"}):
             self.assertEqual(self.iris_watchlist.default_path(), self.home / "iris" / "iris.db")
-            self.assertEqual(self.iris_store._cache_path("active.myshopify.com"),
-                             self.home / "iris" / ".shopify-token-active.myshopify.com.json")
 
     def test_data_override_is_profile_scoped(self):
         scoped_data = Path(self.tmp.name) / "custom-data"
         self.scope["IRIS_DATA_DIR"] = str(scoped_data)
         with mock.patch.dict(os.environ, {"IRIS_DATA_DIR": "other-data"}):
             self.assertEqual(self.iris_watchlist.default_path(), scoped_data / "iris.db")
-            self.assertEqual(self.iris_store._cache_path("active.myshopify.com"),
-                             scoped_data / ".shopify-token-active.myshopify.com.json")
 
     def test_unscoped_gateway_error_is_not_replaced_with_process_values(self):
         self.secret.side_effect = RuntimeError("No profile scope installed")
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "other.myshopify.com", "IRIS_DATA_DIR": "other-data"}):
-            with self.assertRaisesRegex(RuntimeError, "No profile scope"):
-                self.iris_store._store()
+        with mock.patch.dict(os.environ, {"IRIS_DATA_DIR": "other-data"}):
             with self.assertRaisesRegex(RuntimeError, "No profile scope"):
                 self.iris_watchlist.default_path()
-
-    def test_standalone_native_resolver_can_read_process_environment(self):
-        self.secret.side_effect = os.environ.get
-        with mock.patch.dict(os.environ, {"SHOPIFY_STORE": "standalone.myshopify.com",
-                                          "SHOPIFY_ADMIN_TOKEN": "standalone-token"}):
-            self.assertEqual(self.iris_store._store(), "standalone.myshopify.com")
-            self.assertEqual(self.iris_store._token("standalone.myshopify.com"), "standalone-token")
-
-
-class CatalogEvaluation(unittest.TestCase):
-    def setUp(self):
-        from helpers import ROOT
-        self.root = ROOT
-        spec = importlib.util.spec_from_file_location("evaluate_iris", ROOT / "tools/evaluate_iris.py")
-        self.evaluator = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(self.evaluator)
-
-    def test_fixture_cannot_run_against_source_profile(self):
-        with mock.patch.object(sys, "argv", ["evaluate", "--profile-home", "unused", "--output", "unused",
-                                               "--catalog-fixture", "unused"]), mock.patch("sys.stderr", io.StringIO()):
-            with self.assertRaises(SystemExit) as error:
-                self.evaluator.main()
-        self.assertEqual(error.exception.code, 2)
-
-    def test_private_catalog_fixture_keeps_reads_and_denies_offer_queries(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            home = Path(tmp)
-            (home / "iris").mkdir()
-            source = home / "plugins/iris/iris_store.py"
-            source.parent.mkdir(parents=True)
-            source.write_text((self.root / "plugins/iris/iris_store.py").read_text(encoding="utf-8"), encoding="utf-8")
-            (home / ".env").write_text("SHOPIFY_ADMIN_TOKEN='fixture-old-token'\n", encoding="utf-8")
-            self.evaluator.install_catalog_fixture(home, self.root / "tests/fixtures/own_electronics_catalog.json")
-            spec = importlib.util.spec_from_file_location("evaluation_fixture_store", source)
-            store = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(store)
-            self.assertEqual(store.catalog()["shop"], "Circuit Shelf")
-            product = store.search("Model X")["products"][0]
-            self.assertEqual(product["options"][0]["name"], "Storage")
-            with self.assertRaises(store.StoreError):
-                store._graphql("mutation CreateDiscount", {})
-            self.assertNotIn("fixture-old-token", (home / ".env").read_text())
-            self.assertEqual((home / "memories/MEMORY.md").read_text(), "")
-
 
 class Doctor(unittest.TestCase):
     def setUp(self):
@@ -585,6 +470,7 @@ class Doctor(unittest.TestCase):
             path = self.home / rel
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
+        (self.home / "config.yaml").write_text("mcp_servers:\n  composio:\n    enabled: true\n")
 
     def run_doctor(self, env_text):
         (self.home / ".env").write_text(env_text, encoding="utf-8")
@@ -596,9 +482,6 @@ class Doctor(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
     def test_dotenv_quoted_profile_values_are_ready(self):
         result, output = self.run_doctor("TELEGRAM_BOT_TOKEN='bot-token'\nTELEGRAM_ALLOWED_USERS='123'\n"
-                                         "SHOPIFY_STORE='active.myshopify.com' # owner store\n"
-                                         "SHOPIFY_CLIENT_ID='app-id'\nSHOPIFY_CLIENT_SECRET='app-secret'\n"
-                                         "SEARXNG_URL='http://localhost:8888'\n"
                                          "AGENT_BROWSER_ARGS='--user-agent=IrisBot/1.0'\n")
         self.assertEqual(result, 0, output)
         self.assertIn("Ready.", output)
@@ -618,17 +501,16 @@ class Doctor(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
     def test_dotenv_empty_quotes_and_bare_keys_are_missing(self):
         result, output = self.run_doctor("TELEGRAM_BOT_TOKEN=''\nTELEGRAM_ALLOWED_USERS=\"\"\n"
-                                         "SHOPIFY_STORE\nSHOPIFY_ADMIN_TOKEN=''\n"
-                                         "SHOPIFY_CLIENT_ID='app-id'\nSHOPIFY_CLIENT_SECRET=''\n")
+                                         "UNUSED_SETTING\n")
         self.assertEqual(result, 1)
-        for label in ("Telegram bot token", "only the owner can talk to Iris", "store address", "store credentials"):
+        for label in ("Telegram bot token", "only the owner can talk to Iris"):
             self.assertIn("MISSING " + label, output)
 
     @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
     def test_dotenv_keeps_quoted_hash_characters(self):
         path = self.home / ".env"
-        path.write_text("SHOPIFY_CLIENT_SECRET='secret#value' # comment\n", encoding="utf-8")
-        self.assertEqual(self.doctor.read_env(path)["SHOPIFY_CLIENT_SECRET"], "secret#value")
+        path.write_text("EXAMPLE_SECRET='secret#value' # comment\n", encoding="utf-8")
+        self.assertEqual(self.doctor.read_env(path)["EXAMPLE_SECRET"], "secret#value")
 
     def test_missing_dotenv_reports_dependency_without_false_readiness(self):
         with mock.patch.dict(sys.modules, {"dotenv": None}):

@@ -1,13 +1,15 @@
 Iris includes ideas and adapted code from these MIT-licensed projects:
 
-- zhaoheng588-tech/shopify-scout — Shopify /products.json paging and the compare-at sale signal
-  (plugins/iris/iris_feeds.py). Copyright (c) 2026 Zhao Sheng. The anti-bot parts were not used.
+- zhaoheng588-tech/shopify-scout — the compare-at sale signal retained in
+  plugins/iris/iris_feeds.py. Copyright (c) 2026 Zhao Sheng. The catalog paging
+  and anti-bot parts are not used.
 - DannylydST/sorftime-seller-agent — snapshot change thresholds (plugins/iris/iris_changes.py).
   Copyright (c) 2026 DannylydST · Sorftime Data Technology.
-- FlatNineOrg/ecommerce-skills — pricing and trend reading methods (skills/market-watch/references/methods.md).
+- FlatNineOrg/ecommerce-skills — the product-type pricing view in
+  plugins/iris/iris_changes.py.
   Copyright (c) 2026 Cart (usecart.com).
-- cgaravitoq/shopify-hermes-agent — output-hygiene rules and the Shopify client credentials method
-  (SOUL.md, plugins/iris/iris_store.py). Copyright (c) 2026 cgaravitoq.
+- cgaravitoq/shopify-hermes-agent — output-hygiene guidance in SOUL.md.
+  Copyright (c) 2026 cgaravitoq. The Shopify client was removed.
 
 MIT License text (applies to the parts above):
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and

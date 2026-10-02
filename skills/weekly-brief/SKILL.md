@@ -13,7 +13,8 @@ version: 1.0.0
 - Owner asks in chat: call `market_changes` with `week`.
 - Use the saved Market profile's comparison keys and unit of measure; for a product match, read
   `../market-watch/references/categories.md` for the category.
-- Always call `my_store` `summary` to connect findings to the owner's own products.
+- Read the confirmed connected catalog through Composio (setup skill),
+  to connect findings to the owner's own products.
 - Saved category price summaries may omit currency. Do not label them with the owner's currency
   or compare prices until the competitor's currency is confirmed.
 - Use each store's evidence URL and local check date. A saved snapshot is not a fresh read.
@@ -42,9 +43,13 @@ version: 1.0.0
 
 ## Shape
 
+For actionable findings, use Choose the response in `../market-watch/SKILL.md`. Prioritize one
+supported move across the findings, accounting for known chosen or dismissed actions. A quiet
+week or thin history does not require a new campaign. Preserve the coverage limits above.
+
 1. One opening line: the week in one sentence.
 2. Up to 3 items that pass the checklist in SOUL. Each: what changed (store, product, numbers, when)
-   → what it means for the owner's products → one move.
+   → what it means for the owner's products → justified response or hold.
 3. One line on anything from the owner's screenshots, if it adds something.
 4. When reviewing a chosen action with an unknown result, end with its one agreed-measure
    question if it hasn't already been asked. Include source links for the findings; write a draft
