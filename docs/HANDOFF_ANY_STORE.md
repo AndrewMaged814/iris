@@ -39,22 +39,28 @@ self-hosted search/monitor services, multi-owner support and broader store write
   Delivery retry/receipt handling, store-write approval and reader safety remain tested.
 - Earlier CI failure was missing python-dotenv; fixed and those pushed checks passed.
 
-## Before deployment
+## Deployed 2 October 2026
 
-1. Verify the final pushed CI and review this simplification. Candidate files have not replaced
-   the live profile, owner memory, sessions or cron jobs. No owner Telegram message or store
-   mutation was sent during validation.
-2. Existing broad store watches must be replaced with exact product pages chosen by the owner.
-   Do not silently remove their database/history or claim the old full-store coverage survives.
-   Legacy reader kinds are accepted but do not restore crawling. Price/stock keys can change;
-   first observations establish a fresh baseline, not new/removed product alerts.
-3. Retired external-monitor watches remain on the service until the operator cleans them up;
+The owner requested rollout. Runtime source `c0f4cb5` is installed; the shared gateway was
+gracefully restarted and Iris Telegram reconnected. Live doctor reports Ready: own-store
+catalog and exact product readable, IrisBot User-Agent set. Four broad watches were retired
+under the product-only decision while keeping their history; the exact Infinity watch remains.
+All 696 messages, owner memory, auth/model configuration and three job definitions were
+preserved. Hermes's native session API cleared the one frozen prompt, retaining the transcript.
+Backups are private on the host. Earlier local main edits/drafts are preserved in Git stash
+`before Iris native rollout 2026-10-02`; primary and host checkouts use the pushed branch.
+
+## Remaining proof
+
+1. Additional exact product watches require the owner's selection. Existing broad history
+   remains but its old full-store coverage is retired. First observations establish a baseline.
+2. Retired external-monitor watches remain on the service until the operator cleans them up;
    deleting integration code does not delete live watches or stop services.
-4. Native owner Telegram research/browser flow and actual scheduled execution/delivery need
+3. Native owner Telegram research/browser flow and actual scheduled execution/delivery need
    verification. Isolated native chat and cron-toolset research are not Telegram transport.
-5. Live merchant onboarding remains pending until a store exists. Synthetic context recall
+4. Live merchant onboarding remains pending until a store exists. Synthetic context recall
    does not prove Shopify access or actual scheduled delivery.
-6. Known-match answers sometimes repeat acknowledged demo provenance and run long. The caption
+5. Known-match answers sometimes repeat acknowledged demo provenance and run long. The caption
    acknowledged-preview case passed source handling; quality is reviewed, not an automatic score.
 
 Earlier coverage research documents are historical evidence for the retired crawler, not current
