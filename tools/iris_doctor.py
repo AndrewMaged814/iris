@@ -47,6 +47,8 @@ def main() -> int:
     good &= check("store credentials", bool(env.get("SHOPIFY_ADMIN_TOKEN") or
                                              (env.get("SHOPIFY_CLIENT_ID") and env.get("SHOPIFY_CLIENT_SECRET"))),
                   "set the Shopify app credentials")
+    good &= check("competitor search (SearXNG)", bool(env.get("SEARXNG_URL")),
+                  "set SEARXNG_URL in .env; see docs/SETUP.md")
     print("Hermes pieces Iris relies on")
     try:
         import tools.url_safety  # noqa: F401

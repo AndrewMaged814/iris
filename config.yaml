@@ -48,6 +48,12 @@ tools:
   tool_search:
     enabled: false
 
+# Free, self-hosted competitor search: SearXNG at SEARXNG_URL (see docs/SETUP.md). Hermes uses
+# this exact backend with no fallback, so search fails visibly if SearXNG is down. web_extract is
+# not affected and keeps Hermes' own backend selection.
+web:
+  search_backend: searxng
+
 # Native Telegram feedback: an "eyes" reaction while Iris works, then thumbs up when delivered
 # (thumbs down on failure). Hermes also delivers Iris's natural mid-turn updates as messages.
 telegram:
