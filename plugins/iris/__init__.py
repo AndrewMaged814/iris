@@ -198,7 +198,7 @@ SCHEMAS = {
         "parameters": {"type": "object", "properties": {
             "url": {"type": "string", "description": "Store or product link"},
             "focus": {"type": "array", "items": {"type": "string"},
-                      "description": "Optional words to keep only matching products, e.g. ['serum']"}},
+                      "description": "Optional words to keep only matching products, e.g. ['coffee']"}},
             "required": ["url"], "additionalProperties": False}},
     "watchlist": {
         "description": "Stores Iris watches every day. 'list' shows them; 'add' and 'remove' only when the owner "
@@ -208,7 +208,7 @@ SCHEMAS = {
             "url": {"type": "string"},
             "name": {"type": "string", "description": "Short store name, or what a note is about"},
             "focus": {"type": "array", "items": {"type": "string"},
-                      "description": "Product types to care about at this store, e.g. ['serum', 'sunscreen']"},
+                      "description": "Product types to care about at this store, e.g. ['phone case', 'charger']"},
             "text": {"type": "string", "description": "Note text (for 'note')"}},
             "required": ["operation"], "additionalProperties": False}},
     "market_changes": {

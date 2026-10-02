@@ -7,7 +7,7 @@
   with urgency limited to the owner's product types.
 - Daily check with the `{"wakeAgent": false}` gate and acknowledgement after confirmed delivery;
   persistent warning after 3 failed checks. Unknown sends are held for operator investigation.
-- Weekly data collection. SOUL, four skills, validator, doctor, CI. 92 tests, no network.
+- Weekly data collection. SOUL, four skills, validator, doctor, CI. 116 tests, no network.
 - Exact product links return that product with description and page evidence for advertised offers.
 - Market history includes successful-check coverage so Iris can distinguish a baseline from a quiet week.
 - Chat and scheduled briefs share dated evidence, source URLs and profile-local timestamps.
@@ -18,6 +18,36 @@
   Creation/deactivation require fresh authenticated native owner confirmation; cron and CLI writes
   fail closed. Exact readback, uncertain-result reconciliation, stale-fact checks and ledger claims
   have offline coverage. Brand language comes from owner preference or an explicit request.
+
+## Any-store continuation (2026-10-02)
+
+- Added owner-confirmed Market profile setup and category references for beauty, fashion,
+  electronics, food, home and other products. Comparisons use category-specific confirmed keys
+  and units. Unreadable products route to Hermes extraction/browser reads; robots denials stop.
+- Doctor checks reader imports, honest browser UA and optional monitor credentials/authenticated
+  reachability. Setup documents manual profile-plugin dependency installation on `c1488ac`.
+- 116 offline tests pass on Windows and Hermes's Python; repository validation passes. Repository validation passes.
+- Real changedetection.io container (`sha256:34df3680db1cbffc45ac1e9c1514bc0507dd0c5b5fde47d1992fe6f14a7b40e4`)
+  created/deleted a temporary Infinity product watch with Iris UA configured. Its watch API
+  omits native `restock` properties: adapter now reads authenticated cached HTML snapshots
+  (`history/latest?html=1`) and returns EGP 360, available true, dated observation.
+  Actual monitor request UA verified through httpbin: the full IrisBot/1.0 identifier.
+- Native local browser navigate/snapshot returned httpbin's received `IrisBot/1.0` UA. Real
+  PluginManager loads Iris and its hook: clicks/private addresses blocked, snapshots allowed.
+  Browser actions remain visible in the native inventory but fail at execution through the hook.
+  Node, agent-browser and Playwright Chromium were prepared; no fingerprint bypass was used.
+- Installed extruct/price-parser into Hermes's Python. Native hook/provider imports pass;
+  existing SearXNG service returns HTTP 200 JSON search results. No production profile deployment.
+- Candidate doctor live read returned Mira Nile's 6 products, Likemoon 627, Source Beauty 79,
+  Deoora 958 and the exact Infinity sunscreen. Infinity's whole catalog was blocked. Doctor
+  exit 1 also reflects the intentionally removed Telegram token; this is not deployment readiness.
+- Seven isolated native Luna cases completed: four supplied hypothetical category-expansion
+  comparisons and three Mira Nile regressions. See EVALUATION for the reviewed limits.
+- Missing product types stay `other`: option names/title words alone do not establish a category.
+  Iris uses product details and the confirmed Market profile for comparisons.
+- Original 30-store measurement discarded its URL manifest, so an exact cohort rerun is not
+  reproducible yet. Six reconstructed store URLs were probed; TV-IT now yields a labelled
+  sitemap sample. The coverage doc preserves blocks and gaps rather than claiming a 30-store gain.
 
 ## Verified on the host (2026-09-30)
 

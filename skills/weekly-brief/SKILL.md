@@ -11,6 +11,8 @@ version: 1.0.0
 - Scheduled run: the week's data is in your prompt. Your previous weekly message is also there;
   don't repeat what you already said unless it changed.
 - Owner asks in chat: call `market_changes` with `week`.
+- Use the saved Market profile's comparison keys and unit of measure; for a product match, read
+  `../market-watch/references/categories.md` for the category.
 - Always call `my_store` `summary` to connect findings to the owner's own products.
 - Saved category price summaries may omit currency. Do not label them with the owner's currency
   or compare prices until the competitor's currency is confirmed.
@@ -24,8 +26,8 @@ version: 1.0.0
 - Two or more checks cover their first-to-last interval, not automatically a whole week. State
   that interval when it is shorter than the requested period; do not call the entire week quiet.
 - A short baseline with no recorded changes needs no category price list or invented next move.
-  If a price list is requested, retain the source's category names: a broad moisturizer group
-  doesn't establish that every product is a face moisturizer.
+  If a price list is requested, retain the source's category names: a broad accessories group
+  doesn't establish that every product is a phone case.
 
 ## Follow up on the owner's action
 

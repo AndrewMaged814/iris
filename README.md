@@ -65,7 +65,11 @@ Iris supplies the business judgment, skills and tools. Hermes supplies the agent
 
 The four tools read your catalog, inspect competitors, manage the watchlist and retrieve changes.
 The own-store tool also handles bounded response codes when offer access is enabled.
-Public readers support Shopify, WooCommerce and structured product pages.
+Public readers support Shopify, WooCommerce and structured product pages, with labelled sitemap
+samples when a catalog is unavailable. Hermes supplies chat-only browser reads for JavaScript
+pages; optional changedetection.io monitors product-page price and stock daily. Comparisons use
+an owner-confirmed Market profile and category references for beauty, fashion, electronics,
+food, home and other categories. Mira Nile remains the skincare demo.
 Saved observations distinguish today's listings from changes recorded over time.
 
 ## Project structure
@@ -85,7 +89,7 @@ iris/
 
 ## Proof & next steps
 
-**92 offline tests. 22 reusable business cases.** Native Luna runs exercise comparisons,
+**116 offline tests.** Reusable business cases cover Mira Nile and hypothetical category expansions. Native Luna runs exercise comparisons,
 drafting and remembered actions; Telegram delivery and scheduled checks have been verified.
 [Expected vs. actual](docs/EVALUATION.md) · [Deployment status](docs/STATUS.md)
 

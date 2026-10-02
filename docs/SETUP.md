@@ -35,7 +35,6 @@ Use [`.env.EXAMPLE`](../.env.EXAMPLE) as the checklist for the profile's `.env`:
 | `SHOPIFY_STORE` | The store's `your-store.myshopify.com` address |
 | `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` | Installed Shopify app credentials |
 | `SHOPIFY_ADMIN_TOKEN` | Alternative to the client-credential pair |
-
 | `SEARXNG_URL` | Your SearXNG instance, for free competitor search |
 
 Never commit real credentials. This version uses operator-configured product access;
@@ -56,6 +55,64 @@ docker run -d --name searxng --restart unless-stopped -p 127.0.0.1:8888:8080 sea
 In the instance's `settings.yml`, add `json` to `search.formats` (Hermes requests JSON results)
 and restart it. Then set `SEARXNG_URL=http://127.0.0.1:8888` in the profile's `.env`. Keep it bound
 to localhost; it doesn't need to be public.
+
+### Product reader dependencies
+
+The profile plugin declares `extruct` and `price-parser`. On the tested Hermes revision,
+manifest dependencies are checked but profile installation does not install them automatically.
+Run with the same Python Hermes uses, then verify with the doctor:
+
+```sh
+python -m pip install 'extruct>=0.18,<1' 'price-parser>=0.5,<1'
+```
+
+### Browser for JavaScript product pages
+
+Iris uses Hermes's local browser in chat. The tested `c1488ac` has no `hermes pm` command;
+with Node.js/npx available, prepare the native CLI and Playwright cache:
+
+```sh
+npx --ignore-scripts -y agent-browser@0.26.0 --version
+npx playwright install --with-deps chromium
+```
+
+The tested Hermes browser probe looks for Playwright's `chromium-*` cache directories;
+`agent-browser install` alone can install Chrome in a cache that this revision misses.
+Set the profile's `.env` (quote the value, including spaces):
+
+```dotenv
+AGENT_BROWSER_ARGS="--user-agent=IrisBot/1.0 (market watch for a store owner; read-only)"
+```
+
+For a root/container host that needs sandbox flags, use comma-separated arguments:
+
+```dotenv
+AGENT_BROWSER_ARGS="--no-sandbox,--disable-dev-shm-usage,--user-agent=IrisBot/1.0 (market watch for a store owner; read-only)"
+```
+
+`browser.cloud_provider: local` and `browser.backend: "off"` select native read tools and
+exclude `browser_exec`. Iris's pre-tool hook allows navigate, snapshot, scroll, back, images
+and vision; it blocks browser actions, private addresses and robots-disallowed navigation.
+Cron has no browser toolset. Check the actual request User-Agent and guard on your installed
+revision before relying on browser reads. Report blocks; never bypass a challenge.
+
+### Optional daily product monitor (changedetection.io)
+
+Run a local [changedetection.io](https://github.com/dgtlmoon/changedetection.io) service:
+
+```sh
+docker run -d --name iris-changedetection --restart unless-stopped -p 127.0.0.1:5000:5000 -v iris-changedetection:/datastore ghcr.io/dgtlmoon/changedetection.io
+```
+
+Create/copy an API key in Settings → API, then set `CHANGEDETECTION_URL=http://127.0.0.1:5000`
+and `CHANGEDETECTION_API_KEY` privately in the profile's `.env`. Leave both empty to opt out.
+Reload Hermes gracefully. Newly approved product-page watches use its daily `restock_diff`
+processor with Iris's User-Agent. The current watch API omits native restock fields, so Iris
+parses its authenticated cached raw page snapshot to retain confirmed currency as well as price/stock. Removing the Iris watch removes the service watch.
+This replaces daily price/stock fetching for those pages; catalog checks and Iris's judgment
+stay in Iris. It does not verify page-only promotions. If the service fails, the daily script
+falls back to Iris's own reader. Existing watches need owner-approved remove/add to enroll;
+do not silently recreate them. The doctor's `--live` checks authenticated service reachability.
 
 ## 3. Verify the connection
 

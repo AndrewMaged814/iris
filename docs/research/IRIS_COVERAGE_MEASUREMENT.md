@@ -81,3 +81,25 @@ In order of stores gained per line of code; none adds a tool or script:
 
 Store list and raw results were produced from a temporary script and are not kept in the repo;
 rerun by reading the same stores with `read_store`.
+
+## Bounded after-probe — 2 October 2026
+
+The original temporary URL/results manifest was discarded. An exact 30-store before/after
+comparison needs those addresses reconstructed and confirmed; this probe is a subset, not a
+replacement measurement or a claim of seven stores gained. Ran on the Hermes host with Iris
+UA, `MAX_PAGES=3`, sitemap sample capped at three product pages and one-second page delays.
+Feeds, robots and sitemap requests are additional requests; the cap is on feed paging/sample pages.
+
+| Store URL | Before (original named store) | After | Scope/count |
+| --- | --- | --- | --- |
+| https://ramfabeauty.com/ | Feed 500/no catalog | blocked | no products |
+| https://www.jovialitynaturals.com/ | Full catalog under Joviality name | blocked | identity/domain may differ from discarded original URL |
+| https://novenccieg.com/ | Full catalog | Shopify readable, EGP | 216 products within paging cap |
+| https://cairovolt.com/ | No products | no_products | browser/extraction still needed |
+| https://www.ldnioegypt.com/ | One product readable | homepage no_products | exact-product reads are separate from this homepage probe |
+| https://tv-it.com/ | JS-only/no products | sitemap readable, EGP | 2 products from 3 sampled pages out of 2,782 listed URLs |
+
+Access depends on domain, network and current store behavior. Blocks were reported without
+retrying through disguises or challenges. Samples do not prove catalog-wide price/stock coverage.
+Missing `product_type` stays `other`; option names such as Size/Color cannot safely infer a
+product category. Comparison skills use confirmed profile keys and individual catalog details.

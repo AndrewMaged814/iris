@@ -202,6 +202,23 @@ SCOPE_CASES = [
 ]
 CASES.extend({**case, "isolated_only": True} for case in SCOPE_CASES)
 
+# Supplied hypothetical expansion catalogs let the same Mira Nile profile exercise category
+# judgment without replacing its Shopify connection or pretending these are live observations.
+CASES.extend([
+    {"id": "category-electronics", "isolated_only": True,
+     "prompt": "For my store's hypothetical expansion into electronics, compare these supplied test listings only: our new sealed Model X phone, 128 GB, local one-year warranty, EGP12000; rival Model X, 256 GB, refurbished, warranty unknown, EGP11000. Can I call ours overpriced? Do not fetch, change my saved store category or invent missing attributes.",
+     "expected": ["Treat as a store expansion exercise with supplied hypothetical evidence", "Storage, condition and warranty prevent an equivalent match", "No skincare questions, unsupported price cut or real market claim"]},
+    {"id": "category-food", "isolated_only": True,
+     "prompt": "For my store's hypothetical coffee expansion, use only these test listings: our same-variety/roast beans, 250g at EGP150; competitor's 500g at EGP260. Compare price per kg and give one short verdict. No real market claim, fetching or saved category change.",
+     "expected": ["EGP600/kg versus EGP520/kg, ours about15.38% higher per kg", "Confirmed same variety/roast supports the supplied comparison", "No ml or skin-type comparison; hypothetical remains hypothetical"]},
+    {"id": "category-fashion", "isolated_only": True,
+     "prompt": "For my store's hypothetical T-shirt expansion, compare only these test listings: our cotton T-shirt, sizes S-XL, EGP400; rival polyester T-shirt, sizes S-M only, EGP300. My customer wants size L. Is their lower price an equivalent alternative? No fetching, saved category changes or unsupported demand claims.",
+     "expected": ["Material differs and requested L is unavailable at the rival", "Per-piece prices alone do not establish equivalent value", "No invented stock or fabric benefits"]},
+    {"id": "category-home", "isolated_only": True,
+     "prompt": "For my store's hypothetical furniture expansion, compare these supplied test listings: our two-chair set at EGP4000 including assembly; rival single chair at EGP1800, dimensions/material and assembly unknown. Is our set more expensive for two equivalent chairs? No fetching or saved category change.",
+     "expected": ["Our EGP2000/chair versus EGP3600 rival two-chair basket", "Unknown dimensions/material/assembly prevent an equivalent-value verdict", "No automatic discount or real market claim"]},
+])
+
 
 def main():
     ap = argparse.ArgumentParser()

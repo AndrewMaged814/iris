@@ -547,9 +547,27 @@ class Doctor(unittest.TestCase):
     def test_dotenv_quoted_profile_values_are_ready(self):
         result, output = self.run_doctor("TELEGRAM_BOT_TOKEN='bot-token'\nTELEGRAM_ALLOWED_USERS='123'\n"
                                          "SHOPIFY_STORE='active.myshopify.com' # owner store\n"
-                                         "SHOPIFY_CLIENT_ID='app-id'\nSHOPIFY_CLIENT_SECRET='app-secret'\n")
+                                         "SHOPIFY_CLIENT_ID='app-id'\nSHOPIFY_CLIENT_SECRET='app-secret'\n"
+                                         "SEARXNG_URL='http://localhost:8888'\n"
+                                         "AGENT_BROWSER_ARGS='--user-agent=IrisBot/1.0'\n")
         self.assertEqual(result, 0, output)
         self.assertIn("Ready.", output)
+
+    def test_missing_reader_dependency_prevents_readiness(self):
+        with mock.patch.dict(sys.modules, {"extruct": None}):
+            result, output = self.run_doctor("")
+        self.assertEqual(result, 1)
+        self.assertIn("MISSING extruct importable", output)
+
+    def test_browser_argument_must_be_a_user_agent_flag(self):
+        result, output = self.run_doctor("AGENT_BROWSER_ARGS='--other=--user-agent=IrisBot'\n")
+        self.assertEqual(result, 1)
+        self.assertIn("MISSING browser user agent", output)
+
+    def test_optional_monitor_requires_both_settings(self):
+        result, output = self.run_doctor("CHANGEDETECTION_URL='http://localhost:5000'\n")
+        self.assertEqual(result, 1)
+        self.assertIn("MISSING optional product monitor credentials", output)
 
     @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
     def test_dotenv_empty_quotes_and_bare_keys_are_missing(self):
@@ -622,6 +640,35 @@ class Monitor(unittest.TestCase):
                 self.monitor.product("w-1", "https://rival.example/p", "Lamp", opener=FakeMonitor(watch))
         with self.assertRaises(self.monitor.MonitorError):
             self.monitor.product("w-1", "https://rival.example/p", "Lamp", opener=FakeMonitor(fail=True))
+
+    def test_current_api_reads_cached_raw_page_without_fetching_the_store(self):
+        page = '<script type="application/ld+json">' + json.dumps({
+            "@type": "Product", "name": "Lamp", "offers": {
+                "@type": "Offer", "price": "1250", "priceCurrency": "EGP",
+                "availability": "https://schema.org/OutOfStock"}}) + '</script>'
+        metadata = FakeMonitor({"last_checked": 1759400000, "last_error": False})
+
+        def api(req, timeout=None):
+            if "history/latest?html=1" in req.full_url:
+                self.assertEqual(req.get_header("X-api-key"), "k-123")
+                return io.BytesIO(page.encode())
+            return metadata(req, timeout)
+
+        product = self.monitor.product("w-1", "https://rival.example/product/lamp/", "Lamp", opener=api)
+        self.assertEqual((product["price"], product["currency"], product["available"]), (1250, "EGP", False))
+        self.assertIsNotNone(product["checked_at"])
+
+    def test_current_api_rejects_a_cached_listing_page(self):
+        page = '<script type="application/ld+json">' + json.dumps([
+            {"@type": "Product", "name": name, "offers": {"price": 10, "priceCurrency": "EGP"}}
+            for name in ("Lamp", "Chair")]) + '</script>'
+
+        def api(req, timeout=None):
+            body = page if "history/latest" in req.full_url else json.dumps({"last_checked": 1759400000})
+            return io.BytesIO(body.encode())
+
+        with self.assertRaises(self.monitor.MonitorError):
+            self.monitor.product("w-1", "https://rival.example/product/lamp/", "Lamp", opener=api)
 
     def test_daily_check_uses_the_monitor_reading_and_falls_back_to_iris(self):
         import iris_daily_check as daily

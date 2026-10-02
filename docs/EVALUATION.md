@@ -132,3 +132,24 @@ this is a verified backfill, not a fabricated owner turn or a test of the next s
 Real-owner adoption, measured time saving and revenue impact remain unverified. A useful next
 pilot is one merchant choosing one action, reporting whether it was used and measuring the
 agreed task time or business result. [Current deployment evidence](STATUS.md).
+
+## Any-store continuation — 2 October 2026
+
+Seven isolated native Luna runs on Hermes `c1488ac`, with candidate instructions and production
+model configuration copied privately; no Telegram token/delivery, offers disabled. Every run
+exited zero. These are reviewed answers, not an automatic pass score.
+
+| Case | Observed answer | Limit |
+| --- | --- | --- |
+| Electronics expansion | Storage, sealed/refurbished condition and unknown warranty prevent equivalent price judgment | Supplied hypothetical listings, no live electronics owner |
+| Food expansion | EGP 600/kg vs EGP 520/kg; EGP 80/kg difference | Correct units; omitted expected percentage premium |
+| Fashion expansion | Polyester differs; requested L not offered by rival | Supplied sizes, no inferred demand or fabric benefits |
+| Home expansion | EGP 4,000 vs EGP 3,600 for two; dimensions/material/assembly unknown | Correct basket math; equivalent-value judgment withheld |
+| Known Mira Nile match | Fresh official serum listings, confirmed 30 ml matches and formula caveat | Still said "your demo" despite acknowledged demo; brief was over the usual 70-word target |
+| Exact Infinity product | 50 ml, oily/combination, EGP 360, advertised buy-2-get-2, no visible expiry | No checkout verification; current page evidence only |
+| Honest caption | Arabic caption limited to SPF50, 50 ml and EGP 320 | Linked a returned Shopify CDN image rather than a product page |
+
+The four new cases explicitly concern hypothetical expansion of the connected store and avoid
+replacing its real Shopify catalog or saved Market profile. They test comparison judgment,
+not onboarding, confirmed-profile memory readback or live non-beauty catalog integration.
+Private session evidence is retained on the operator host; owner data is not committed.

@@ -2,7 +2,8 @@
 
 changedetection.io's restock_diff processor already reads price, currency and stock from a
 product page every day. Iris only creates, reads and deletes its watches over the documented
-REST API (/api/v1/watch, header x-api-key) and turns the result into her own product record;
+REST API (/api/v1/watch, header x-api-key) and reads cached HTML snapshots when native restock properties are omitted from the API;
+Iris parses the cached page into her own product record;
 the change rules and every owner-facing sentence stay with Iris. Not configured = not used.
 """
 from __future__ import annotations
@@ -13,7 +14,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
-from iris_feeds import USER_AGENT
+from iris_feeds import USER_AGENT, _page_products
 
 try:
     from agent.secret_scope import get_secret as _profile_value
@@ -79,16 +80,29 @@ def product(uuid: str, url: str, title: str, key: str | None = None, opener=None
     if not isinstance(data, dict):
         raise MonitorError("unexpected changedetection.io answer")
     restock = data.get("restock") or {}
+    checked = data.get("last_checked")
+    checked_at = (datetime.fromtimestamp(checked, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                  if isinstance(checked, (int, float)) and checked else None)
+    # Current changedetection.io exposes restock as a Python property, not in watch JSON.
+    # Its authenticated raw snapshot API supplies the cached page without another site fetch.
+    if "restock" not in data and not data.get("last_error") and checked_at:
+        raw = _call("GET", f"/api/v1/watch/{uuid}/history/latest?html=1", opener=opener)
+        products = _page_products(raw, url) if isinstance(raw, str) else []
+        if len(products) != 1:
+            raise MonitorError("cached monitor page has no unambiguous product reading")
+        product = products[0]
+        if product.get("price") is None and product.get("available") is None:
+            raise MonitorError("cached monitor page has no price or stock reading")
+        product.update(key=key or product["key"], checked_at=checked_at)
+        return product
     if data.get("last_error") or (restock.get("price") is None and restock.get("in_stock") is None):
         raise MonitorError(str(data.get("last_error") or "no price or stock reading yet"))
     try:
         price = round(float(restock["price"]), 2) if restock.get("price") is not None else None
     except (TypeError, ValueError):
         price = None
-    checked = data.get("last_checked")
     return {"key": key or f"page:{url.split('?', 1)[0].rstrip('/')}", "title": title, "url": url,
             "product_type": "", "tags": [], "vendor": None, "price": price, "compare_at": None,
             "on_sale": False, "currency": restock.get("currency"), "available": restock.get("in_stock"),
             "created_at": None, "variants": 1,
-            "checked_at": (datetime.fromtimestamp(checked, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-                           if isinstance(checked, (int, float)) and checked else None)}
+            "checked_at": checked_at}

@@ -1,6 +1,7 @@
 # Iris for any store: design
 
-Status: design only, nothing implemented. Date: 2 October 2026.
+Status: category references, Market profile instructions, variant options and reader fallbacks
+implemented on `iris-any-store`; live onboarding and full cohort remeasurement pending. Date: 2 October 2026.
 Goal: any Shopify store owner, whatever they sell, gets a correct scout. The demo stays on Mira Nile.
 
 ## The problem in one line

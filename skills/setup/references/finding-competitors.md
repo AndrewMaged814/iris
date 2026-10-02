@@ -11,4 +11,4 @@ Skip:
 - Stores that only exist on Instagram or Facebook. Suggest the owner sends screenshots of those instead.
 
 Explain each suggestion in one line the owner understands, for example:
-"Glow Lab: sells serums and sunscreens at 300–650 EGP, close to your range."
+"Coffee House: sells beans and drip packs at 300–650 EGP, close to your range."
