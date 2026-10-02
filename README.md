@@ -13,6 +13,11 @@
   <a href="#architecture">See the architecture</a>
 </p>
 
+<p align="center">
+  <a href="assets/iris-demo.mp4"><img src="assets/iris-demo-poster.png" alt="Iris demo video: an owner forwards a rival's buy-2-get-2 post, Iris checks the rival page and the store's catalog, advises holding the price, drafts an Egyptian Arabic caption and connects Shopify through Composio" width="100%"></a>
+</p>
+<p align="center"><sub><a href="assets/iris-demo.mp4">▶ Watch the 25-second demo (with sound)</a></sub></p>
+
 ## Why a store owner would use Iris
 
 - **Know what a discount would cost you.** Using the costs you provide, Iris shows how much is left from each sale after a price cut and how many extra sales it would take to break even. If the numbers do not support the cut, Iris recommends keeping your price.

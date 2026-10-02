@@ -20,3 +20,10 @@ The asset is covered by the repository's [MIT license](../LICENSE).
 [`architecture.png`](architecture.png) is the full-size, 2400 × 1380 README diagram.
 Its editable source is [`architecture.svg`](architecture.svg) at 1200 × 690.
 Render the SVG at 2× resolution when updating the PNG.
+
+## Demo video
+
+[`iris-demo.mp4`](iris-demo.mp4) is the 25-second README demo, with
+[`iris-demo-poster.png`](iris-demo-poster.png) as its poster. It is an illustrative motion
+graphic built with Remotion, using Mira Nile's demo figures from [the walkthrough](../docs/DEMO.md);
+music, sound effects and the voice note were generated with ElevenLabs. It is not a screen recording.
