@@ -76,6 +76,10 @@ class Watchlist:
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA foreign_keys = ON")
         self.db.executescript(SCHEMA)
+        try:  # changedetection.io watch id for a watched product page (added in 1.2)
+            self.db.execute("ALTER TABLE stores ADD COLUMN monitor_id TEXT")
+        except sqlite3.OperationalError:
+            pass  # column already there
         try:
             os.chmod(self.path, 0o600)
         except OSError:
@@ -115,6 +119,10 @@ class Watchlist:
         self.db.execute("UPDATE stores SET active = 0 WHERE id = ?", (store["id"],))
         self.db.commit()
         return True
+
+    def set_monitor(self, store_id: int, monitor_id: str | None) -> None:
+        self.db.execute("UPDATE stores SET monitor_id = ? WHERE id = ?", (monitor_id, store_id))
+        self.db.commit()
 
     def record_failure(self, store_id: int, failed: bool) -> int:
         self.db.execute("UPDATE stores SET failures = CASE WHEN ? THEN failures + 1 ELSE 0 END WHERE id = ?",

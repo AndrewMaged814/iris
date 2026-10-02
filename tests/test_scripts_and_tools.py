@@ -301,9 +301,31 @@ class Tools(unittest.TestCase):
             def register_redaction_patterns(self, patterns):
                 return len(patterns)
 
+            def register_hook(self, event, callback):
+                hooks.append((event, callback))
+
+        hooks = []
         self.plugin.register(Ctx())
         self.assertEqual(sorted(registered), sorted([(n, "iris", n) for n in
                                                      ("my_store", "read_store", "watchlist", "market_changes")]))
+        self.assertEqual(hooks, [("pre_tool_call", self.plugin.browser_guard)])
+
+    def test_browser_guard_allows_reading_public_pages_only(self):
+        guard = self.plugin.browser_guard
+        feeds = self.plugin.feeds
+        feeds._ROBOTS.clear()
+        with mock.patch.object(feeds, "_basic_guard", lambda url: None), \
+             mock.patch.object(feeds, "_fetch", lambda url: (200, "User-agent: IrisBot\nDisallow: /members/")):
+            self.assertIsNone(guard(tool_name="browser_navigate", args={"url": "https://shop.example/product/a"}))
+            self.assertEqual(guard(tool_name="browser_navigate",
+                                   args={"url": "https://shop.example/members/prices"})["action"], "block")
+        for blocked in ("browser_click", "browser_type", "browser_press", "browser_console", "browser_cdp",
+                        "browser_vault_fill", "browser_exec", "browser_dialog"):
+            self.assertEqual(guard(tool_name=blocked, args={})["action"], "block", blocked)
+        self.assertEqual(guard(tool_name="browser_navigate", args={"url": "file:///etc/passwd"})["action"], "block")
+        self.assertEqual(guard(tool_name="browser_navigate", args={"url": "http://127.0.0.1:8080/"})["action"], "block")
+        self.assertIsNone(guard(tool_name="browser_snapshot", args={}))
+        self.assertIsNone(guard(tool_name="web_search", args={"query": "x"}))
 
     def test_watch_add_takes_a_baseline_and_lists_it(self):
         web = FakeWeb({"https://glow.example/products.json": (200, fixture("shopify_products.json"))})
@@ -550,6 +572,77 @@ class Doctor(unittest.TestCase):
         self.assertEqual(result, 1)
         self.assertIn("run the doctor with Hermes' Python", output)
         self.assertIn("Not ready yet", output)
+
+
+class FakeMonitor:
+    """A changedetection.io stand-in: records requests and answers like its REST API."""
+    def __init__(self, watch=None, fail=False):
+        self.requests, self.watch, self.fail = [], watch or {}, fail
+
+    def __call__(self, req, timeout=None):
+        body = json.loads(req.data) if req.data else None
+        self.requests.append((req.get_method(), req.full_url, dict(req.header_items()), body))
+        if self.fail:
+            raise OSError("connection refused")
+        answer = {"uuid": "w-1"} if req.get_method() == "POST" else (self.watch if req.get_method() == "GET" else "")
+        return io.BytesIO(json.dumps(answer).encode() if answer != "" else b"")
+
+
+class Monitor(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        os.environ.update(IRIS_DATA_DIR=self.tmp.name, CHANGEDETECTION_URL="http://127.0.0.1:5000/",
+                          CHANGEDETECTION_API_KEY="k-123")
+        import iris_monitor
+        self.monitor = iris_monitor
+
+    def tearDown(self):
+        self.tmp.cleanup()
+        for key in ("IRIS_DATA_DIR", "CHANGEDETECTION_URL", "CHANGEDETECTION_API_KEY"):
+            os.environ.pop(key, None)
+
+    def test_watch_asks_for_daily_price_and_stock_with_iris_user_agent(self):
+        fake = FakeMonitor()
+        self.assertEqual(self.monitor.watch("https://rival.example/product/lamp/", "Rival lamp", opener=fake), "w-1")
+        method, url, headers, body = fake.requests[0]
+        self.assertEqual((method, url), ("POST", "http://127.0.0.1:5000/api/v1/watch"))
+        self.assertEqual(headers.get("X-api-key"), "k-123")
+        self.assertEqual((body["processor"], body["time_between_check"], body["time_between_check_use_default"]),
+                         ("restock_diff", {"days": 1}, False))
+        self.assertEqual(body["headers"], {"User-Agent": feeds.USER_AGENT})
+        self.assertNotIn("proxy", body)
+
+    def test_reading_becomes_an_iris_product_or_an_error(self):
+        fake = FakeMonitor({"last_checked": 1759400000, "last_error": False,
+                            "restock": {"price": "1250.0", "currency": "EGP", "in_stock": False, "last_price": 1400}})
+        p = self.monitor.product("w-1", "https://rival.example/product/lamp/", "Lamp", key="page:x#Lamp", opener=fake)
+        self.assertEqual((p["key"], p["price"], p["currency"], p["available"]), ("page:x#Lamp", 1250.0, "EGP", False))
+        for watch in ({"last_error": "403 Forbidden", "restock": {}}, {"last_error": False, "restock": {}}):
+            with self.assertRaises(self.monitor.MonitorError):
+                self.monitor.product("w-1", "https://rival.example/p", "Lamp", opener=FakeMonitor(watch))
+        with self.assertRaises(self.monitor.MonitorError):
+            self.monitor.product("w-1", "https://rival.example/p", "Lamp", opener=FakeMonitor(fail=True))
+
+    def test_daily_check_uses_the_monitor_reading_and_falls_back_to_iris(self):
+        import iris_daily_check as daily
+        import iris_watchlist
+        wl = iris_watchlist.Watchlist()
+        s = wl.add("Rival lamp", "https://rival.example/product/lamp/", kind="page")
+        wl.save_snapshot(s["id"], {"access": "ok", "source": "page", "products": [
+            {"key": "page:lamp#Lamp", "title": "Lamp", "price": 1400.0, "available": True, "on_sale": False}]})
+        wl.set_monitor(s["id"], "w-1")
+        store = wl.find(s["url"])
+        reading = {"key": "page:lamp#Lamp", "title": "Lamp", "url": s["url"], "price": 1250.0,
+                   "available": False, "checked_at": "2026-10-02T06:00:00Z"}
+        with mock.patch.object(daily.iris_monitor, "product", lambda *a, **k: dict(reading)):
+            result = daily._monitored(wl, store)
+        self.assertEqual((result["source"], result["scope"], result["products"][0]["key"]),
+                         ("changedetection", "product", "page:lamp#Lamp"))
+        def down(*a, **k):
+            raise daily.iris_monitor.MonitorError("unreachable")
+        with mock.patch.object(daily.iris_monitor, "product", down):
+            self.assertIsNone(daily._monitored(wl, store))  # Iris reads the page herself instead
+        wl.close()
 
 
 if __name__ == "__main__":

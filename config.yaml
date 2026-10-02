@@ -9,13 +9,16 @@ cron:
   mirror_delivery: true
   wrap_response: false
 
-# Tools Iris may use in chat and in scheduled runs. Terminal, files, browser, messaging and
-# cron scheduling stay off. Fixed offer writes require the live owner's private Telegram approval;
+# Tools Iris may use in chat and in scheduled runs. Terminal, files, messaging and cron scheduling
+# stay off. The browser is chat-only and read-only: the Iris plugin's pre_tool_call guard blocks
+# clicks, typing, consoles and the vault, and robots.txt-disallowed or private addresses.
+# Fixed offer writes require the live owner's private Telegram approval;
 # scheduled runs can read/propose but cannot execute them.
 platform_toolsets:
   telegram:
     - iris
     - web             # native web_search + web_extract for discovery and linked page evidence
+    - browser         # renders pages that only show products after JavaScript runs
     - vision          # reading screenshots
     - memory          # Hermes' built-in memory: USER.md (the owner) and MEMORY.md (Iris's notes)
     - iris-skill-read
@@ -37,7 +40,6 @@ agent:
   disabled_toolsets:
     - terminal
     - file
-    - browser
     - delegation
     - messaging
     - cronjob
@@ -53,6 +55,13 @@ tools:
 # not affected and keeps Hermes' own backend selection.
 web:
   search_backend: searxng
+
+# Hermes's own headless Chromium on this host: no cloud browser, no Camofox fingerprint spoofing,
+# no Browser Use code execution. AGENT_BROWSER_ARGS in .env sets Iris's honest user agent.
+browser:
+  cloud_provider: local
+  backend: "off"          # built-in read tools, not browser_exec
+  inactivity_timeout: 120
 
 # Native Telegram feedback: an "eyes" reaction while Iris works, then thumbs up when delivered
 # (thumbs down on failure). Hermes also delivers Iris's natural mid-turn updates as messages.
