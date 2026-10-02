@@ -196,6 +196,13 @@ reader, watch mutation, memory write or store write. Direct default-Hermes tools
 the official listings and exact page. The default path's native fallback supplied the successful
 search; this is evidence for the effective native path, not a claim that every backend succeeded.
 
+The same research case also completed with cron toolsets, using native search/extraction and
+returning the supported matcha listing. This verifies tool availability in scheduled context,
+not an actual cron trigger or delivery. The exact Infinity product rerun used only native
+research/browser tools and returned LE216 versus the earlier LE360 baseline; it omitted the
+earlier advertised multi-buy. That case stays partial: do not call changed price/offer evidence
+a passed unchanged regression without current first-party reconciliation.
+
 Current offline suite: 96 tests. Obsolete tests for deleted features were removed; delivery,
 approval, isolated catalog and exact-product safety regressions remain. Product-watch failures
 remain explicit; native research availability does not guarantee structured monitoring of every site.

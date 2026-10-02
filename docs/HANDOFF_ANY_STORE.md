@@ -29,6 +29,9 @@ self-hosted search/monitor services, multi-owner support and broader store write
 - Native isolated research used only skill_view, web_search and web_extract: found Greenuts'
   official 50 g matcha page, returned EGP350/EGP400 and its source. No custom reader, watch, memory
   or store writes. Default Hermes tools also found/extracted the page where forced SearXNG failed.
+- The same native research case passed with cron toolsets. An exact Infinity product case used
+  native extraction/search/browser only; its returned price/promotion differs from the earlier
+  reader baseline, so that case remains partial pending current first-party offer reconciliation.
 - Synthetic electronics onboarding confirmed the Market profile, native readback, fresh-session
   recall and cron-toolset recall. The owner has no merchant store yet. Fixture stays isolated.
 - Canonical own-product storefront URLs returned by Shopify; null unpublished URLs stay null.
@@ -47,8 +50,8 @@ self-hosted search/monitor services, multi-owner support and broader store write
    first observations establish a fresh baseline, not new/removed product alerts.
 3. Retired external-monitor watches remain on the service until the operator cleans them up;
    deleting integration code does not delete live watches or stop services.
-4. Native owner Telegram research/browser flow and actual scheduled web-provider access need
-   verification. The current native research proof is an isolated chat, not Telegram transport.
+4. Native owner Telegram research/browser flow and actual scheduled execution/delivery need
+   verification. Isolated native chat and cron-toolset research are not Telegram transport.
 5. Live merchant onboarding remains pending until a store exists. Synthetic context recall
    does not prove Shopify access or actual scheduled delivery.
 6. Known-match answers sometimes repeat acknowledged demo provenance and run long. The caption
