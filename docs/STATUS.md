@@ -2,6 +2,20 @@
 
 ## Current snapshot — 7 October 2026
 
+- The owner's active goal is to substantially improve Iris's chance of winning the Agents at
+  Work hackathon. The working cutoff is Friday 9 October around midday Cairo; the organizer's
+  extended submission deadline is Saturday 10 October at 11:59 PM Cairo. Reassess dates before
+  acting on this time-sensitive note.
+- [Official judging guidance](https://ai.untap.us/) calls for a live agent a judge can run end
+  to end and measurable SME impact through time saved, costs saved or revenue generated. The
+  [program requirements](https://ai.untap.us/programs/aaw-1st-edition) include a repository and
+  README a judge can run in under five minutes, impact slides and a 2–3 minute demo video.
+  Criterion weights and the exact measurement method are not published. Treat projected impact
+  as projected, not measured.
+- Product direction remains open. A full market-signal → owner-specific decision → approved
+  action → verified result workflow is a recommendation from the 7 October discussion, not an
+  approved build plan. The owner has not yet answered whether to pursue that direction or whether
+  Mira Nile can serve as a real SME impact pilot. Do not default to a discount feature.
 - Iris is an owner-operated market analyst for selected competitor products. The live profile has
   five watched products and three active scheduled jobs. The daily and offer checks last ran on
   7 October; the weekly brief last ran on 4 October. All reported completion, which alone does
@@ -15,8 +29,9 @@
   Hermes reads this access setting for each inbound turn. A second-account denial test is still
   needed. Prompt-based speaker identity is not an access control.
 - No measured merchant outcomes have been recorded; published impact claims are estimates.
-- This preparation branch passes 61 offline tests and the repository validator. The installed
-  profile has not been updated from this branch. See [Testing](TESTING.md) for commands.
+- The main repository passes 61 offline tests and the repository validator. The installed
+  profile has not been updated from the repository's latest preparation commit. See
+  [Testing](TESTING.md) for commands.
 
 The dated sections below record earlier implementation and evaluation work. They are history,
 not a current feature decision or proof of the installed profile's present behavior.

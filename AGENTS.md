@@ -22,6 +22,7 @@
   `.agents/skills/iris-development/SKILL.md`. The root `skills/` directory is shipped to Iris;
   it is not a Codex workflow library.
 - Read `docs/PRODUCT.md` for the product promise and the top of `docs/STATUS.md` for current
-  evidence. Dated plans, research and old evaluations are historical context, not approved scope.
+  evidence and time-sensitive hackathon context. Dated plans, research and old evaluations are
+  historical context, not approved scope.
   Choose new work from the owner's current goal and verified gaps.
 - Tests run with `python3 -m unittest discover -s tests` (`python` on Windows) and need no network.
