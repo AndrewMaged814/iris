@@ -1,5 +1,8 @@
 # Iris feature prior art
 
+> Historical option analysis from 30 September. Its recommended workflow is not current scope;
+> use the owner's latest request and the [current status](../STATUS.md).
+
 Research date: **30 September 2026**. Purpose: choose a memorable next Iris workflow without expanding into a general commerce platform. This file records primary-source product documentation and vendor claims; it does not establish effectiveness, customer demand or uniqueness.
 
 ## What already exists

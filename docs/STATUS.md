@@ -1,7 +1,30 @@
 # Status
 
-Updated 2 October 2026. Composio is authenticated through native Hermes MCP in the live Iris
-profile. Google Sheets and Reddit are connected. The owner reports Reddit reads working.
+## Current snapshot — 7 October 2026
+
+- Iris is an owner-operated market analyst for selected competitor products. The live profile has
+  five watched products and three active scheduled jobs. The daily and offer checks last ran on
+  7 October; the weekly brief last ran on 4 October. All reported completion, which alone does
+  not prove an owner received a useful alert.
+- Native Composio reports active Apify, Google Sheets, Reddit and Shopify connections. A live
+  read matched Mira Nile's 50 ml SPF 50 product in Shopify at EGP 320, with 20 available units
+  and EGP 160 recorded item cost. A separate owner-confirmed Sheets catalog was not found.
+  Connected-app writes have not been verified.
+- The owner profile previously admitted public Telegram users despite an owner allowlist.
+  `TELEGRAM_ALLOW_ALL_USERS` was set to `false` on 7 October; one owner ID remains configured.
+  Hermes reads this access setting for each inbound turn. A second-account denial test is still
+  needed. Prompt-based speaker identity is not an access control.
+- No measured merchant outcomes have been recorded; published impact claims are estimates.
+- This preparation branch passes 61 offline tests and the repository validator. The installed
+  profile has not been updated from this branch. See [Testing](TESTING.md) for commands.
+
+The dated sections below record earlier implementation and evaluation work. They are history,
+not a current feature decision or proof of the installed profile's present behavior.
+
+## Earlier updates — through 2 October 2026
+
+Composio was authenticated through native Hermes MCP in the live Iris profile. Google Sheets
+and Reddit were connected, and the owner reported Reddit reads working.
 
 ## Recommendation update — 2 October 2026
 
@@ -131,9 +154,9 @@ Neither a zeroed timer nor page advertising verifies checkout eligibility.
   memory, watch history, native OAuth and existing job identities were preserved. Watch storage
   counts match before/after: five rows, 20 snapshots and 40 signals (including retired watches).
 
-## Public-demo identity
+## Public-demo identity — 2 October, superseded
 
-The public Telegram profile remains open, with shared connected-app reads and writes. The stale
+At that time, the public Telegram profile was open, with shared connected-app reads and writes. The stale
 claim of a native owner-only discount approval gate has been removed. Iris uses Hermes's native
 plugin prompt section and task-local sender ID to identify the configured operator; display names
 and typed claims do not establish operator identity. Visitors keep names/preferences in their chat.
@@ -142,7 +165,8 @@ Andrew's shared user memory records his known role as creator of Iris and Mira N
 Native concurrent-context checks distinguish owner and visitor, including a visitor named Andrew.
 Isolated Luna sessions greet Andrew by name and role and ask a visitor what to call them; shared
 USER.md remains unchanged. The gateway restarted successfully. These checks simulate Telegram
-context and do not replace an actual second-account Telegram exchange.
+context and do not replace an actual second-account Telegram exchange. Public access was disabled
+on 7 October; see the current snapshot above.
 
 ## Remaining proof
 

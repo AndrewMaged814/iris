@@ -1,23 +1,28 @@
 # Product
 
-Iris scouts the owner's market, compares sourced competitor evidence with their confirmed
-product catalog, and brings one useful next move to Telegram. Hermes supplies the agent,
-Telegram, memory, research and schedules. Composio supplies connected app authorization and
-operations. Iris owns competitor watch history and change detection.
+Iris is a market analyst in Telegram for one small online store owner. She watches the
+competitor products the owner selects, investigates relevant prices, offers and availability,
+and answers: **what changed, does it matter to my store, and what should I do?**
 
-The catalog can live in any supported connected app. Iris confirms the source and field meanings
-with the owner; missing cost, currency or stock stays unknown. There are no per-app Iris clients.
+The owner can lose time checking rival pages and still make a poor decision from a headline
+price or an offer with unclear conditions. Iris connects outside evidence to the owner's
+product, stock and cost facts before recommending a response. Holding course is a useful
+answer when the evidence does not justify action.
 
-Recommendations compare a feasible response with holding course. Iris reads the stock, costs
-and other confirmed business facts that could change that decision, then leads with one priority,
-the decisive tradeoff and a proposed measure. A missing material input prompts one question;
-a competitor's move alone does not justify a discount or imply demand. The shared decision
-process lives in `skills/market-watch/SKILL.md` and is used by alerts, weekly briefs and offers.
+## The workflow
 
-The demo allows owner-requested connected app reads and writes. For an offer, Iris discovers
-supported operations, resolves exact terms, executes the owner's request and verifies readback.
-The removed Shopify offer bridge no longer enforces native confirmation, margin limits or expiry.
-These must not be described as guaranteed runtime controls. Scheduled checks only read apps.
+1. **Observe.** Read selected rival product pages and keep dated watch history. On-demand
+   research can investigate other sources, but Iris does not monitor an entire market.
+2. **Interpret.** Compare like products and relevant offer quantities. Read the owner's facts
+   from their confirmed connected app. Unknown cost, stock, eligibility or product equivalence
+   stays unknown.
+3. **Respond.** Give one sourced decision in plain language. If the owner asks, Iris can draft
+   customer-facing copy or carry out a supported connected-app change. An app change needs the
+   owner's request and readback before Iris reports success.
+4. **Review.** Remember a move only when the owner chooses it. A later brief can review what the
+   owner reports; it cannot infer sales lift from a competitor page.
 
-Done means a sourced observation, a relevant comparison, a requested draft or verified app action,
-and an honest weekly review. Claims of sales impact require measured owner-reported outcomes.
+Hermes supplies conversation, Telegram, research, vision, memory and schedules. Composio
+supplies connected-app authorization and operations. Iris owns selected-product history and
+the business reasoning in her skills. See [Status](STATUS.md) for what has been verified in the
+current repo and live profile. Historical plans and research do not define the next feature.

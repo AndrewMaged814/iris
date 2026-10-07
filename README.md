@@ -7,7 +7,7 @@
 <p align="center">Iris watches the competitor products you choose. She investigates new prices, offers, and stock changes,<br>checks them against your own products and costs, and recommends your next move. Then she can help you make it.</p>
 
 <p align="center">
-  <a href="https://t.me/IrisMarketWatcherBot"><strong>Try Iris on Telegram</strong></a> ·
+  <a href="https://t.me/IrisMarketWatcherBot"><strong>Owner bot on Telegram</strong></a> ·
   <a href="docs/DEMO.md">See Iris in action</a> ·
   <a href="docs/impact-slides.pdf">Impact slides</a> ·
   <a href="docs/SETUP.md">Set up Iris</a> ·
@@ -58,11 +58,11 @@ The diagram is available as an [editable SVG](assets/architecture.svg). The PNG 
 
 Read the [impact slides in PDF](docs/impact-slides.pdf) on GitHub, or download the [editable PowerPoint](docs/impact-slides.pptx).
 
-## Try Iris
+## Run Iris
 
-**[Open the Iris bot on Telegram →](https://t.me/IrisMarketWatcherBot)** to try the shared demo with Mira Nile, the example store in this README.
+The [hosted Telegram bot](https://t.me/IrisMarketWatcherBot) is currently restricted to its configured owner. To run Iris for your own store, install a separate profile.
 
-To use Iris with your own store, run your own profile. You need Hermes, a model provider, a Telegram bot, and a Composio connection to the app that holds your product information. The repository currently requires access.
+You need Hermes, a model provider, a Telegram bot, and a Composio connection to the app that holds your product information. This repository is public.
 
 ```sh
 git clone https://github.com/AndrewMaged814/iris.git
@@ -75,7 +75,7 @@ Then connect your catalog, confirm its fields, and enable the three scheduled ch
 
 ## What is verified
 
-The current version passes **59 offline tests**. The live Hermes profile has authenticated to Composio and read a connected spreadsheet; connected-app writes and real merchant outcomes still need live verification. [Current status](docs/STATUS.md) · [Testing guide](docs/TESTING.md).
+The current repository passes **61 offline tests**. The live Hermes profile has authenticated to Composio and read a connected Shopify product; connected-app writes and real merchant outcomes still need live verification. [Current status](docs/STATUS.md) · [Testing guide](docs/TESTING.md).
 
 <sub>Iris is a hackathon project and an active demo, not a measured claim of sales growth.</sub>
 

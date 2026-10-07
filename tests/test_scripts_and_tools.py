@@ -486,6 +486,21 @@ class Doctor(unittest.TestCase):
         self.assertEqual(result, 0, output)
         self.assertIn("Ready.", output)
 
+    @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
+    def test_public_telegram_setting_overrides_owner_allowlist(self):
+        result, output = self.run_doctor("TELEGRAM_BOT_TOKEN='bot-token'\nTELEGRAM_ALLOWED_USERS='123'\n"
+                                         "TELEGRAM_ALLOW_ALL_USERS=true\n"
+                                         "AGENT_BROWSER_ARGS='--user-agent=IrisBot/1.0'\n")
+        self.assertEqual(result, 1)
+        self.assertIn("MISSING only the owner can talk to Iris", output)
+
+    @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
+    def test_wildcard_is_not_an_owner_allowlist(self):
+        result, output = self.run_doctor("TELEGRAM_BOT_TOKEN='bot-token'\nTELEGRAM_ALLOWED_USERS='*'\n"
+                                         "AGENT_BROWSER_ARGS='--user-agent=IrisBot/1.0'\n")
+        self.assertEqual(result, 1)
+        self.assertIn("MISSING only the owner can talk to Iris", output)
+
     def test_missing_reader_dependency_prevents_readiness(self):
         with mock.patch.dict(sys.modules, {"extruct": None}):
             result, output = self.run_doctor("")

@@ -43,7 +43,11 @@ def main() -> int:
             good &= check(".env parser", False, "run the doctor with Hermes' Python (includes python-dotenv)")
     print("Settings")
     good &= check("Telegram bot token", bool(env.get("TELEGRAM_BOT_TOKEN")), "set TELEGRAM_BOT_TOKEN in .env")
-    good &= check("only the owner can talk to Iris", bool(env.get("TELEGRAM_ALLOWED_USERS")), "set TELEGRAM_ALLOWED_USERS")
+    owner_ids = [part.strip() for part in env.get("TELEGRAM_ALLOWED_USERS", "").split(",") if part.strip()]
+    public_access = env.get("TELEGRAM_ALLOW_ALL_USERS", "").strip().lower() in {"true", "1", "yes"}
+    good &= check("only the owner can talk to Iris",
+                  len(owner_ids) == 1 and owner_ids[0] != "*" and not public_access,
+                  "set one owner ID in TELEGRAM_ALLOWED_USERS and TELEGRAM_ALLOW_ALL_USERS=false")
     import yaml
     try:
         cfg = yaml.safe_load((home / "config.yaml").read_text()) or {}

@@ -1,5 +1,8 @@
 # Iris release and demo research
 
+> Historical decision research from 2 October. Its proposed release path is not current scope;
+> use the owner's latest request and the [current status](../STATUS.md).
+
 Researched 2 October 2026. This note records primary sources supporting the next-release decision.
 It is a planning artifact, not evidence that Iris has executed the proposed demo.
 

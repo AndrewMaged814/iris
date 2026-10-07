@@ -1,5 +1,9 @@
 # Finish Iris: one decision, one verified action
 
+> Historical proposal from 2 October 2026. Its discount-centered release scope was not adopted
+> for the current development pass. Use the owner's latest request and the current snapshot in
+> [Status](STATUS.md) before selecting work.
+
 Decision plan, 2 October 2026. This is a proposed release scope, not a claim that the live workflow has passed.
 
 Implementation update: the owner prioritized recommendation quality before the offer demo.

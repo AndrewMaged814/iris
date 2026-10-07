@@ -7,7 +7,7 @@ Set up one Hermes profile for one store owner, then talk to Iris in Telegram.
 - [Hermes](https://github.com/NousResearch/hermes-agent) with profile distributions and a model provider.
 - A Telegram bot token and the owner's numeric Telegram ID.
 - A Composio account and an app containing the owner's product information.
-- Access to this repository. Iris is currently private.
+- Access to this public repository.
 
 The tested installation uses Hermes commit `c1488ac` and Luna through Azure Foundry.
 The distribution lets you select your own provider; model settings and credentials belong on the host.
@@ -28,6 +28,8 @@ If Iris is already installed, use the verification steps below rather than reins
 
 Use [`.env.EXAMPLE`](../.env.EXAMPLE) for the Telegram bot token, allowed owner ID and browser
 user agent. There are no Iris-specific Shopify credentials or app API clients.
+Keep `TELEGRAM_ALLOW_ALL_USERS=false` for an owner profile; an owner ID alone does not close
+public access when that flag is enabled.
 
 Hermes connects to `https://connect.composio.dev/mcp` with native OAuth. Enable the shipped
 `mcp_servers.composio` entry and authenticate with `hermes -p iris mcp login composio`.
@@ -126,7 +128,7 @@ product pages to watch.
 Gateway ownership depends on your Hermes setup. The tested host uses one shared gateway for
 all profiles; it does not need a separate Iris service. Use Hermes's native gateway management.
 
-## 4. Enable daily checks and the weekly brief
+## 4. Enable the daily checks and weekly brief
 
 Run this **once**, replacing the example number with the authorized owner's Telegram ID:
 
@@ -135,9 +137,11 @@ OWNER_CHAT_ID=123456789 bash scripts/setup_jobs.sh
 hermes -p iris cron list --all
 ```
 
-Expect `iris-daily-check` at **08:00** and `iris-weekly-brief` on **Sunday at 10:00**, Cairo time.
-The setup enables native delivery mirroring so the owner's reply can refer to the report.
-Daily structured price/stock checks do not automatically detect page-only promotions.
+Expect three jobs in Cairo time: `iris-daily-check` at **08:00** for structured price and stock
+changes, `iris-offer-check` at **08:30** for advertised offers on watched product pages, and
+`iris-weekly-brief` on **Sunday at 10:00**. The setup enables native delivery mirroring so the
+owner's reply can refer to a report. The offer check reads pages with Hermes; it does not prove
+checkout eligibility or guarantee that every page-only promotion is visible.
 
 ## Updating an existing Iris
 
