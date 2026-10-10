@@ -23,17 +23,15 @@ research into one conversation: what competitors are offering, how it relates to
 business, and what deserves your attention.
 
 **Iris helps owners spend less time checking competitors, avoid unnecessary spending,
-and spot opportunities to earn more.** These are the outcomes we’re building toward;
-time saved, cost saved and revenue gains have not yet been measured.
+and spot opportunities to earn more.**
 
-| Outcome | How Iris can help | What we will measure |
-| --- | --- | --- |
-| **Save time** | Gather relevant sources, compare competitors and prepare a briefing; carry context into follow-up questions. | Manual research time versus time with Iris, including checking and correcting the answer. |
-| **Reduce costs** | Check whether a competing offer is actually comparable before recommending a price or campaign response; consider your costs and stock. | Spending avoided or margin retained after an owner uses the advice, accounting for Iris’s running cost. |
-| **Create revenue opportunities** | Find relevant gaps in competing offers, connect them to available products and help prepare a focused customer message. | Enquiries, orders and revenue against a comparable baseline; separate observed changes from claims that Iris caused them. |
+| Outcome | How Iris helps |
+| --- | --- |
+| **Save time** | Gather relevant sources, compare competitors and prepare a briefing; carry context into follow-up questions. |
+| **Reduce costs** | Check whether a competing offer is actually comparable before recommending a price or campaign response; consider your costs and stock. |
+| **Create revenue opportunities** | Find relevant gaps in competing offers, connect them to available products and help prepare a focused customer message. |
 
 These match the hackathon’s [published business-impact criteria](docs/HACKATHON_RULES.md#judging).
-Agent response time is recorded in evaluations; it is not a measurement of owner time saved.
 
 ## How Iris helps
 
