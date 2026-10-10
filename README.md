@@ -17,6 +17,8 @@
   <a href="#run-iris">Run Iris</a>
 </p>
 
+https://github.com/user-attachments/assets/340f8976-7280-4cd8-b8e8-2c61eb3eb937
+
 ## Try Iris
 
 **[Open Iris in Telegram](https://t.me/IrisMarketWatcherBot)** and tap **Start**.
