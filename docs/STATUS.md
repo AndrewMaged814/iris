@@ -15,7 +15,7 @@ connected into investigations, priorities, drafts and remembered decisions in Te
 - The Cloud checker separates failed attempts from successful model completions and retains
   unknown failure usage. Native token/user-label checks pass on the pinned Hermes runtime.
 - **112 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
-  GitHub Actions now runs the offline suite and validator on pushes/PRs.
+  The existing GitHub Actions workflow runs the suite, validator and shell syntax check.
 - README, architecture, setup, demo plan and evidence/observability guides are consolidated.
   Obsolete planning diaries, rejected engines, repeated trial exports and old video/slide
   drafts are archived privately. Earlier material failures remain in public evidence.
