@@ -131,6 +131,13 @@ The current release's private conversation, native dispatch and Cloud readback a
 in [status](STATUS.md). Source/reply inspection remains required for acceptance; no automated
 judge turns these cases into a blanket accuracy claim.
 
+The final export now includes citation coverage. It flags the unread regular moisturizer
+listing in the Infinity follow-up. It also flags the failed daily-moisturizer fetch cited in
+the initial answer; that citation reports a coverage gap and is not itself a false factual
+claim. Existing questions, replies, timings, counts and source hashes are unchanged.
+Captured reads remain subject to claim review: collection navigation and conflicting price
+labels do not establish a promotion or payable price. [Operator review](OBSERVABILITY.md).
+
 ## Highest-value remaining proof
 
 1. Record the multi-source demo in the actual interface; use its real trace and elapsed time.

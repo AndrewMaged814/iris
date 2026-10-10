@@ -327,6 +327,8 @@ def summarize_trace(messages):
                 if not isinstance(content, str):
                     content = json.dumps(content, sort_keys=True, ensure_ascii=False)
                 pages.append({"url": entry.get("url"), "characters": len(content),
+                              "read_status": "failed" if entry.get("error") or entry.get("success") is False else
+                                             ("content_returned" if content.strip() else "empty"),
                               "sha256": hashlib.sha256(content.encode()).hexdigest(),
                               "returned_at": message.get("timestamp")})
     return {"tool_calls": len(calls), "by_tool": dict(Counter(c["tool"] for c in calls)),

@@ -4,7 +4,9 @@ import json
 import argparse
 import hashlib
 import os
+import re
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 
 def native_json(content):
@@ -92,6 +94,52 @@ def evidence_snapshot(report, case_id, report_sha256=None):
         "public_pages": list(pages.values()), "catalog_field_observations": list(app_fields.values())}
 
 
+def citation_key(url):
+    """Ignore fragments only; query strings can select different product variants."""
+    try:
+        parts = urlsplit(url)
+        if parts.scheme not in ("http", "https") or not parts.hostname:
+            return None
+        return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), parts.path,
+                           parts.query, ""))
+    except (TypeError, ValueError):
+        return None
+
+
+def capture_reads(messages, reads, turn_index):
+    """Record returned evidence, never promote search snippets or requested URLs."""
+    for message in messages:
+        data = native_json(message.get("content"))
+        if data.get("error") or data.get("success") is False:
+            continue
+        if message.get("tool_name") == "web_extract":
+            pages = data.get("results", [])
+            if isinstance(pages, dict):
+                pages = [pages]
+            for page in pages:
+                if not isinstance(page, dict) or page.get("error") or page.get("success") is False:
+                    continue
+                content = page.get("content") or page.get("markdown")
+                key = citation_key(page.get("url"))
+                if key and isinstance(content, str) and content.strip():
+                    reads.setdefault(key, []).append({"kind": "page_text", "turn": turn_index})
+        elif message.get("tool_name") == "read_store" and data.get("access") == "ok":
+            for product in data.get("products", []):
+                key = citation_key(product.get("url")) if isinstance(product, dict) else None
+                if key:
+                    reads.setdefault(key, []).append({"kind": "structured_product", "turn": turn_index})
+
+
+def citation_review(reply, reads):
+    urls = list(dict.fromkeys(url.rstrip(".,;:!?)]}") for url in
+                             re.findall(r'https?://[^\s<>"\']+', reply or "")))
+    citations = [{"url": url, "captured_reads": reads.get(citation_key(url), [])} for url in urls]
+    return {"scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": citations,
+            "without_captured_read": [item["url"] for item in citations if not item["captured_reads"]],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."}
+
+
 def review_export(report, run_name):
     """Export review data without merchant payloads, memory contents or app arguments.
 
@@ -105,13 +153,22 @@ def review_export(report, run_name):
               "profile_file_hashes": report.get("profile_file_hashes", {}), "cases": []}
     for case in report["cases"]:
         item = {"id": case["id"], "evidence_mode": case.get("evidence_mode"), "turns": []}
-        for turn in case["turns"]:
+        reads, prior_session = {}, None
+        for turn_index, turn in enumerate(case["turns"], 1):
+            session = turn.get("usage", {}).get("session_id")
+            if turn.get("fresh_session") or (session and prior_session and session != prior_session):
+                reads = {}
+            if session:
+                prior_session = session
+            capture_reads(turn.get("new_messages", []), reads, turn_index)
             finals = [m["content"] for m in turn.get("new_messages", [])
                       if m.get("role") == "assistant" and not m.get("tool_calls") and m.get("content")]
+            reply = finals[-1] if finals and not turn["exit_code"] else None
             trace = turn.get("trace_summary", {})
             item["turns"].append({
                 "prompt": turn.get("review_prompt", turn["prompt"]), "expected": turn.get("expected", []),
-                "reply": finals[-1] if finals and not turn["exit_code"] else None,
+                "reply": reply,
+                "citation_review": citation_review(reply, reads),
                 "exit_code": turn["exit_code"], "elapsed_seconds": turn["seconds"],
                 "timing_scope": "Native CLI including startup; not measured Telegram latency",
                 "main_model_calls": turn.get("usage", {}).get("api_calls"),

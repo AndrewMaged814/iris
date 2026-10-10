@@ -5,8 +5,8 @@
 **Iris is your AI market watcher.**
 
 She closes the gap between running your store and understanding the market around it.
-Iris brings competitor activity, public market research and your store’s context together
-in Telegram, helping you see what deserves attention and choose your next move.
+Iris brings competitor activity, public market research and your store’s context together,
+helping you see what deserves attention and choose your next move.
 
 **Know what’s changing. See what matters. Make your next move.**
 

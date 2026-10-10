@@ -49,6 +49,16 @@ python tools/report_iris_cases.py --root PRIVATE_EVALUATIONS --pattern RUN_NAME 
 The export removes app arguments, memory and raw transport data. Prompts/replies still need
 a privacy review. Raw evidence stays private. A successful tool call is not an accuracy score.
 
+Exports now include `citation_review`: cited URLs without a captured native read are flagged,
+and page text is distinguished from structured product data. Follow-ups reuse reads from the
+same conversation; a fresh session starts a new read inventory. Failed/empty extracts and
+search snippets do not establish a read. Native traces label failed, empty and content-returned
+extractions separately. Query strings are retained because they may select a product variant.
+
+This is an operator review aid, not an agent search gate or a factual verdict. A link may be
+supplied by the owner or cited to report a failed fetch. Returned text may contain only
+navigation or the wrong product facts. Check the actual claim against the private source.
+
 ## Setup and privacy
 
 The tested runtime is Hermes `c1488ac`, Python Langfuse SDK 4.17.0. Use Hermes's Python:

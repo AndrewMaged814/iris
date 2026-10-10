@@ -1,7 +1,8 @@
 # Demo: “Iris, what’s happening in my market?”
 
 **Target: 2 minutes 50 seconds.** This is a working-demo production plan, not a completed
-recording. The video follows an actual SME owner planning the week with Iris.
+recording. The video follows a store owner planning the week with Iris. The current connected
+catalog is staged; footage using it must be labeled as a demo store.
 
 ## The product story
 
@@ -42,7 +43,7 @@ overlay, not a new dashboard.
 | --- | --- | --- |
 | 0:00–0:12 | Owner, competitor tabs, catalog, opening question. | A recognizable SME workflow and broad market question. |
 | 0:12–0:52 | Actual research across three businesses plus connected catalog. Show the final briefing and its source links. | Several sources become a consolidated picture, grouped by the owner’s products and priorities. |
-| 0:52–1:27 | “How is Infinity doing right now? Go deeper.” Iris checks selected products, campaign evidence and relevant recorded observations. | Investigation adapts to a follow-up; confirmed activity, public explanations and hypotheses stay distinct. |
+| 0:52–1:27 | “What is Infinity offering right now? Go deeper.” Iris checks selected products, campaign evidence and relevant recorded observations. | Investigation adapts to a follow-up; confirmed activity, public explanations and hypotheses stay distinct. |
 | 1:27–1:57 | “What matters most for my store this week?” Iris connects the wider picture to stock, product positioning and the owner’s goal. | One practical priority across findings, with a clear reason and measure. |
 | 1:57–2:27 | Owner requests Egyptian Arabic copy, chooses a move, then opens a fresh conversation to recall it. | Usable execution support and persistent memory. |
 | 2:27–2:50 | Actual trace, timed task result if measured, and judge access. Closing product line. | Real execution, visible reliability and an outcome a judge can verify. |
@@ -69,7 +70,7 @@ claim. The business conclusion comes from Iris, not from a predetermined script.
 
 **Owner:**
 
-> How is Infinity doing right now across the products you checked? Is this one isolated offer
+> What is Infinity offering right now across the products you checked? Is this one isolated offer
 > or a broader campaign? What do we know, and what might explain it?
 
 Needed evidence may include:
@@ -86,7 +87,7 @@ Other pages must be discovered/read and kept with the run. The
 [fixed retrieval fixture](../tools/fixtures/retrieval_check.json) also provides a Nut Botanicals
 product lead. A URL is a lead, not proof of its current price.
 
-“How is Infinity doing?” can establish public activity. It cannot establish sales growth,
+This investigation can establish public activity. It cannot establish sales growth,
 financial health or strategy from listings alone. An official explanation is useful evidence;
 a supported hypothesis can be useful if labeled.
 
@@ -161,6 +162,33 @@ End with **“Your AI market watcher.”**
 7. Capture the trace belonging to the demonstrated run, sanitize it, and test judge access.
 
 The evidence capture is an operator workflow; it does not add a service or alter Iris’s tools.
+
+## Measure the task before claiming impact
+
+The owner has not yet used an Iris recommendation. Start with a **controlled demo trial**,
+then repeat with a real store; neither a rehearsal nor an agent's response time proves savings.
+
+Use one task: compare sunscreen and moisturizers across three businesses, choose a priority
+and prepare a customer message. Agree on completion before timing: checked sources, preserved
+product differences, one justified priority and usable copy. Use the same target coverage for
+the manual and Iris attempts. Record their order; repeating the same task can benefit from
+what the person learned in the first attempt.
+
+| Record for each attempt | Manual | With Iris |
+| --- | --- | --- |
+| Owner time researching, checking and preparing the response | Pending | Pending |
+| Total elapsed time, including waits and corrections | Pending | Pending |
+| Supported findings and unresolved gaps | Pending | Pending |
+| Model/provider cost, or explicit unknown | N/A | Pending |
+
+Report owner time saved only when both attempts meet the agreed quality bar. A failed or
+unfinished answer remains a failed trial. Record review and correction time; keep agent wait
+time separate from active owner time. One paired task is a sample, not verified weekly savings.
+
+Cost/revenue results need an owner-used action and a comparable baseline. Record the action,
+period, enquiries, orders, revenue, relevant costs and other business changes. A proposed post
+is an opportunity, not generated revenue. Keep unmeasured outcomes marked unmeasured in the
+video, slides and README.
 
 ## Done when
 

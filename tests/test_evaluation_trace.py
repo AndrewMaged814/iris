@@ -20,6 +20,64 @@ report_spec.loader.exec_module(reporting)
 
 
 class EvaluationTrace(unittest.TestCase):
+    def test_recorded_promotion_citation_has_no_captured_page_read(self):
+        recorded = json.loads((Path(__file__).resolve().parents[1] /
+                               "docs/evidence/release-final.json").read_text(encoding="utf-8"))
+        reads = {}
+        # Reconstruct read presence from the actual sanitized inventory, not claim support.
+        for index, turn in enumerate(recorded["cases"][0]["turns"][:2], 1):
+            messages = [{"tool_name": "web_extract", "content": json.dumps({"results": [
+                {"url": page["url"], "content": "Captured text" if page["characters"] else ""}
+                for page in turn["source_reads"]]})}]
+            reporting.capture_reads(messages, reads, index)
+        review = reporting.citation_review(recorded["cases"][0]["turns"][1]["reply"], reads)
+        self.assertIn("https://infinityclinicpharma.com/products/infinity-moisturizing-cream",
+                      review["without_captured_read"])
+        self.assertNotIn("https://infinityclinicpharma.com/products/infinity-daily-moisturizing-cream",
+                         review["without_captured_read"])
+        self.assertIn("Not evaluated", review["claim_support"])
+
+    def test_citation_review_excludes_search_failed_reads_and_preserves_variant_queries(self):
+        reads = {}
+        messages = [{"tool_name": "web_search", "content": json.dumps({
+            "data": {"web": [{"url": "https://shop.example/unread", "description": "40% OFF"}]}})},
+            {"tool_name": "web_extract", "content": json.dumps({"results": [
+                {"url": "https://shop.example/failed", "content": "Denied", "error": "blocked"},
+                {"url": "https://shop.example/empty", "content": " "},
+                {"url": "https://shop.example/item?variant=small", "content": "15 ml"},
+                {"url": "https://shop.example/navigation", "content": "Menu and footer"}]})}]
+        reporting.capture_reads(messages, reads, 1)
+        review = reporting.citation_review(
+            "[a](https://shop.example/unread) [b](https://shop.example/failed) "
+            "[c](https://shop.example/empty) [d](https://shop.example/item?variant=large) "
+            "[e](https://shop.example/item?variant=small#price) [f](https://shop.example/navigation)", reads)
+        self.assertEqual(len(review["without_captured_read"]), 4)
+        self.assertEqual(review["citations"][4]["captured_reads"], [{"kind": "page_text", "turn": 1}])
+        self.assertIn("navigation", review["claim_support"])
+
+    def test_citation_review_reuses_conversation_reads_but_resets_on_fresh_session(self):
+        def turn(session, messages):
+            return {"prompt": "Follow up", "seconds": 1, "exit_code": 0,
+                    "usage": {"session_id": session}, "new_messages": messages + [
+                        {"role": "assistant", "content": "[Item](https://shop.example/item)"}]}
+        messages = [{"tool_name": "read_store", "content": json.dumps({"access": "ok",
+            "url": "https://shop.example/", "products": [{"url": "https://shop.example/item"}]})}]
+        result = reporting.review_export({"cases": [{"id": "followups", "turns": [
+            turn("one", messages), turn("one", []), turn("fresh", [])]}]}, "fixture")
+        turns = result["cases"][0]["turns"]
+        self.assertEqual(turns[1]["citation_review"]["without_captured_read"], [])
+        self.assertEqual(turns[1]["citation_review"]["citations"][0]["captured_reads"],
+                         [{"kind": "structured_product", "turn": 1}])
+        self.assertEqual(turns[2]["citation_review"]["without_captured_read"], ["https://shop.example/item"])
+
+    def test_native_trace_marks_failed_and_empty_extractions_explicitly(self):
+        report = evaluation.summarize_trace([{"tool_name": "web_extract", "content": json.dumps({
+            "results": [{"url": "https://shop.example/failed", "error": "provider failed"},
+                        {"url": "https://shop.example/empty", "content": " "},
+                        {"url": "https://shop.example/read", "content": "Observed text"}]})}])
+        self.assertEqual([page["read_status"] for page in report["extracted_pages"]],
+                         ["failed", "empty", "content_returned"])
+
     def test_cloud_readback_counts_resumed_session_turns_once(self):
         def turn(session, calls, tools):
             return {"usage": {"session_id": session, "api_calls": calls},

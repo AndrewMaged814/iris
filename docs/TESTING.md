@@ -96,6 +96,9 @@ python tools/report_iris_cases.py --root PRIVATE_EVALUATIONS --pattern RUN_NAME 
 
 This export omits app payloads, arguments, memory and raw transport output. Questions and
 replies still require a privacy review before publication. Keep source evidence private.
+The citation review flags links without a captured read in that conversation; it preserves
+variant query strings and resets read coverage on fresh sessions. It does not judge whether
+a read supports the claim. Failed and empty extraction results are labeled in new native traces.
 See [the evidence ledger](EVALUATION.md) for completed runs and failures.
 
 Before updating live Iris, back up affected files and SQLite state; preserve configuration,

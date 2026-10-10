@@ -14,11 +14,31 @@ connected into investigations, priorities, drafts and remembered decisions in Te
   cited facts against successful reads. Null catalog public URLs stay null in follow-up footers.
 - The Cloud checker separates failed attempts from successful model completions and retains
   unknown failure usage. Native token/user-label checks pass on the pinned Hermes runtime.
-- **112 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
+- **116 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
   The existing GitHub Actions workflow runs the suite, validator and shell syntax check.
 - README, architecture, setup, demo plan and evidence/observability guides are consolidated.
   Obsolete planning diaries, rejected engines, repeated trial exports and old video/slide
   drafts are archived privately. Earlier material failures remain in public evidence.
+
+### README and evidence review
+
+The README now leads with owner time, cost and revenue opportunities using owner-approved
+wording. The hypothetical morning story and repeated benefit section are removed; the
+headline, product promise and distribution description use **Your AI market watcher**.
+Telegram remains documented as the tested conversation channel. The owner confirmed they
+have not yet used a recommendation; no measured savings or income are claimed.
+
+Operator exports now flag cited URLs without a captured read in that conversation and
+distinguish page text from structured product data. New native traces label failed, empty
+and content-returned extracts. Four regression checks include the retained unread promotion
+citation, failed reads, variant queries and fresh-session boundaries. Re-exporting the final
+journey preserves its original replies, timings and counts and flags the unread moisturizer
+URL. This improves review visibility; it does **not** repair the agent's answer. No runtime
+behavior or live profile was changed in this follow-up.
+
+The [demo plan](DEMO.md#measure-the-task-before-claiming-impact) now defines a paired task
+comparison including source checking and correction time. Controlled demo trials, merchant
+outcomes and hypothetical revenue opportunities have separate labels.
 
 ## What has been observed
 

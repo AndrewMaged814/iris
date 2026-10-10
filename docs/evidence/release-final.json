@@ -43,6 +43,89 @@
             "Research follows relevant leads and stops at sufficient evidence or precise coverage gaps; no app/watch writes"
           ],
           "reply": "Your strongest this week is a sunscreen post, not a moisturizer push: you have 20 sunscreens recorded, while your moisturizer has zero recorded and needs a stock check first.\n\nSunscreen\n- Your SPF 50, 50 ml sunscreen is EGP 320 in your connected catalog.\n- Cairo Drop’s 50 ml UVEPRO SPF 50+ cream is EGP 439 — EGP 119 more. That’s one same-size price comparison, not your position across the whole market. [Cairo Drop](https://cairodrop.com/products/hayah-uvepro-light-sunscreen-spf-50-cream-50ml)\n- Infinity lists an SPF 50+ cream at EGP 340, but its page doesn’t show the size, so it’s not a fair price comparison. [Infinity Clinic Pharma](https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types)\n- NUT lists an SPF 50 PA++++ lotion at EGP 430; I couldn’t confirm its size from the page. [NUT Botanicals](https://nutbotanicals.com/products/b5-skinprotect-invisible-sunscreen-lotion-spf-50-pa-broad-spectrum)\n\nDaily face moisturizer\n- Yours is EGP 250 for 50 ml; zero units are recorded, so confirm stock before featuring it.\n- Cairo Drop’s 50 ml Femme Naturelle cream is EGP 439, EGP 189 more, though it’s a different product—not a like-for-like formula comparison. [Cairo Drop](https://cairodrop.com/products/femme-naturelle-moisturizing-cream-50ml)\n- NUT’s face-cream page shows several sizes with an EGP 185 headline price, so I can’t tie that price to its 50 ml size. [NUT Botanicals](https://nutbotanicals.com/products/eternity-spring-niacinamide-and-hyaluronic-face-cream-50ml)\n- Infinity’s daily moisturizer page didn’t load for verification; Cairo Drop has several moisturizer listings, but the one I checked was a 50 g cream, not a 50 ml match. [Infinity Clinic Pharma](https://infinityclinicpharma.com/collections/acne-range/products/infinity-daily-moisturizing-cream) · [Cairo Drop](https://cairodrop.com/products/raw-african-hyaluronic-intensive-hydrating-cream-50g)\n\nWhat to pay attention to: shops are selling sunscreen and moisturizer through specific skin-type, texture, and routine claims. For your ten-minute post, test a simple SPF 50 enquiry prompt that asks what shoppers are looking for; count relevant replies this week. Hold off featuring the moisturizer until its stock is confirmed.\n\nChecked Oct 10, 2026 (Cairo time). Public pages checked today; catalog facts are from your connected catalog. No apps or watches changed, and nothing was published.",
+          "citation_review": {
+            "scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": [
+              {
+                "url": "https://cairodrop.com/products/hayah-uvepro-light-sunscreen-spf-50-cream-50ml",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  },
+                  {
+                    "kind": "structured_product",
+                    "turn": 1
+                  },
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              },
+              {
+                "url": "https://nutbotanicals.com/products/b5-skinprotect-invisible-sunscreen-lotion-spf-50-pa-broad-spectrum",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  },
+                  {
+                    "kind": "structured_product",
+                    "turn": 1
+                  }
+                ]
+              },
+              {
+                "url": "https://cairodrop.com/products/femme-naturelle-moisturizing-cream-50ml",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  }
+                ]
+              },
+              {
+                "url": "https://nutbotanicals.com/products/eternity-spring-niacinamide-and-hyaluronic-face-cream-50ml",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  },
+                  {
+                    "kind": "structured_product",
+                    "turn": 1
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/collections/acne-range/products/infinity-daily-moisturizing-cream",
+                "captured_reads": []
+              },
+              {
+                "url": "https://cairodrop.com/products/raw-african-hyaluronic-intensive-hydrating-cream-50g",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  }
+                ]
+              }
+            ],
+            "without_captured_read": [
+              "https://infinityclinicpharma.com/collections/acne-range/products/infinity-daily-moisturizing-cream"
+            ],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."
+          },
           "exit_code": 0,
           "elapsed_seconds": 106.67,
           "timing_scope": "Native CLI including startup; not measured Telegram latency",
@@ -344,6 +427,81 @@
             "No inference of sales growth, clearance, hidden motive or recurring campaign from sparse history"
           ],
           "reply": "Infinity’s discounts are broader than one isolated sunscreen offer, but I can’t confirm a named, time-limited campaign. The clearest pattern is several SPF products presented as 1+1 promo packs, alongside separate discounts on regular listings.\n\n- **Sunscreens:** the official pages show 1+1 packs for Ultra Fluid, lotion, Hydro Boost gel, kids’ lotion, mist, tinted, and Velvet Touch. Separate cream listings show 40% off; for example, the all-skin-types SPF 50+ cream is listed at EGP 340, reduced to EGP 204. The “only 10 items left” message appears on several pages, but doesn’t prove stock is actually low or that they’re clearing it. [Ultra Fluid](https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1) · [Hydro Boost gel](https://infinityclinicpharma.com/products/infinity-care-hydro-boost-gel-spf50-promopack) · [Sunscreen cream](https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types)\n- **Moisturizers:** I found regular cream listings displaying 40% discounts, plus a separate day-and-night cream duo advertised as 1+1. Infinity’s daily acne moisturizer page confirms its positioning, but didn’t show a price or offer when I read it. [Moisturizing cream](https://infinityclinicpharma.com/products/infinity-moisturizing-cream) · [Day + night duo](https://infinityclinicpharma.com/products/infinity-collagen-anti-aging-day-night-50ml-1-1) · [Acne daily moisturizer](https://infinityclinicpharma.com/products/infinity-daily-moisturizing-cream)\n\n**What history adds:** the watched Infinity pages have price/stock readings from Oct 1–10, but no recorded changes. That’s a limited set of products, and these snapshots don’t capture offer terms or when they began—so it doesn’t establish how long the deals have run. [Infinity’s terms](https://infinityclinicpharma.com/pages/terms-conditions) refer to “Big Deals and offers” and limit customers to one order during them. That supports the possibility of a broader deals period, but doesn’t confirm these listings belong to one current campaign.\n\n**Possible explanation:** several 1+1 packs across different sunscreen types look like a deliberate multi-product promotion, and the one-order rule may be intended to limit repeat ordering during deals. But Infinity doesn’t state why these offers are running. I found no proof of clearance, a seasonal reason, or a response to competitors.\n\nChecked Oct 10, 2026, Cairo time.",
+          "citation_review": {
+            "scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": [
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-care-hydro-boost-gel-spf50-promopack",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  },
+                  {
+                    "kind": "structured_product",
+                    "turn": 1
+                  },
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-moisturizing-cream",
+                "captured_reads": []
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-collagen-anti-aging-day-night-50ml-1-1",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-daily-moisturizing-cream",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/pages/terms-conditions",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              }
+            ],
+            "without_captured_read": [
+              "https://infinityclinicpharma.com/products/infinity-moisturizing-cream"
+            ],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."
+          },
           "exit_code": 0,
           "elapsed_seconds": 63.06,
           "timing_scope": "Native CLI including startup; not measured Telegram latency",
@@ -606,6 +764,31 @@
             "Reuses relevant evidence without restarting setup or broad discovery"
           ],
           "reply": "Focus your ten-minute post on the sunscreen and invite questions that reveal what shoppers need help choosing. Don’t spend the time discounting or promoting the moisturizer until its stock is confirmed.\n\n- Your catalog records 20 units of your SPF 50 sunscreen and zero of the daily moisturizer. One checked 50 ml SPF 50+ sunscreen at Cairo Drop is EGP 439 versus your EGP 320, but that’s only one comparison—not a reason to cut your price. [Cairo Drop](https://cairodrop.com/products/hayah-uvepro-light-sunscreen-spf-50-cream-50ml)\n- Infinity’s several sunscreen offers show competitive noise, not evidence you need to match their deals. [Infinity’s 1+1 sunscreen](https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1)\n\nPost a simple question about what people want help with when choosing SPF. This fits the time you have and gives you a clearer signal than likes: count relevant sunscreen enquiries this week.",
+          "citation_review": {
+            "scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": [
+              {
+                "url": "https://cairodrop.com/products/hayah-uvepro-light-sunscreen-spf-50-cream-50ml",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 1
+                  }
+                ]
+              },
+              {
+                "url": "https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1",
+                "captured_reads": [
+                  {
+                    "kind": "page_text",
+                    "turn": 2
+                  }
+                ]
+              }
+            ],
+            "without_captured_read": [],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."
+          },
           "exit_code": 0,
           "elapsed_seconds": 21.01,
           "timing_scope": "Native CLI including startup; not measured Telegram latency",
@@ -644,6 +827,12 @@
             "No publishing or premature memory of an unchosen action"
           ],
           "reply": "بتدوروا على واقي شمس SPF 50؟ قولولنا بشرتكم محتاجة إيه، وإيه أهم حاجة بتدوروا عليها في واقي الشمس — هنساعدكم تختاروا الأنسب ليكم.",
+          "citation_review": {
+            "scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": [],
+            "without_captured_read": [],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."
+          },
           "exit_code": 0,
           "elapsed_seconds": 11.71,
           "timing_scope": "Native CLI including startup; not measured Telegram latency",
@@ -675,6 +864,12 @@
             "No app, watch or external messaging action"
           ],
           "reply": "Got it. I’ve noted the rehearsal move as planned, not posted: you’ll use the sunscreen enquiry prompt on an existing channel this week. We’ll review relevant sunscreen enquiries in the Sunday brief and compare them with the previous equivalent period; no results are recorded yet.",
+          "citation_review": {
+            "scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": [],
+            "without_captured_read": [],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."
+          },
           "exit_code": 0,
           "elapsed_seconds": 15.1,
           "timing_scope": "Native CLI including startup; not measured Telegram latency",
@@ -706,6 +901,12 @@
             "No unrelated web/app/calculator discovery or new action"
           ],
           "reply": "This week, the plan was to post the drafted Egyptian Arabic SPF 50 sunscreen enquiry prompt on an existing channel. It hasn’t been posted yet.\n\nTrack the number of relevant sunscreen enquiries this week, then compare it with the previous equivalent period before judging whether it made a difference. These are still rehearsal notes, not real results.",
+          "citation_review": {
+            "scope": "Captured native reads in this conversation; supplied facts and memory require manual review",
+            "citations": [],
+            "without_captured_read": [],
+            "claim_support": "Not evaluated. A captured read may be navigation, stale or about a different variant."
+          },
           "exit_code": 0,
           "elapsed_seconds": 7.55,
           "timing_scope": "Native CLI including startup; not measured Telegram latency",
