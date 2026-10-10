@@ -11,7 +11,7 @@ generated with the built-in image generation tool on 30 September 2026.
 [PNG](architecture.png): 2400 × 1380.
 [Editable SVG](architecture.svg): 1200 × 690. Render at 2× after edits.
 The white/slate/violet diagram shows the owner, Hermes, native Composio, four Iris tools,
-selected-product history, calculations and native Langfuse tracing.
+selected-product history, calculations and the Langfuse observability layer.
 
 The obsolete illustrative video and impact slide drafts were archived outside this repository.
-The [current demo storyboard](../docs/DEMO.md) describes the working recording still required.
+The [current status](../docs/STATUS.md) tracks the working recording still required.

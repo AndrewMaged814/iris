@@ -36,9 +36,16 @@ journey preserves its original replies, timings and counts and flags the unread 
 URL. This improves review visibility; it does **not** repair the agent's answer. No runtime
 behavior or live profile was changed in this follow-up.
 
-The [demo plan](DEMO.md#measure-the-task-before-claiming-impact) now defines a paired task
+The private production plan defines a paired task
 comparison including source checking and correction time. Controlled demo trials, merchant
 outcomes and hypothetical revenue opportunities have separate labels.
+
+The public README now uses generic competitor examples, explains the Composio authorization
+flow, and presents the Langfuse integration as an **observability layer**. The architecture
+SVG and PNG use the same wording. The production storyboard and measurement worksheet are
+preserved outside the public repository; public links to the internal plan are removed.
+The two pinned-runtime tracing patches remain documented under `patches/`; their token and
+owner/evaluation user-label checks still pass on the tested Hermes installation.
 
 ## What has been observed
 
@@ -103,7 +110,8 @@ trace still need verification. [Telegram evidence](EVALUATION.md#owner-telegram-
 
 ## Submission work still requiring evidence
 
-1. Record the **2–3 minute working demo** using the multi-source [storyboard](DEMO.md).
+1. Record the **2–3 minute working demo**: market briefing, competitor investigation,
+   store priority, requested copy and fresh-session recall.
 2. Verify a separate judge run/access route and time it; the owner bot stays restricted.
 3. Measure a real SME workflow against the manual task, including correction time, then
    prepare the impact slides. No verified time/cost/revenue improvement is claimed.

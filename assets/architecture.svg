@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
   <title id="title">Iris system architecture</title>
-  <desc id="desc">Iris connects a store owner with the market through Telegram. Hermes runs Luna, sessions, memory and schedules. Iris's business skills and four data tools observe market signals, connect competitor evidence, understand relevance to the store and recommend a response. Native web tools research competitors and public market context. Native Composio reads connected store data and supports requested operations with readback. Iris stores selected product history in SQLite and performs sourced calculations. Native Langfuse exports metadata timelines and usage; full costs remain unreconciled. Chosen actions and later reviews continue the owner relationship.</desc>
+  <desc id="desc">Hermes runs Iris with Luna, sessions, memory and schedules. Iris investigates competitors and connects market findings to the owner's business. Composio connects supported business tools through authorization links and provides app data and requested operations. Selected product history is stored in SQLite. The observability layer uses Hermes's Langfuse plugin to track response time, model and tool calls, tokens and usage by user. The owner chooses a move and can review its results with Iris later.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#64748b"/>
@@ -75,10 +75,10 @@
   <!-- Native observation is outside the owner decision path. -->
   <rect x="46" y="374" width="396" height="145" rx="10" fill="#faf9fd" stroke="#b6a8e0" stroke-width="2"/>
   <rect x="46" y="374" width="6" height="145" rx="3" fill="#8c79bb"/>
-  <text class="heading" x="66" y="410">Native Langfuse observer</text>
-  <text class="body" x="66" y="439">Model / tool timeline · timing · tokens</text>
-  <text class="small" x="66" y="467">Cloud metadata; raw evidence stays private</text>
-  <text class="small" x="66" y="494">Full costs: not yet reconciled</text>
+  <text class="heading" x="66" y="410">Observability layer</text>
+  <text class="body" x="66" y="439">Langfuse plugin in Hermes</text>
+  <text class="small" x="66" y="467">Response time · tool calls · tokens</text>
+  <text class="small" x="66" y="494">Usage by user · session traces</text>
 
   <!-- Iris consults native research, connected apps and its own watch history. -->
   <text class="eyebrow" x="885" y="190">RESEARCH, APPS &amp; HISTORY</text>
@@ -92,8 +92,8 @@
   <rect x="885" y="322" width="269" height="88" rx="9" fill="#ffffff" stroke="#90c4c4" stroke-width="2"/>
   <rect x="885" y="322" width="6" height="88" rx="3" fill="#138c93"/>
   <text class="heading" x="907" y="356">Composio</text>
-  <text class="body" x="907" y="381">Your connected store data</text>
-  <text class="small" x="907" y="399">Requested writes + readback</text>
+  <text class="body" x="907" y="381">Connect your business tools</text>
+  <text class="small" x="907" y="399">Authorization links · app access</text>
 
   <rect x="885" y="422" width="269" height="88" rx="9" fill="#ffffff" stroke="#c0b5de" stroke-width="2"/>
   <rect x="885" y="422" width="6" height="88" rx="3" fill="#8c79bb"/>

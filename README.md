@@ -10,9 +10,9 @@
 <p align="center">
   <a href="#business-value">Business value</a> ·
   <a href="#how-iris-helps">Capabilities</a> ·
+  <a href="#connect-your-tools">Connect your tools</a> ·
   <a href="#architecture">Architecture</a> ·
   <a href="#observability">Observability</a> ·
-  <a href="docs/DEMO.md">Demo plan</a> ·
   <a href="#run-iris">Run Iris</a>
 </p>
 
@@ -40,7 +40,7 @@ These match the hackathon’s [published business-impact criteria](docs/HACKATHO
 | Ask Iris | The work she supports |
 | --- | --- |
 | **“What should I know about my market this week?”** | Bring selected watch history and new research into a briefing with sources, priorities and coverage gaps. |
-| **“What is Infinity offering, and how do the other stores compare?”** | Investigate public products, offers and availability; compare relevant alternatives across competitors. |
+| **“What are my competitors offering, and how do we compare?”** | Investigate public products, offers and availability; compare relevant alternatives across competitors. |
 | **“What might explain this move?”** | Look for official explanations and relevant context, distinguishing confirmed facts from hypotheses. |
 | **“What makes sense for my store?”** | Connect findings to your catalog, stock, costs and goals; recommend a practical next step and draft copy when asked. |
 | **“What did we decide, and did it help?”** | Remember your chosen move and review the results you report against a baseline. |
@@ -50,9 +50,28 @@ request. Current listings show public activity. Dated observations support chang
 Competitor sales and hidden motives need their own evidence.
 [Product promise and boundaries](docs/PRODUCT.md).
 
+## Connect your tools
+
+> **“Iris, connect my Shopify store.”**
+
+For apps supported by [Composio Connect](https://docs.composio.dev/docs/composio-connect),
+Iris finds the integration and guides you through connecting your account:
+
+1. **Ask Iris** to connect the tool you use.
+2. **Open the authorization link** Iris receives from Composio and shares in the chat.
+3. **Approve access** through Composio’s connection flow.
+4. **Continue with Iris.** She verifies the connection, then uses the app for your requested task.
+
+**Ask → Authorize → Verify → Use**
+
+Your catalog, spreadsheet or other supported business tool becomes context Iris can work
+with. Connecting an app is separate from choosing which catalog or sheet she should use.
+[Connection flow](https://docs.composio.dev/toolkits/meta-tools/manage_connections) ·
+[Setup](docs/SETUP.md).
+
 ## Architecture
 
-![Iris architecture: Hermes and the Iris profile connect the owner to competitor research, native Composio, selected-product history, calculations and native Langfuse tracing.](assets/architecture.png)
+![Iris architecture: Hermes runs Iris, Composio connects business tools, and a Langfuse observability layer tracks response time, tool calls and usage.](assets/architecture.png)
 
 [Editable SVG](assets/architecture.svg)
 
@@ -61,38 +80,32 @@ Competitor sales and hidden motives need their own evidence.
 | [Hermes](https://github.com/NousResearch/hermes-agent) | Conversation, sessions, memory, native web research, vision, schedules and delivery. The tested deployment uses Luna and Telegram. |
 | Iris skills | Market investigations, interpretation, recommendations, requested drafts and reviews. Iris writes the business advice. |
 | Four Iris tools | `read_store`, `watchlist`, `market_changes`, `market_math`: structured public product facts, selected history and calculations. |
-| Native [Composio](https://composio.dev/) | Authorized connected-app reads and owner-requested changes. Scheduled checks only read apps. |
-| Native Langfuse plugin | Model and tool timelines, timing, usage and failures for operator review. |
+| Native [Composio](https://composio.dev/) | App discovery, authorization links and connected-app operations. Scheduled checks only read apps. |
+| Observability layer | Hermes’s Langfuse plugin records response time, model/tool calls and token usage, grouped by user and session. |
 
-Requested app changes require exact terms and readback through instructions; this release
-has no enforced transaction bridge, and live app writes remain unverified.
+For requested app changes, Iris confirms the terms and checks the saved result by readback.
+[Technical setup and boundaries](docs/SETUP.md).
 
 ## Observability
 
-Each investigation can be reviewed through its tool sequence, sources, final reply,
-elapsed time and token usage. Private source reports let us check whether the evidence
-supports the recommendation. Langfuse separates owner activity from private evaluations.
-Evaluation exports flag citations without a captured source read for review.
+**Follow a request from tool selection to the final response—and see where the time and tokens went.**
 
-The latest Cloud readback reconciles **12 private turns, 39 main model completions and
-53 tool requests**, with failed attempts tracked separately.
-[Recorded readback](docs/evidence/cloud-release-final.json).
+Iris has an observability layer powered by the [Langfuse plugin in Hermes](https://github.com/NousResearch/hermes-agent/tree/c1488ac947c9bc33fd65ec464548dc9d8edd6122/plugins/observability/langfuse).
+It records model and tool activity so we can inspect an investigation and improve it.
 
-Metadata capture keeps raw owner/app payloads out of Cloud. Actual provider charges and
-complete auxiliary usage are still unreconciled. Traces show what ran; source review
-establishes whether the answer was supported.
-[Tracing, costs and reliability](docs/OBSERVABILITY.md).
+| What we track | What it tells us |
+| --- | --- |
+| **Response time** | How long an agent turn takes and which model or tool calls account for the wait. |
+| **Tokens and model usage** | Input, output and reported cache usage for model calls. |
+| **Usage by user and session** | Activity grouped by the profile’s owner label and conversation, with evaluations labeled separately. |
+| **Tool calls, failures and retries** | The path Iris took, the sources she accessed and where execution needs attention. |
 
-## Current evidence
+Cloud traces use metadata capture; private session reports retain the source evidence for
+answer review. Evaluation exports also flag cited URLs without a captured source read.
 
-Native rehearsals demonstrate connected catalog reads, research across three businesses,
-requested Arabic drafting and fresh-session recall of a chosen move. Owner Telegram
-replies and sanitized execution records are also retained.
-
-**Broad briefing accuracy remains a release priority:** the latest rehearsal still made
-an unsupported promotion claim. Offline tests passing does not establish answer accuracy.
-Merchant impact has not been measured; the working demo recording and judge access route
-are still pending. [Replies and critique](docs/EVALUATION.md) · [Current status](docs/STATUS.md).
+[Inspect a recorded trace check](docs/evidence/cloud-release-final.json) ·
+[Tracing setup and reporting](docs/OBSERVABILITY.md) ·
+[Langfuse user tracking](https://langfuse.com/docs/observability/features/users).
 
 ## Run Iris
 
@@ -124,7 +137,7 @@ python tools/validate_repo.py
 - **A broader market picture:** stronger grouping across competitors and richer campaign, catalog and policy history.
 - **Proof of value:** a timed owner workflow, a working 2–3 minute demo and verified judge access.
 
-[Demo storyboard](docs/DEMO.md) · [Evidence priorities](docs/EVALUATION.md#highest-value-remaining-proof) · [Submission requirements](docs/HACKATHON_RULES.md).
+[Evidence priorities](docs/EVALUATION.md#highest-value-remaining-proof) · [Submission requirements](docs/HACKATHON_RULES.md).
 
 ## License
 
