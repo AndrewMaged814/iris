@@ -2,6 +2,30 @@
 
 Set up one Hermes profile for one store owner, then talk to Iris in Telegram.
 
+## Hosted judge demo
+
+Open [Iris in Telegram](https://t.me/IrisMarketWatcherBot) and tap Start. Mira Nile's demo
+Shopify catalog and selected competitors are already configured. No app connection or
+installation is needed to explore the hosted demo.
+
+The hosted profile explicitly enables `IRIS_PUBLIC_DEMO=true` and
+`TELEGRAM_ALLOW_ALL_USERS=true`, with one operator ID retained in `TELEGRAM_ALLOWED_USERS`.
+The plugin's pre-tool access guard gives visitors demo Shopify reads, public research,
+recommendations and drafts. It blocks other apps, app writes, connection management,
+watch changes and shared-memory writes before dispatch. Visitor reads use specific catalog
+and inventory tools; general GraphQL operations are unavailable to visitors.
+Visitor names and decisions stay in native per-chat conversations. The operator is identified
+from Hermes's trusted Telegram sender ID, never from a name or message.
+
+This mode is for a prepared demo shop. Normal installations remain private by default.
+Use the native platform command policy to reserve administrative commands for the operator.
+Set both `allow_admin_from` and `group_allow_admin_from` to that ID, with
+`user_allowed_commands: []` and `group_user_allowed_commands: []` under `platforms.telegram`.
+Set `auxiliary.background_review.enabled: false` to prevent automatic shared-memory updates
+from visitor conversations. The native `pre_gateway_dispatch` hook turns Telegram's `/start`
+ping into a greeting; Iris generates the welcome using the visitor's Telegram name.
+Verify a first visit from another Telegram account before calling external access tested.
+
 ## What you need
 
 - [Hermes](https://github.com/NousResearch/hermes-agent) with profile distributions and a model provider.
@@ -41,9 +65,10 @@ verifies the connection, discovers and reads candidate sources, and confirms the
 ambiguous fields with you. She saves its location and field meanings in Hermes memory.
 Connecting another app later follows the same process. Missing facts stay unknown.
 
-The owner-authorized demo exposes connected app reads and writes directly through Composio.
-There is no custom action allowlist, catalog adapter, Shopify fallback, offer ledger or native
-discount confirmation bridge. Iris uses requested terms and readback; this is agent instruction,
+The authenticated operator uses connected app reads and writes directly through Composio.
+The public demo guard restricts visitors separately. There is no catalog adapter, Shopify
+fallback, offer ledger or native discount confirmation bridge. Iris uses requested terms
+and readback; this is agent instruction,
 not an enforced discount policy. Scheduled market checks are instructed to read apps only.
 Supported operations depend on the toolkit and authorized account; connecting an app does not
 prove every operation works. No Composio developer API key is needed for this Connect setup.

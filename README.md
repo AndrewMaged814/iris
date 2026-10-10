@@ -8,6 +8,7 @@
 <p align="center">Iris connects competitor activity, market research and your store’s context<br>to help you see opportunities, understand threats and decide where to focus.</p>
 
 <p align="center">
+  <a href="https://t.me/IrisMarketWatcherBot"><strong>Try Iris on Telegram</strong></a> ·
   <a href="#business-value">Business value</a> ·
   <a href="#how-iris-helps">Capabilities</a> ·
   <a href="#connect-your-tools">Connect your tools</a> ·
@@ -15,6 +16,24 @@
   <a href="#observability">Observability</a> ·
   <a href="#run-iris">Run Iris</a>
 </p>
+
+## Try Iris
+
+**[Open Iris in Telegram](https://t.me/IrisMarketWatcherBot)** and tap **Start**.
+Explore **Mira Nile**, our Egyptian skincare demo shop, with Shopify already connected
+and competitors selected. You can start asking questions immediately.
+
+Try a quick market overview, then follow what interests you:
+
+> “What should I know about the competitors you follow?”
+>
+> “Show me our sunscreen and moisturizer. What’s available?”
+>
+> “How do our products compare, and where should I focus this week?”
+
+Iris uses your conversational name and keeps the context of your follow-ups. The public
+demo supports catalog reads, market research, recommendations and drafts. App changes
+and connection management are reserved for the operator.
 
 ## Business value
 
@@ -119,8 +138,8 @@ hermes -p iris setup
 ```
 
 Follow [setup](docs/SETUP.md) to install reader dependencies, connect the catalog and verify
-a reply. The [hosted bot](https://t.me/IrisMarketWatcherBot) is restricted to its configured
-owner. A separate judge route and fresh-machine setup under five minutes still need verification.
+a reply. The hosted demo above is ready to explore without installing Hermes or connecting
+your own store. Fresh-machine installation timing remains separate from hosted access.
 
 Local checks need no credentials or network:
 
@@ -135,7 +154,7 @@ python tools/validate_repo.py
 
 - **Reliable briefings:** resolve product/variant and source conflicts before drawing conclusions.
 - **A broader market picture:** stronger grouping across competitors and richer campaign, catalog and policy history.
-- **Proof of value:** a timed owner workflow, a working 2–3 minute demo and verified judge access.
+- **Proof of value:** a timed owner workflow and measured business outcomes.
 
 [Evidence priorities](docs/EVALUATION.md#highest-value-remaining-proof) · [Submission requirements](docs/HACKATHON_RULES.md).
 

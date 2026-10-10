@@ -36,7 +36,10 @@ not define Iris’s identity.
 
 ## Current boundaries
 
-One Iris serves one store owner, with access restricted to that owner.
+One Iris serves one store owner; normal installations restrict access to that owner.
+The hosted judge demo explicitly allows visitors to explore the connected Mira Nile demo
+shop. Each visitor has their own conversation; app changes, connections and shared memory
+remain reserved for the authenticated operator.
 Automatic watches cover selected product pages; wider research is on demand.
 History has an explicit observation window, and current pages do not establish past changes.
 Competitor sales, full market coverage and hidden motives remain unknown without evidence.

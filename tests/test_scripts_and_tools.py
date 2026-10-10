@@ -340,6 +340,8 @@ class Tools(unittest.TestCase):
         self.assertEqual(sorted(registered), sorted([(n, "iris", n) for n in
                                                      ("read_store", "watchlist", "market_changes", "market_math")]))
         self.assertEqual(hooks, [("pre_tool_call", self.plugin.browser_guard),
+                                ("pre_tool_call", self.plugin.demo_access_guard),
+                                ("pre_gateway_dispatch", self.plugin.demo_start),
                                 ("pre_tool_call", self.plugin.research_progress.before),
                                 ("post_tool_call", self.plugin.research_progress.after)])
         self.assertEqual(self_identities, [("iris.speaker", self.plugin.speaker_context)])
@@ -366,6 +368,82 @@ class Tools(unittest.TestCase):
             self.assertIn("Multiple speakers", self.plugin.speaker_context({}))
             session["HERMES_SESSION_PLATFORM"] = "local"
             self.assertEqual(self.plugin.speaker_context({}), "")
+
+    def test_public_demo_blocks_app_writes_and_shared_state_before_execution(self):
+        with mock.patch.object(self.plugin, "public_demo_enabled", return_value=True), \
+                mock.patch.object(self.plugin, "is_operator", return_value=False):
+            guard = self.plugin.demo_access_guard
+            for name, args in [
+                ("memory", {"action": "add", "content": "visitor name"}),
+                ("watchlist", {"operation": "remove", "name": "Rival"}),
+                ("mcp__composio__COMPOSIO_MANAGE_CONNECTIONS", {"toolkits": []}),
+                ("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                    {"tool_slug": "GOOGLESHEETS_SEARCH_SPREADSHEETS", "arguments": {}}]}),
+                ("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                    {"tool_slug": "SHOPIFY_UPDATE_PRODUCT", "arguments": {}}]}),
+                ("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                    {"tool_slug": "SHOPIFY_GRAPH_QL_QUERY", "arguments": {"query": "mutation { productDelete(id: 1) { id } }"}}]}),
+                ("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                    {"tool_slug": "SHOPIFY_GRAPH_QL_PRODUCTS", "arguments": {"operation": "create"}}]}),
+                ("mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS", {"tool_slugs": [{}]}),
+                ("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [{"tool_slug": {}}]}),
+                ("mcp__composio__COMPOSIO_SEARCH_TOOLS", {"queries": [{"use_case": "Search my email"}]})]:
+                with self.subTest(name=name, args=args):
+                    self.assertEqual(guard(name, args)["action"], "block")
+            for query in ('{ products(first: 2) { nodes { title } } }',
+                          'query Catalog { products(first: 2) { nodes { title } } }'):
+                self.assertEqual(guard("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                    {"tool_slug": "SHOPIFY_GRAPH_QL_QUERY", "arguments": {"query": query}}]})["action"], "block")
+            self.assertIsNone(guard("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                {"tool_slug": "SHOPIFY_GET_PRODUCTS_PAGINATED", "arguments": {"limit": 5}}]}))
+            self.assertIsNone(guard("watchlist", {"operation": "list"}))
+            self.assertEqual(guard("watchlist", {"operation": "note", "action": "list"})["action"], "block")
+            self.assertIsNone(guard("web_search", {"query": "competitor skincare Egypt"}))
+            self.assertEqual(guard("mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL", {"tools": [
+                {"tool_slug": "SHOPIFY_GET_PRODUCT", "arguments": {"connected_account_id": "other"}}]})["action"], "block")
+
+    def test_demo_operator_and_private_profiles_retain_native_operations(self):
+        for demo, operator in [(False, False), (True, True)]:
+            with mock.patch.object(self.plugin, "public_demo_enabled", return_value=demo), \
+                    mock.patch.object(self.plugin, "is_operator", return_value=operator):
+                self.assertIsNone(self.plugin.demo_access_guard("memory", {"action": "add"}))
+                self.assertIsNone(self.plugin.demo_access_guard(
+                    "mcp__composio__COMPOSIO_MANAGE_CONNECTIONS", {}))
+
+    def test_demo_start_rewrites_only_the_telegram_dm_platform_ping(self):
+        source = types.SimpleNamespace(platform="telegram", chat_type="dm")
+        event = types.SimpleNamespace(source=source, text="/start")
+        with mock.patch.object(self.plugin, "public_demo_enabled", return_value=True):
+            self.assertFalse(self.plugin.demo_start(event)["text"].startswith("/"))
+            for text in ("/start@IrisMarketWatcherBot judge", "/start demo"):
+                event.text = text
+                self.assertEqual(self.plugin.demo_start(event)["action"], "rewrite")
+            for text in ("/restart", "/startled", "check competitors"):
+                event.text = text
+                self.assertIsNone(self.plugin.demo_start(event))
+            event.text = "/start"
+            source.chat_type = "group"
+            self.assertIsNone(self.plugin.demo_start(event))
+            source.chat_type, source.platform = "dm", "discord"
+            self.assertIsNone(self.plugin.demo_start(event))
+        source.platform = "telegram"
+        with mock.patch.object(self.plugin, "public_demo_enabled", return_value=False):
+            self.assertIsNone(self.plugin.demo_start(event))
+
+    def test_public_demo_welcome_uses_visitor_name_and_preconfigured_shop(self):
+        context = types.ModuleType("gateway.session_context")
+        context.get_session_env = {"HERMES_SESSION_USER_NAME": "Salma"}.get
+        secret = types.ModuleType("agent.secret_scope")
+        secret.get_secret = lambda key, default=None: default
+        with mock.patch.dict(sys.modules, {"gateway.session_context": context, "agent.secret_scope": secret}), \
+                mock.patch.object(self.plugin, "public_demo_enabled", return_value=True), \
+                mock.patch.object(self.plugin, "is_operator", return_value=False):
+            section = self.plugin.speaker_context({})
+            self.assertIn('"Salma"', section)
+            self.assertIn("already connected", section)
+            self.assertIn("No Shopify account", section)
+            self.assertIn("don't write shared memory", section)
+            self.assertLessEqual(len(section), 1600)
 
     def test_composio_uses_native_operations_without_custom_policy(self):
         guard = self.plugin.browser_guard
@@ -531,6 +609,21 @@ class Doctor(unittest.TestCase):
                                          "AGENT_BROWSER_ARGS='--user-agent=IrisBot/1.0'\n")
         self.assertEqual(result, 1)
         self.assertIn("MISSING only the owner can talk to Iris", output)
+
+    def test_public_demo_requires_guard_and_operator_command_policy(self):
+        env = ("TELEGRAM_BOT_TOKEN=bot-token\nTELEGRAM_ALLOWED_USERS=123\n"
+               "TELEGRAM_ALLOW_ALL_USERS=true\nIRIS_PUBLIC_DEMO=true\n"
+               "AGENT_BROWSER_ARGS='--user-agent=IrisBot/1.0'\n")
+        result, output = self.run_doctor(env)
+        self.assertEqual(result, 1)
+        self.assertIn("MISSING public demo with an identified operator", output)
+        (self.home / "plugins/iris/__init__.py").write_text('ctx.register_hook("pre_tool_call", demo_access_guard)')
+        (self.home / "config.yaml").write_text("mcp_servers:\n  composio:\n    enabled: true\n"
+            "platforms:\n  telegram:\n    allow_admin_from: ['123']\n    user_allowed_commands: []\n"
+            "    group_allow_admin_from: ['123']\n    group_user_allowed_commands: []\n"
+            "auxiliary:\n  background_review:\n    enabled: false\n")
+        result, output = self.run_doctor(env)
+        self.assertEqual(result, 0, output)
 
     @unittest.skipUnless(importlib.util.find_spec("dotenv"), "Hermes' python-dotenv is needed for parsing")
     def test_wildcard_is_not_an_owner_allowlist(self):

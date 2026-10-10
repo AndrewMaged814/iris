@@ -19,6 +19,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 CASES = [
+    {"id": "sme-public-judge-start", "isolated_only": True,
+     "evidence_mode": "Public-demo visitor rehearsal; private native CLI, live demo Shopify reads, no Telegram delivery",
+     "prompt": "Hi Iris! I'm Salma. What can I do here?",
+     "expected": ["Welcomes Salma to preconfigured Mira Nile demo; useful starter questions",
+                  "No request for Shopify account, connection or operator identity"],
+     "followups": [
+         {"prompt": "Show me the demo shop's sunscreen and moisturizer: their prices, sizes and availability. I don't have a Shopify account.",
+          "expected": ["Uses preconfigured demo Shopify through native Composio; no account setup",
+                       "Reads actual catalog fields, keeps availability conflicts visible"]},
+         {"prompt": "Which shop am I exploring, and what should you call me?",
+          "expected": ["Mira Nile and Salma from this conversation; no shared visitor-name memory write"]}]},
     {"id": "sme-natural-overview-and-stock", "isolated_only": True,
      "evidence_mode": "Private native conversation; saved watch history and explicitly supplied product facts",
      "prompt": "Hi Iris",
@@ -429,13 +440,14 @@ def main():
                     help="Test native Hermes optional execution guidance in isolation")
     ap.add_argument("--reasoning-effort", choices=("low", "medium", "high"),
                     help="Test native reasoning effort in isolation without changing model/provider")
+    ap.add_argument("--public-demo", action="store_true", help="Rehearse public demo visitor access in isolation")
     ap.add_argument("--resume-session", help="Copy and resume one existing session in isolation; refresh its prompt")
     ap.add_argument("--image-dir", type=Path, help="Operator fixture directory for native CLI image attachments")
     ap.add_argument("--snapshot-input", type=Path, help="Private saved native evidence for the frozen composition cases")
     ap.add_argument("--transport", choices=("chat", "oneshot"), default="chat",
                     help="Native chat honors configured turn limits and records full tool timings")
     args = ap.parse_args()
-    if (args.instructions_from or args.extract_backend or args.search_backend or args.execution_guidance or args.reasoning_effort or args.resume_session or args.snapshot_input) and not args.isolate:
+    if (args.instructions_from or args.extract_backend or args.search_backend or args.execution_guidance or args.reasoning_effort or args.resume_session or args.snapshot_input or args.public_demo) and not args.isolate:
         ap.error("Candidate instructions/backend/session require --isolate")
     import yaml  # available in Hermes' Python; no evaluation framework dependency
     cfg = yaml.safe_load((args.profile_home / "config.yaml").read_text())
@@ -508,6 +520,8 @@ def main():
             set_key(home / ".env", "IRIS_DATA_DIR", str(home / "iris"))
             set_key(home / ".env", "HERMES_HOME", str(home))
             set_key(home / ".env", "HERMES_LANGFUSE_ENV", "evaluation")
+            if args.public_demo:
+                set_key(home / ".env", "IRIS_PUBLIC_DEMO", "true")
         env.update(HERMES_HOME=str(home), IRIS_DATA_DIR=str(home / "iris"))
         env.pop("TELEGRAM_BOT_TOKEN", None)
         env["HERMES_LANGFUSE_ENV"] = "evaluation"
@@ -534,7 +548,9 @@ def main():
                 "auto": "auto", "true": True, "false": False}[args.execution_guidance]
         if args.reasoning_effort:
             cfg.setdefault("agent", {})["reasoning_effort"] = args.reasoning_effort
-        if args.extract_backend or args.search_backend or args.execution_guidance or args.reasoning_effort:
+        if args.public_demo:
+            cfg.setdefault("auxiliary", {}).setdefault("background_review", {})["enabled"] = False
+        if args.extract_backend or args.search_backend or args.execution_guidance or args.reasoning_effort or args.public_demo:
             (home / "config.yaml").write_text(yaml.safe_dump(cfg), encoding="utf-8")
     manifest = {
         "started_at": datetime.now(timezone.utc).isoformat(),

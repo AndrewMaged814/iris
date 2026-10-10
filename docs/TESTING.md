@@ -87,6 +87,19 @@ Its bounded readback covers the last six hours and refuses truncated
 responses. `check_workflow_cloud.py` retains its existing operator filename; the retired
 workflow engine is no longer shipped.
 
+### Public judge entry
+
+```sh
+python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris --isolate \
+  --public-demo --output PRIVATE_UNUSED_DIRECTORY --cases sme-public-judge-start
+python tools/check_research_hooks.py --profile-home PREPARED_DEMO_PROFILE --public-demo
+```
+
+The rehearsal tests the preconfigured shop, real catalog reads and conversational name
+recall without Telegram delivery. The dispatch check uses a mock provider to verify visitor
+blocks, operator access, native Start rewriting, administrative-command policy and distinct
+session keys. A separate Telegram account must still verify actual first-visit delivery.
+
 ## Publishable evidence and live verification
 
 ```sh

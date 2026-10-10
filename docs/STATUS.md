@@ -7,7 +7,7 @@ connected into investigations, priorities, drafts and remembered decisions in Te
 ## Release preparation
 
 - Hermes, **Luna** and native Composio remain the stack. No new research engine or paid reviewer.
-- Distribution **1.2.0** / Iris plugin **1.3.1**; the rejected investigation controller and graph trials
+- Distribution **1.2.1** / Iris plugin **1.3.2**; the rejected investigation controller and graph trials
   are removed from the shipped profile. Four Iris tools remain.
 - Market-watch **1.8.10** distinguishes casual overviews from requested detailed briefings,
   avoids irrelevant own-catalog reads, binds stock to its exact product/variant, and checks
@@ -15,7 +15,7 @@ connected into investigations, priorities, drafts and remembered decisions in Te
 - The Cloud checker separates failed attempts from successful model completions and retains
   unknown failure usage. Custom Langfuse patches and their patch-dependent checker are removed;
   native session grouping and evaluation environments replace custom user labels.
-- **117 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
+- **122 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
   The existing GitHub Actions workflow runs the suite, validator and shell syntax check.
 - README, architecture, setup and evidence/observability guides are consolidated.
   Obsolete planning diaries, rejected engines, repeated trial exports and old video/slide
@@ -92,14 +92,44 @@ counts, canonical totals and evaluation labels matching.
 
 ## Live profile updated
 
-Updated at **15:28 Cairo on 10 October**. The 24 distribution-owned runtime files match the
+### Public judge demo — 17:54 Cairo
+
+[@IrisMarketWatcherBot](https://t.me/IrisMarketWatcherBot) now explicitly enables public demo
+access to the preconfigured Mira Nile Shopify shop. The repository and installed plugin,
+manifest and distribution hashes match. The shared gateway restarted and is active; the
+installed-profile doctor passes. Credentials, OAuth, memory and scheduled jobs are preserved.
+The affected files and both SQLite databases were backed up before deployment.
+
+Hermes's native incoming-message hook rewrites Telegram's `/start` ping into a greeting
+that Iris answers herself. Native dispatch checks verify demo catalog reads can execute,
+while visitor app changes, connection management, other apps, watch changes and shared
+memory writes are blocked before the provider. The configured operator retains native app
+access. Native DM/group command policies reserve administrative commands for that operator;
+automatic shared-memory background review is disabled. Native authorization admits an
+unknown Telegram visitor; the native session keys differ between visitors.
+
+A private three-turn visitor rehearsal greeted Salma, read sunscreen/moisturizer through
+native Composio without requesting a Shopify account, and retained her name in that chat.
+The final turns took 9.53s, 20.06s and 7.23s including CLI startup. A repeat had incorrectly
+called the moisturizer unavailable from quantity 0 despite untracked inventory. That failure
+is retained in the evidence. SOUL/setup 1.1.1 now explain the tracking field, and the final
+rehearsal reports stock untracked. It also included an unrequested body lotion: relevance
+still needs attention. This establishes the entry/catalog workflow,
+not broad market-briefing accuracy or external Telegram delivery. A fresh 10.57s welcome
+rehearsal used the native sender name Nour without that name appearing in the prompt.
+A separate Telegram account still needs to verify the actual Start/reply experience.
+[Judge demo verification](evidence/judge-demo.json).
+
+### Earlier release deployment — 15:28 Cairo
+
+The 24 distribution-owned runtime files matched the
 release bundle hashes. Backup: `~/iris-backups/publish-runtime-20261010T122821Z`.
 Configuration, environment, OAuth, memory and job files were unchanged; the owner database
 remained 86 sessions/1,653 messages through deployment and verification. The retired
 controller file and its bytecode were removed after backup.
 
 The existing shared gateway restarted successfully and is active as PID 428439. The profile
-doctor passes, owner-only access remains configured, native tool discovery/dispatch passes,
+doctor passed, owner-only access was configured, native tool discovery/dispatch passed,
 and completed-result reuse plus failed-search retry still work. Luna's configuration is
 preserved. Native Composio OAuth connectivity passes after restart; the server discovers
 11 tools and the profile restricts the exposed Connect inventory to its five selected tools. [Deployment readback](evidence/deployment.json).
@@ -123,7 +153,7 @@ trace still need verification. [Telegram evidence](EVALUATION.md#owner-telegram-
 
 1. Record the **2–3 minute working demo**: market briefing, competitor investigation,
    store priority, requested copy and fresh-session recall.
-2. Verify a separate judge run/access route and time it; the owner bot stays restricted.
+2. Verify the public judge bot's first visit from a separate Telegram account and time it.
 3. Measure a real SME workflow against the manual task, including correction time, then
    prepare the impact slides. No verified time/cost/revenue improvement is claimed.
 4. Check the registered participant's submission round and upload the required artifacts.

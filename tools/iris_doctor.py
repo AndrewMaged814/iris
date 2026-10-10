@@ -45,15 +45,34 @@ def main() -> int:
     good &= check("Telegram bot token", bool(env.get("TELEGRAM_BOT_TOKEN")), "set TELEGRAM_BOT_TOKEN in .env")
     owner_ids = [part.strip() for part in env.get("TELEGRAM_ALLOWED_USERS", "").split(",") if part.strip()]
     public_access = env.get("TELEGRAM_ALLOW_ALL_USERS", "").strip().lower() in {"true", "1", "yes"}
-    good &= check("only the owner can talk to Iris",
-                  len(owner_ids) == 1 and owner_ids[0] != "*" and not public_access,
-                  "set one owner ID in TELEGRAM_ALLOWED_USERS and TELEGRAM_ALLOW_ALL_USERS=false")
+    public_demo = env.get("IRIS_PUBLIC_DEMO", "").strip().lower() in {"true", "1", "yes"}
+    if public_demo:
+        plugin_text = (home / "plugins/iris/__init__.py").read_text() if (home / "plugins/iris/__init__.py").exists() else ""
+        good &= check("public demo with an identified operator and visitor access guard",
+                      public_access and len(owner_ids) == 1 and owner_ids[0] != "*"
+                      and 'ctx.register_hook("pre_tool_call", demo_access_guard)' in plugin_text,
+                      "verify the demo guard, one operator ID and TELEGRAM_ALLOW_ALL_USERS=true")
+    else:
+        good &= check("only the owner can talk to Iris",
+                      len(owner_ids) == 1 and owner_ids[0] != "*" and not public_access,
+                      "set one owner ID in TELEGRAM_ALLOWED_USERS and TELEGRAM_ALLOW_ALL_USERS=false")
     import yaml
     try:
         cfg = yaml.safe_load((home / "config.yaml").read_text()) or {}
     except (OSError, yaml.YAMLError):
         cfg = {}
     composio = cfg.get("mcp_servers", {}).get("composio", {})
+    if public_demo:
+        telegram_policy = cfg.get("platforms", {}).get("telegram", {})
+        good &= check("public demo administrative commands reserved for operator",
+                      telegram_policy.get("allow_admin_from") == owner_ids
+                      and telegram_policy.get("user_allowed_commands") == []
+                      and telegram_policy.get("group_allow_admin_from") == owner_ids
+                      and telegram_policy.get("group_user_allowed_commands") == [],
+                      "reserve DM and group administrative commands for the operator")
+        good &= check("public demo automatic shared-memory review disabled",
+                      cfg.get("auxiliary", {}).get("background_review", {}).get("enabled") is False,
+                      "set auxiliary.background_review.enabled: false for the shared demo")
     good &= check("Composio enabled", composio.get("enabled") is True,
                   "authorize with Hermes mcp login composio and enable the server")
     good &= check("browser user agent", any(arg.strip().startswith("--user-agent=IrisBot")

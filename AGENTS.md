@@ -18,6 +18,10 @@
 - Keep the owner profile restricted to its one Telegram ID. Check both `TELEGRAM_ALLOWED_USERS`
   and `TELEGRAM_ALLOW_ALL_USERS`; a prompt-level owner label is not an access control. Do not
   expose the owner's connected apps to untrusted users.
+- The owner-authorized hosted judge demo is an explicit exception: `IRIS_PUBLIC_DEMO=true`
+  with public Telegram access, one authenticated operator, visitor access restricted by the
+  pre-tool hook to demo Shopify reads, and visitor names/choices kept in native conversations.
+  Do not expose other apps, shared memory changes or connection management to visitors.
 - For code, instruction, evaluation or deployment changes, use the project Codex skill at
   `.agents/skills/iris-development/SKILL.md`. The root `skills/` directory is shipped to Iris;
   it is not a Codex workflow library.

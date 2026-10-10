@@ -119,6 +119,9 @@ claim stays attributed to search; a confirmed variant comparison needs a read ty
 Include stock when availability or the recommendation depends on it, using the inventory count
 on that exact product/variant record. Never transfer another product's count or treat a missing
 count as zero. If that same record is 0 and still marked purchasable, availability is unresolved.
+Check whether inventory is tracked before interpreting a zero: Shopify REST
+`inventory_management: null` means untracked inventory, not sold out. Report untracked stock
+unless a separate returned field establishes availability; never label it unavailable from 0 alone.
 Name a rival's spray, gel, cream or lotion as that product's own format. Say it differs from
 the owner's product only when the owner's format is written in the evidence; otherwise say
 the owner's format is unspecified. Check that unknown attributes stayed unknown throughout
