@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Checks that keep the repo honest. Runs on the files git tracks (what actually installs).
+"""Checks that keep the repo honest. Covers tracked and non-ignored untracked source files.
 
 - every skill has a name matching its folder and a description starting with "Use when"
 - skill bodies stay under 200 lines and linked references exist
 - no secrets or private paths in tracked files
 - no model or provider pinned in config.yaml
-- exactly the three agreed history tools are registered
+- exactly the history and calculation tools are registered
 """
 import re
 import subprocess
@@ -13,13 +13,13 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SECRET = re.compile(r"(shpat_|shpss_)[A-Za-z0-9]{8,}|\b\d{8,10}:[A-Za-z0-9_-]{30,}\b|-----BEGIN [A-Z ]*PRIVATE KEY|/home/[a-z]+/")
-TOOLS = {"read_store", "watchlist", "market_changes"}
+SECRET = re.compile(r"(shpat_|shpss_)[A-Za-z0-9]{8,}|\b\d{8,10}:[A-Za-z0-9_-]{30,}\b|-----BEGIN [A-Z ]*PRIVATE KEY|/home/[a-z]+/|\bsk-lf-[a-f0-9-]{20,}|\bgh[pousr]_[A-Za-z0-9]{30,}|\bgithub_pat_[A-Za-z0-9_]{30,}|\bsk-(?:proj-|ant-)?[A-Za-z0-9_-]{32,}")
+TOOLS = {"read_store", "watchlist", "market_changes", "market_math"}
 
 
 def tracked() -> list[Path]:
     try:
-        out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout
+        out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT, capture_output=True, text=True, check=True).stdout
         files = [ROOT / line for line in out.splitlines() if line]
         if files:
             return files
@@ -58,7 +58,7 @@ def main() -> int:
     plugin = (ROOT / "plugins" / "iris" / "__init__.py").read_text()
     handlers = set(re.findall(r'"(\w+)": \w+_tool', plugin))
     if handlers != TOOLS:
-        problems.append(f"plugin tools {sorted(handlers)} differ from the agreed three")
+        problems.append(f"plugin tools {sorted(handlers)} differ from the declared tool set")
     for p in problems:
         print("FAIL", p)
     print("ok" if not problems else f"{len(problems)} problem(s)")

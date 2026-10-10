@@ -7,13 +7,27 @@ need owner screenshots; search snippets do not prove a price or offer.
 
 ## Beauty and personal care
 
-Check pack size, form, skin type and advertised offers. A matching size and category is enough
-to compare price; don't list every unconfirmed attribute. Compare price per ml when both sizes
-are confirmed. Keep bundles and conditional offers separate from a single item's base price.
-Equal concentration, formulation or efficacy needs evidence on both sides.
+Assess product category and application format from titles/descriptions and owner-confirmed
+facts first. Roll-on, spray, stick and squeeze-tube gel can all be sunscreens; a confirmed
+material format difference makes an alternative comparison, even when SPF and size match.
+Lead with that distinction before discussing price. A generic sunscreen title does not prove
+non-roll-on; the owner's explicit confirmation can establish their own format.
+If that distinction already answers whether to match price, do not fetch images or chase pack
+size merely to reject a direct match. If asked for size or a useful normalized comparison,
+resolve the relevant quantity; use native vision only when needed text is missing.
+Do not end that format-based verdict by asking for size before a price response: it would
+imply size confirmation can erase the known format difference.
+Report advertised item prices across alternatives as market references when useful, without
+implying that the owner should match them. Compare price per ml only with confirmed comparable
+volume units; do not convert grams to ml without evidence. Keep conditional baskets separate.
+Relevant same-size, same-format listings support a listed-price comparison without proving
+identical formulation or efficacy. Don't list every unconfirmed attribute or require identical
+skin suitability before reporting that price difference; equal efficacy itself needs evidence.
 Competitors: brand stores, beauty retailers, pharmacies and marketplaces; social sellers need screenshots.
 Example: two confirmed 50 ml sunscreens at EGP 320 and EGP 360 differ by EGP 40 per bottle;
 an advertised multi-buy needs its own basket comparison.
+Example: a roll-on at EGP 216 is an alternative to the owner's confirmed non-roll-on sunscreen
+at EGP 320; checking its size is unnecessary just to say it is not a direct format match.
 
 ## Fashion and shoes
 

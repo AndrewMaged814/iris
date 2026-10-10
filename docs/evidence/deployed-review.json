@@ -1,0 +1,178 @@
+{
+  "date": "2026-10-10",
+  "scope": "Inspect actual deployed profile, evaluate isolated copies, preserve owner state; no code fix or rollout.",
+  "deployment": {
+    "repo_runtime_files_matched": [
+      "SOUL.md",
+      "plugins/iris/__init__.py",
+      "plugins/iris/iris_changes.py",
+      "plugins/iris/iris_delivery.py",
+      "plugins/iris/iris_feeds.py",
+      "plugins/iris/iris_investigation.py",
+      "plugins/iris/iris_math.py",
+      "plugins/iris/iris_research.py",
+      "plugins/iris/iris_watchlist.py",
+      "skills/draft-move/SKILL.md",
+      "skills/draft-move/references/voice.md",
+      "skills/market-watch/SKILL.md",
+      "skills/market-watch/references/briefings.md",
+      "skills/market-watch/references/categories.md",
+      "skills/market-watch/references/motives.md",
+      "skills/market-watch/references/signals.md",
+      "skills/setup/SKILL.md",
+      "skills/setup/references/finding-competitors.md",
+      "skills/weekly-brief/SKILL.md"
+    ],
+    "repo_runtime_files_differ": [
+      "config.yaml"
+    ],
+    "config_difference_expected": "Existing live config was preserved at deployment.",
+    "model": "gpt-6-luna",
+    "gateway": "active",
+    "telegram_polling": "Healthy after 09:43 UTC restart; no post-restart owner turn observed.",
+    "owner_restricted": {
+      "allow_all_users": "false",
+      "configured_owner_count": 1,
+      "matches_expected_owner": true
+    },
+    "controller_enabled": false,
+    "runtime_hashes_unchanged_during_check": true,
+    "source_state_before": {
+      "sessions": 84,
+      "messages": 1629
+    },
+    "source_state_after": {
+      "sessions": 84,
+      "messages": 1629
+    }
+  },
+  "offline": {
+    "discovered": 139,
+    "skipped": 2,
+    "result": "OK",
+    "skip_reason": "Optional graph dependency unavailable locally",
+    "validator": "ok"
+  },
+  "native_contracts": {
+    "completed_duplicate_returns_cached_result": "passed",
+    "new_same_site_query_runs": "passed",
+    "failed_identical_query_reaches_provider_again": "passed; two executions",
+    "provider_dispatch_mocked": true,
+    "actual_network_tested_in_contract": false
+  },
+  "frozen": {
+    "packet_sha256": "749cced585e7f067ec04d677fee203e6fda56141874e7983482c85f65ffec120",
+    "same_previous_original_snapshot_prompt": true,
+    "derived_availability_reminder_added": false,
+    "original_packet_currency_limit": "Common controlled EGP assumption as in previous batch, not new merchant evidence.",
+    "completed": 3,
+    "repetitions": [
+      {
+        "elapsed_seconds": 36.13,
+        "main_model_calls": 6,
+        "exit_code": 0,
+        "tool_requests": 5,
+        "search_requests": 0,
+        "research_blocks": 0
+      },
+      {
+        "elapsed_seconds": 34.41,
+        "main_model_calls": 4,
+        "exit_code": 0,
+        "tool_requests": 6,
+        "search_requests": 0,
+        "research_blocks": 0
+      },
+      {
+        "elapsed_seconds": 39.82,
+        "main_model_calls": 4,
+        "exit_code": 0,
+        "tool_requests": 6,
+        "search_requests": 0,
+        "research_blocks": 0
+      }
+    ],
+    "material_moisturizer_conflict_retained": 3,
+    "owner_format_unspecified_retained": 3,
+    "unrequested_customer_drafts": 0,
+    "numeric_comparison_direction_correct": 3,
+    "previous_candidate_material_conflict_retained": 0,
+    "wording_limit": "Some phrases deny a format match rather than explicitly withholding it, despite explicitly stating owner format is unspecified.",
+    "other_omission": "Third replay omits the unrelated body-lotion conflict; requested moisturizer conflict is retained.",
+    "web_or_app_reads": false
+  },
+  "current_source": {
+    "first_briefing": {
+      "elapsed_seconds": 133.33,
+      "main_model_calls": 14,
+      "exit_code": 0,
+      "tool_requests": 28,
+      "search_requests": 10,
+      "research_blocks": 0
+    },
+    "completed_journey_turns": 6,
+    "journey_observed_case_seconds": 217.05,
+    "journey_main_calls": 28,
+    "journey_tool_requests": 46,
+    "extra_unknown_format_case_pass": true,
+    "material_error": {
+      "claim": "Both Mira Nile Sunscreen SPF 50 and Mira Nile Daily Face Moisturizer have zero inventory while available for sale.",
+      "native_catalog_observation": {
+        "Mira Nile Sunscreen SPF 50": {
+          "inventoryQuantity": 20,
+          "availableForSale": true
+        },
+        "Mira Nile Daily Face Moisturizer": {
+          "inventoryQuantity": 0,
+          "availableForSale": true
+        }
+      },
+      "correction": "Priority follow-up acknowledges sunscreen error and says 20; no fresh catalog read.",
+      "assessment": "Incorrect first briefing; later correction does not erase the original error. Correct source fields were available.",
+      "exact_internal_cause": "Unproved; observed product/fact association failure."
+    },
+    "invalid_app_requests": [
+      "String entry inside Composio tools array; validation rejects it",
+      "Invented READ_STORE_NOT_AVAILABLE slug; tool-not-found result"
+    ],
+    "writes": "Reviewed GraphQL operations are queries; no app mutation, watch write or publication requested. Private choice memory only.",
+    "good_behavior": [
+      "Both product families and three businesses covered",
+      "Unknown owner format retained",
+      "Conflicting prices and ambiguous variant-size associations retained",
+      "Wider Infinity offer mechanics researched with exclusions and unreliable timing caveats",
+      "History, observed promotions and motive hypotheses distinguished",
+      "Requested Arabic draft, choice memory and fresh-session recall complete"
+    ]
+  },
+  "observability": {
+    "frozen_sessions": 6,
+    "frozen_counts_usage_labels_match": true,
+    "live_tools_match_all_sessions": true,
+    "live_evaluation_labels_match": true,
+    "flagged_session": "20261010_100818_3b5a3d",
+    "native_successful_calls": 1,
+    "cloud_attempt_generations": 2,
+    "verified_explanation": "Token-rate-limit failure (ERROR generation with empty usage), then successful completion. Native CLI counts successful call; Cloud records both attempts.",
+    "auxiliary_title_generation": "Also rate-limited; no complete auxiliary charge estimate.",
+    "checker_changed": false,
+    "canonical_check_limitation": "Requires every generation to have usage; empty failed-attempt usage triggers failure.",
+    "context_warnings": "Native OpenTelemetry context detach warnings persist.",
+    "actual_charges": "unknown"
+  },
+  "verdict": {
+    "deployment_healthy": true,
+    "frozen_material_omission_improved_in_this_batch": true,
+    "broad_first_briefing_accepted": false,
+    "next_verified_gap": "Keep stock quantities attached to their exact product in the final market briefing; account for failed model attempts separately from successful completions.",
+    "limits": "Small sample, current-source/cache/model variation; not causal efficiency/cost comparison, Telegram delivery, merchant outcome or production reliability measurement."
+  },
+  "artifacts": [
+    "deployed-check.json",
+    "deployed-frozen.json",
+    "deployed-live.json",
+    "deployed-frozen-cloud.json",
+    "deployed-live-cloud.json",
+    "deployed-cloud-retry.json"
+  ]
+}

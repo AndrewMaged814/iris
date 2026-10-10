@@ -1,0 +1,32 @@
+{
+  "session": "20261010_100818_3b5a3d",
+  "native_log": "One rate-limit failure followed by successful retry; native api_calls counts one successful completion.",
+  "generations": [
+    {
+      "id": "fa8f6515a7e3bba0",
+      "name": "LLM call 1",
+      "type": "GENERATION",
+      "level": "DEFAULT",
+      "startTime": "2026-10-10T10:08:24.911000Z",
+      "endTime": "2026-10-10T10:08:27.462000Z",
+      "usageDetails": {
+        "input": 3,
+        "output": 154,
+        "cache_creation_input_tokens": 11051,
+        "reasoning_tokens": 91,
+        "total": 11208
+      }
+    },
+    {
+      "id": "8e8ac38df937d00c",
+      "name": "LLM call 1",
+      "type": "GENERATION",
+      "level": "ERROR",
+      "startTime": "2026-10-10T10:08:21.211000Z",
+      "endTime": "2026-10-10T10:08:21.903000Z",
+      "usageDetails": {}
+    }
+  ],
+  "raw_prompt_output_requested": false,
+  "actual_charge": "unknown"
+}

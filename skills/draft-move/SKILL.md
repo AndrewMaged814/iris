@@ -1,12 +1,12 @@
 ---
 name: draft-move
-description: Use when the owner asks for a draft, response offer, offer creation or deactivation, product-page review, or action follow-up.
-version: 1.1.0
+description: Use when drafting, creating or deactivating response offers, reviewing product pages, or recording a newly chosen move. Reported action results use weekly-brief directly.
+version: 1.3.2
 ---
 
 # Draft the move
 
-1. Read the confirmed connected catalog through Composio (setup skill) for exact product name,
+1. Reuse fresh confirmed product facts; read only missing needed fields through Composio (setup skill) for exact product name,
    variant, price, currency, stock and cost when available, sizes and what the product really does. Use only true facts about the owner's product.
 2. An explicit language request wins; otherwise use the saved customer-facing language and tone
    (check USER.md), even when the conversation uses another language. If you
@@ -17,6 +17,9 @@ version: 1.1.0
    For an acknowledged demo catalog, complete a requested preview from the listed facts;
    retain catalog provenance internally and keep simulated business results explicit. A preview
    does not verify a real formulation, publish anything or claim a business outcome.
+   When the owner wants a listing in the manner of a competitor page already named, read that
+   page for which facts it states, then draft from the owner's catalog. Ask only for facts the
+   catalog does not have, and show the draft before publishing. Do not copy that store's sentences.
    A draft is marketing, not terms and conditions: open with the customer's benefit or the deal,
    keep it to 2–4 lines, and put required conditions (dates, code, "one per customer") in one short
    closing line. Emojis only if the owner's saved tone allows them.
@@ -73,6 +76,7 @@ the relevant current facts and terms without reopening the whole recommendation 
 2. Ask for one success measure if missing: qualified enquiries, orders, or minutes of work saved.
    Agree to review it in the existing Sunday brief. Do not promise an extra off-schedule reminder.
 3. If the owner supplies results, record them as owner-reported, with the measurement period.
-   Ask for a missing period or currency rather than guessing. Gross revenue isn't profit or
-   incremental revenue; causal impact needs a baseline or comparison and costs.
+   Before judging the move, read `../weekly-brief/SKILL.md` and follow its action review process:
+   baseline, observed difference, then one next decision and its measure. Save a new chosen
+   move only after the owner's confirmation; a recommendation is not a commitment.
 4. A claimed result for a synthetic exercise remains simulated. Never present it as a real SME result.

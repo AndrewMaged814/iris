@@ -1,6 +1,6 @@
 name: iris
-version: 1.1.0
-description: "Your AI market analyst in Telegram. Iris watches the competitor products you choose. She investigates new prices, offers, and stock changes, checks them against your own products and costs, and recommends your next move. Then she can help you make it."
+version: 1.2.0
+description: "Your AI market watcher in Telegram. Iris connects competitor activity, public market research and your store's context so you can see what matters, investigate opportunities and choose your next move."
 author: "Andrew Maged"
 hermes_requires: ">=0.21.3"
 repository: "https://github.com/AndrewMaged814/iris"

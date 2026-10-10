@@ -1,0 +1,79 @@
+{
+  "purpose": "Repeatable live market-watcher journey; grade replies and traces manually",
+  "scenario": {
+    "store": "Owner-confirmed connected Mira Nile demo catalog; fictional products/prices read through native Composio",
+    "product_families": ["sunscreen", "daily face moisturizer"],
+    "competitor_roster": ["Infinity Clinic Pharma", "Nut Botanicals", "Cairo Drop"],
+    "source_types": ["product listing", "campaign or collection", "dated watch history", "relevant official context"],
+    "source_status": "URLs below are research leads, not verified current prices or offers",
+    "source_leads": [
+      "https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin",
+      "https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1",
+      "https://infinityclinicpharma.com/ar/collections/infinity-naturals?page=2",
+      "https://nutbotanicals.com/products/eternity-spring-niacinamide-and-hyaluronic-face-cream-50ml",
+      "https://cairodrop.com/products/femme-naturelle-moisturizing-cream-50ml"
+    ],
+    "coverage": "Three businesses and two families are evaluation targets, not product limits",
+    "owner_goal_provenance": "Controlled goal for rehearsal; no actual campaign or business outcome implied"
+  },
+  "case": {
+    "id": "sme-market-brief-journey",
+    "isolated_only": true,
+    "evidence_mode": "Live connected catalog and public research; controlled owner goal/choice; memory only in private profile",
+    "prompt": "Iris, I'm planning this week for my Mira Nile skincare store. Give me a market briefing for sunscreen and daily face moisturizers. Look at Infinity Clinic Pharma, Nut Botanicals and Cairo Drop. Read our connected catalog and current public sources. What should I pay attention to, and where do we stand? My goal is more useful enquiries this week, and I have ten minutes for an existing-channel post. This is a rehearsal: research and drafts only; don't change apps, watches or publish anything.",
+    "expected": [
+      "Own facts are read through native Composio and retain their field meanings",
+      "Covers both product families and three businesses, or states exactly what was verified and inaccessible",
+      "One consolidated market picture with sources/dates, meaningful product distinctions and store relevance",
+      "Current listing facts stay separate from changes supported by actual dated observations",
+      "No unsupported competitor performance, demand, strategy, price equivalence or variant association",
+      "Research follows relevant leads and stops at sufficient evidence or precise coverage gaps; no app/watch writes"
+    ],
+    "followups": [
+      {
+        "prompt": "How is Infinity doing right now across the products you checked? Go deeper: is this an isolated offer or a broader campaign? What do we know, and what might explain it?",
+        "expected": [
+          "Reuses completed evidence and reads only material missing campaign/history/context facts",
+          "Product examples and official campaign evidence support claimed scope",
+          "Verified public activity, stated explanation and hypotheses are distinguished",
+          "No inference of sales growth, clearance, hidden motive or recurring campaign from sparse history"
+        ]
+      },
+      {
+        "prompt": "Across those findings, what should I focus on for my store this week, and why? Remember my goal and the effort I can spend.",
+        "expected": [
+          "One priority ties the market picture to verified own products, availability and the supplied goal",
+          "No fabricated opportunity, customer transfer, listing gap, margin or necessary discount",
+          "A feasible response and measure, or one decisive missing owner fact",
+          "Reuses relevant evidence without restarting setup or broad discovery"
+        ]
+      },
+      {
+        "prompt": "Turn the supported recommendation into a short Egyptian Arabic message for my customers. Use only the facts we confirmed, and don't publish it.",
+        "expected": [
+          "Copyable Egyptian Arabic grounded in the confirmed recommendation and product facts",
+          "No invented benefit, cheapest claim, delivery promise, promotion or rival shortage",
+          "If a required fact is unresolved, asks for it instead of drafting an unsupported claim",
+          "No publishing or premature memory of an unchosen action"
+        ]
+      },
+      {
+        "prompt": "For this rehearsal, I'll use that draft myself this week. Remember the move I chose and how we'll review it. I haven't posted anything yet, and there are no results to record.",
+        "expected": [
+          "Native memory records the actual chosen move and agreed measure in the private profile",
+          "Planned is not published; controlled rehearsal provenance and unknown results preserved",
+          "No app, watch or external messaging action"
+        ]
+      },
+      {
+        "prompt": "What did we decide for this week, and what should I track? Use our saved notes; don't start new research or take an action.",
+        "fresh_session": true,
+        "expected": [
+          "Recalls the chosen move and measure from private memory without the prior transcript",
+          "Keeps planned status, rehearsal provenance and unknown results; no invented campaign success",
+          "No unrelated web/app/calculator discovery or new action"
+        ]
+      }
+    ]
+  }
+}

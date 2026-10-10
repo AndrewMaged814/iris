@@ -9,6 +9,8 @@ Everything else waits for the weekly message.
 """
 from __future__ import annotations
 
+from math import isfinite
+
 MINOR_PCT, MAJOR_PCT = 5.0, 10.0
 
 
@@ -28,6 +30,22 @@ def _signal(kind, product, urgent, **extra):
     return {"kind": kind, "product_key": product["key"], "urgent": urgent, "product": _brief(product), **extra}
 
 
+def _valid_price(value) -> bool:
+    return type(value) in (int, float) and isfinite(value) and value >= 0
+
+
+def _currency(product: dict) -> str | None:
+    value = product.get("currency")
+    return (value.strip().upper() or None) if isinstance(value, str) else None
+
+
+def _sale_state(product: dict) -> bool | None:
+    # Readers can return on_sale=False when no price was obtainable. That is
+    # missing evidence, not proof that an observed sale ended.
+    value = product.get("on_sale")
+    return value if _valid_price(product.get("price")) and type(value) is bool else None
+
+
 def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | None = None) -> list[dict]:
     """Return the signals between two product lists. The first snapshot is a baseline: no signals.
     Product watches establish price/stock changes, never catalog additions or removals."""
@@ -42,11 +60,14 @@ def diff(previous: list[dict] | None, current: list[dict], focus: list[str] | No
         old = before.get(key)
         if old is None:
             continue
-        if cur.get("on_sale") and not old.get("on_sale"):
+        comparable = (bool(_currency(old)) and _currency(old) == _currency(cur)
+                      and _valid_price(old.get("price")) and _valid_price(cur.get("price")))
+        old_sale, cur_sale = _sale_state(old), _sale_state(cur)
+        if comparable and cur_sale is True and old_sale is False:
             signals.append(_signal("sale_started", cur, urgent=relevant, was_price=old.get("price")))
-        elif old.get("on_sale") and not cur.get("on_sale"):
+        elif comparable and old_sale is True and cur_sale is False:
             signals.append(_signal("sale_ended", cur, urgent=False, was_price=old.get("price")))
-        elif old.get("price") and cur.get("price") and old["price"] != cur["price"]:
+        elif comparable and old["price"] > 0 and old["price"] != cur["price"]:
             pct = round((cur["price"] - old["price"]) / old["price"] * 100, 1)
             if abs(pct) >= MINOR_PCT:
                 signals.append(_signal("price_change", cur, urgent=False, was_price=old["price"], change_pct=pct,

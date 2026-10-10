@@ -1,7 +1,13 @@
 __pycache__/
 *.pyc
 .env
+.env.*
+!.env.EXAMPLE
+auth.json
+mcp-tokens/
+state.db*
 iris.db
+iris.db-*
 .shopify-token-*
 output/
 .codex-impact-preview/

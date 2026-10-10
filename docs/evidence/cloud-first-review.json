@@ -1,0 +1,159 @@
+{
+  "checked_at": "2026-10-10T12:13:44.912402+00:00",
+  "scope": "Native main-call/tool trace readback; not actual charges",
+  "checks": [
+    {
+      "variant": "baseline",
+      "case": "sme-natural-overview-and-stock",
+      "session_id": "20261010_120634_c620ea",
+      "turn_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "native_calls": 16,
+      "native_tools": 11,
+      "expected_roots": 6,
+      "cloud_roots": 6,
+      "cloud_calls": 16,
+      "cloud_successful_calls": 16,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 11,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 387954,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "0e4abe79b5f4971751244a5badd910e5"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "case": "sme-market-brief-journey",
+      "session_id": "20261010_120822_58b02e",
+      "turn_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "native_calls": 25,
+      "native_tools": 41,
+      "expected_roots": 5,
+      "cloud_roots": 5,
+      "cloud_calls": 25,
+      "cloud_successful_calls": 25,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 41,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 1462729,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "644af09860bf0d4fcf8bb0d7dcb94c03"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "case": "sme-market-brief-journey",
+      "session_id": "20261010_121139_668ab4",
+      "turn_indices": [
+        5
+      ],
+      "native_calls": 1,
+      "native_tools": 0,
+      "expected_roots": 1,
+      "cloud_roots": 1,
+      "cloud_calls": 1,
+      "cloud_successful_calls": 1,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 0,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 11403,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "152aa446c27f7cf0588cb6643892f545"
+      ]
+    },
+    {
+      "variant": "candidate",
+      "case": "sme-market-brief-journey",
+      "session_id": "20261010_110912_1a8234",
+      "turn_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "native_calls": 22,
+      "native_tools": 37,
+      "expected_roots": 5,
+      "cloud_roots": 5,
+      "cloud_calls": 22,
+      "cloud_successful_calls": 22,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 37,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 1231623,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "5ed2cf1c4f9953ce3849ec6fe8531305"
+      ]
+    },
+    {
+      "variant": "candidate",
+      "case": "sme-market-brief-journey",
+      "session_id": "20261010_111218_a0c1c9",
+      "turn_indices": [
+        5
+      ],
+      "native_calls": 1,
+      "native_tools": 0,
+      "expected_roots": 1,
+      "cloud_roots": 1,
+      "cloud_calls": 1,
+      "cloud_successful_calls": 1,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 0,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 11175,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "99f17295426baac682181c0ffdca1cf7"
+      ]
+    }
+  ]
+}

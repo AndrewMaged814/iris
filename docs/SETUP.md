@@ -66,6 +66,13 @@ chosen provider settings. Verify a real store query and product-page extraction,
 HTTP reachability. Profile settings are separate: a fresh Iris profile does not automatically
 inherit the default profile's credentials.
 
+### Optional operator tracing
+
+Hermes includes a native `observability/langfuse` plugin. Enable it with your Langfuse project
+credentials to inspect model/tool timelines. The current Iris host uses metadata capture;
+private case reports retain the detailed evidence. Follow [the observability guide](OBSERVABILITY.md)
+for the SDK, gateway capture setting, pinned-version token correction and verified limits.
+
 ### Product reader dependencies
 
 The profile plugin declares `extruct` and `price-parser`. On the tested Hermes revision,
@@ -73,43 +80,15 @@ manifest dependencies are checked but profile installation does not install them
 Run with the same Python Hermes uses, then verify with the doctor:
 
 ```sh
-python -m pip install 'extruct>=0.18,<1' 'price-parser>=0.5,<1'
+python -m pip install 'extruct>=0.18,<0.19' 'price-parser>=0.5,<0.6'
 ```
 
-### Browser for JavaScript product pages
+### Pages needing JavaScript
 
-The current Iris profile temporarily excludes the local browser toolset after navigation and
-daemon failures. Use native extraction or screenshots while it is disabled. The preparation
-notes below describe the dormant setup, not a required step or a verified repair. Re-enable
-only after testing bounded successful navigation and failure recovery on the actual host.
-
-Iris uses Hermes's local browser in chat. The tested `c1488ac` has no `hermes pm` command;
-with Node.js/npx available, prepare the native CLI and Playwright cache:
-
-```sh
-npx --ignore-scripts -y agent-browser@0.26.0 --version
-npx playwright install --with-deps chromium
-```
-
-The tested Hermes browser probe looks for Playwright's `chromium-*` cache directories;
-`agent-browser install` alone can install Chrome in a cache that this revision misses.
-Set the profile's `.env` (quote the value, including spaces):
-
-```dotenv
-AGENT_BROWSER_ARGS="--user-agent=IrisBot/1.0 (market watch for a store owner; read-only)"
-```
-
-For a root/container host that needs sandbox flags, use comma-separated arguments:
-
-```dotenv
-AGENT_BROWSER_ARGS="--no-sandbox,--disable-dev-shm-usage,--user-agent=IrisBot/1.0 (market watch for a store owner; read-only)"
-```
-
-`browser.cloud_provider: local` and `browser.backend: "off"` select native read tools and
-exclude `browser_exec`. Iris's pre-tool hook allows navigate, snapshot, scroll, back, images
-and vision; it blocks browser actions, private addresses and robots-disallowed navigation.
-Cron has no browser toolset. Check the actual request User-Agent and guard on your installed
-revision before relying on browser reads. Report blocks; never bypass a challenge.
+The current profile excludes browser tools after navigation/daemon failures. Use native
+extraction or owner-provided screenshots; report blocked pages. Dormant browser configuration
+and its read-only guard remain for a separately tested recovery. Browser setup is not required
+for this release. Never bypass a challenge or disguise Iris's user agent.
 
 ## 3. Verify the connection
 

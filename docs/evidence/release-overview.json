@@ -1,0 +1,207 @@
+{
+  "run": "publish-overview-final-20261010T120617Z",
+  "started_at": "2026-10-10T12:12:55.320835+00:00",
+  "model": "gpt-6-luna",
+  "transport": "Hermes native chat; Telegram toolsets, no Telegram delivery",
+  "isolated_profile": true,
+  "snapshot_input_sha256": null,
+  "market_brief_fixture_sha256": "3a271ddc31a45b714980b655d152cf3a19409812212d5d8a7ec06eec322b7192",
+  "profile_file_hashes": {
+    "SOUL.md": "b2a2989acee3801747c60735d83cafe27a64b3713c358a62dff099a26ac53fc8",
+    "plugins/iris/__init__.py": "a503c52f71219c6cac8e8152b6e9cc85c99c573e39facf8dbc8ec608e8228805",
+    "plugins/iris/iris_changes.py": "2ed8b726a2c49f9942adb43df3c1d81a4b0945d314d2a6053edbd9e5282791cc",
+    "plugins/iris/iris_delivery.py": "0a1fc9ddcbf09a96da8768973c80a1a291d41de06f70139616cefbe41b7bac1e",
+    "plugins/iris/iris_feeds.py": "718518e514b4b0bac3c8b15529c55082b63073fb6c6bce69b38713bf98d79920",
+    "plugins/iris/iris_investigation.py": "c7daa725705d99cab9f00c917c0813da14f53786c5bff45e1f519d9d519dc6b4",
+    "plugins/iris/iris_math.py": "73b8033835cf57987357dc0698967204ca368e75bbe8708d3be240d814c75176",
+    "plugins/iris/iris_research.py": "f262e900b66831f81da243facba36b3db86fdd748b7bd093a4f06c1aff2aa451",
+    "plugins/iris/iris_watchlist.py": "49b3773f64b41e9a4c93913b00dfef89a872ceea83374d455c698dc116d1ba85",
+    "skills/draft-move/SKILL.md": "eca085be083024f33a75a2cda13434cc021c340e373c5beaaeb427cc2a2f2f07",
+    "skills/draft-move/references/voice.md": "730c8e1c4e62c4a27c3ebf48fd6ca17f0ab02d87e3e4b8bb15fb1745ea0dd182",
+    "skills/market-watch/SKILL.md": "7dbb0887066097f52102ed02d2b95b1974908e8025101081ec7ee6005f1bd0e6",
+    "skills/market-watch/references/briefings.md": "560da3380dcc8939dce1b57f002cbbd3e6459b2dc1a8c7a67c2b60fcdd33f0e5",
+    "skills/market-watch/references/categories.md": "438a559f4973ec3b4d3b7eeda031dbe5a75dc5709693bf7e5bb40eed67771eaa",
+    "skills/market-watch/references/motives.md": "8cb797e51d7300999b52e9b47b05aeb08a40a68b8c75f20dbcc5ed00d452b868",
+    "skills/market-watch/references/signals.md": "283c904015a5063cba4cd0974eaa34f0b0a1846c658088187a26fa008f24b86d",
+    "skills/setup/SKILL.md": "0a3fef72d0fb5da1ce616bbe66f9da4ca64dfca7175030f1e757d47d1aa561d1",
+    "skills/setup/references/finding-competitors.md": "f63069c0e9d8075848a6a47dd49963a0bfc25df38ac6831e7b9aa1fcbbb672d7",
+    "skills/weekly-brief/SKILL.md": "c017428e78fc355355f7d478d410a8a49f2a005b3a5e24103beccb708aae0c39"
+  },
+  "cases": [
+    {
+      "id": "sme-natural-overview-and-stock",
+      "evidence_mode": "Private native conversation; saved watch history and explicitly supplied product facts",
+      "turns": [
+        {
+          "prompt": "Hi Iris",
+          "expected": [
+            "A warm greeting; uses saved name for a trusted owner or asks once if speaker unknown; no product/price report"
+          ],
+          "reply": "Hi, I’m Iris. What should I call you? I can take a look at the market whenever you’re ready.",
+          "exit_code": 0,
+          "elapsed_seconds": 9.78,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        },
+        {
+          "prompt": "What's happening today?",
+          "expected": [
+            "Brief overview by business, with accurate coverage/date; no product-price dump",
+            "No own-catalog read needed for this casual overview",
+            "No claim of no change at businesses not read"
+          ],
+          "reply": "No recorded price or stock changes today. The only fresh readings are from Infinity Clinic Pharma; I don’t have current readings today for Likemoon, Source Beauty, or Deoora.\n\n- Infinity Clinic Pharma: five watched listings were checked; no recorded changes. [SPF 50 gel](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin) · [conditioner](https://infinityclinicpharma.com/ar/collections/all/products/jojoba-oil-shea-butter-hair-conditioner)\n- Likemoon: no current reading today.\n- Source Beauty: no current reading today.\n- Deoora: no current reading today.\n\nChecked today, Oct 10, Cairo time. These readings cover price and availability—not offer terms.",
+          "exit_code": 0,
+          "elapsed_seconds": 15.07,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 4,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 2,
+            "market_changes": 1
+          },
+          "call_order": [
+            "skill_view",
+            "skill_view",
+            "market_changes"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17960
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.01,
+              "characters": 3790
+            },
+            {
+              "tool": "market_changes",
+              "seconds": 0.01,
+              "characters": 3424
+            }
+          ]
+        },
+        {
+          "prompt": "Now give me a detailed briefing with product names and price numbers across the competitors you follow. Use only the readings already saved; don't research new pages. Explain what those readings cover and what's missing.",
+          "expected": [
+            "Explicit detail request overrides casual overview default despite no named business/product",
+            "Uses saved history, preserves its dates and scope; no new web research"
+          ],
+          "reply": "Today’s saved readings give a price picture for five Infinity Clinic Pharma listings; there are no saved current prices today for Likemoon, Source Beauty, or Deoora.\n\nInfinity Clinic Pharma — five listings, checked around 8:00 a.m. Cairo time on Oct 10. Each has one recorded price in EGP:\n\n- [Infinity Naturals SPF 50 Gel (oily skin)](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin) — EGP 360\n- [Infinity Care Sunscreen Ultra Fluid SPF50+ 1+1](https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1) — EGP 900\n- [Infinity Care Sunscreen Lotion SPF50+ BOGO](https://infinityclinicpharma.com/products/infinity-care-sunscreen-lotion-spf50-promopack) — EGP 570\n- [Infinity After Sun Milk](https://infinityclinicpharma.com/products/infinity-naturals-after-sun-milk?variant=52626564645148) — EGP 290\n- [Jojoba Oil & Shea Butter Hair Conditioner, 300 ml](https://infinityclinicpharma.com/ar/collections/all/products/jojoba-oil-shea-butter-hair-conditioner) — EGP 350\n\nWhat these readings cover: one structured price and availability reading per listing, plus compare-at data used for the sale flag. None was flagged out of stock or on sale in those records, and there are no recorded changes today. A single reading can’t show whether a price changed or stayed steady.\n\nWhat’s missing: current readings for Likemoon, Source Beauty, and Deoora; sizes for the four listings without a size in the saved record; and page-level promotion terms or checkout confirmation. “1+1” and “BOGO” appear in two product names, but these saved readings don’t verify the offer details. The readings also include hair care and after-sun products, so they don’t provide a full comparison across the skincare categories you follow.",
+          "exit_code": 0,
+          "elapsed_seconds": 17.69,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 3,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 1,
+            "market_changes": 1
+          },
+          "call_order": [
+            "skill_view",
+            "market_changes"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17960
+            },
+            {
+              "tool": "market_changes",
+              "seconds": 0.01,
+              "characters": 3424
+            }
+          ]
+        },
+        {
+          "prompt": "Use only these confirmed facts for this rehearsal; don't reread apps or research. My SPF50 sunscreen is 50ml, EGP320, inventory20, purchasable. My daily face moisturizer is 50ml, EGP250, inventory0, but also marked purchasable. I want more useful enquiries this week and have ten minutes for a post. Which product should I focus on, and why?",
+          "expected": [
+            "Sunscreen inventory20; moisturizer availability unresolved rather than simply sold out",
+            "Practical priority fits effort and goal; no invented product benefits or copy before asked"
+          ],
+          "reply": "Focus the post on your SPF50 sunscreen.\n\n- It’s 50ml at EGP 320, with 20 in inventory and marked purchasable—so you can direct interested customers to an item you can currently supply.\n- The moisturizer is marked purchasable but has zero inventory; promoting it could invite enquiries you can’t fulfill yet.\n\nUse the ten minutes for a clear sunscreen post with its size and price. Count useful sunscreen enquiries this week.",
+          "exit_code": 0,
+          "elapsed_seconds": 18.03,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 2,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 1
+          },
+          "call_order": [
+            "skill_view"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17960
+            }
+          ]
+        },
+        {
+          "prompt": "Remind me: how many sunscreen bottles do I have?",
+          "expected": [
+            "20, not0; direct short answer without extra reads or warnings"
+          ],
+          "reply": "You said you have 20 bottles of your SPF50 sunscreen in inventory.",
+          "exit_code": 0,
+          "elapsed_seconds": 8.97,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        },
+        {
+          "prompt": "So the moisturizer is definitely sold out?",
+          "expected": [
+            "Not confirmed: inventory0 conflicts with purchasable flag; asks for availability confirmation if needed",
+            "Doesn't invent how the store manages inventory; no fresh research"
+          ],
+          "reply": "Not definitely. You reported zero in inventory, but it’s also marked purchasable, so its availability is unclear.",
+          "exit_code": 0,
+          "elapsed_seconds": 8.06,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        }
+      ]
+    }
+  ]
+}

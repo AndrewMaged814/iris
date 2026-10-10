@@ -21,6 +21,10 @@
 - For code, instruction, evaluation or deployment changes, use the project Codex skill at
   `.agents/skills/iris-development/SKILL.md`. The root `skills/` directory is shipped to Iris;
   it is not a Codex workflow library.
+- For live Iris inspection, try the existing `ssh hermes` alias before assuming Hermes is
+  unavailable from this Windows workspace. The remote profile is `~/.hermes/profiles/iris`;
+  its `state.db` holds conversations and tool calls, and `logs/agent.log` holds turn timings.
+  The alias connected on 8 October 2026 without an IP-rule change; verify access each time.
 - Read `docs/PRODUCT.md` for the product promise and the top of `docs/STATUS.md` for current
   evidence and time-sensitive hackathon context. Dated plans, research and old evaluations are
   historical context, not approved scope.

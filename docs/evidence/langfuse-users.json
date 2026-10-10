@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-10-10T00:16:45.232493+00:00",
+  "checks": [
+    {
+      "expected_user_id": "andrew-maged",
+      "root_count": 1,
+      "observation_count": 2,
+      "observed_user_ids": [
+        "andrew-maged"
+      ],
+      "root_user_ids": [
+        "andrew-maged"
+      ],
+      "all_observations_match": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "5a4646aacbedacb1d3b881e68a35ca62"
+      ],
+      "evidence": "Native CLI operator attribution check; not Telegram delivery proof"
+    },
+    {
+      "expected_user_id": "iris-evaluation",
+      "root_count": 1,
+      "observation_count": 4,
+      "observed_user_ids": [
+        "iris-evaluation"
+      ],
+      "root_user_ids": [
+        "iris-evaluation"
+      ],
+      "all_observations_match": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "0dcf25e31622ae8f9bd9751b237554cd"
+      ],
+      "evidence": "Native CLI operator attribution check; not Telegram delivery proof"
+    }
+  ],
+  "telegram_followup_check": {
+    "checked_at": "2026-10-10T01:03:02.396833+00:00",
+    "source": "Read-only owner-profile native state.db; sessions.source=telegram; messages.timestamp",
+    "attribution_cutoff": "2026-10-10T00:13:52+00:00",
+    "post_cutoff_telegram_message_count": 0,
+    "latest_owner_telegram_message_at": "2026-10-09T19:04:32+00:00",
+    "verdict": "No post-rollout Telegram turn is available to reconcile; CLI Cloud attribution proof does not establish Telegram transport",
+    "external_messages_sent": false
+  }
+}

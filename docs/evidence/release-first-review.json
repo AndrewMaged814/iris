@@ -1,0 +1,838 @@
+{
+  "run": "publish-candidate-20261010T120617Z",
+  "started_at": "2026-10-10T12:06:32.774866+00:00",
+  "model": "gpt-6-luna",
+  "transport": "Hermes native chat; Telegram toolsets, no Telegram delivery",
+  "isolated_profile": true,
+  "snapshot_input_sha256": null,
+  "market_brief_fixture_sha256": "3a271ddc31a45b714980b655d152cf3a19409812212d5d8a7ec06eec322b7192",
+  "profile_file_hashes": {
+    "SOUL.md": "e522ca93d9243211bb34681949573c61b30de473b22eabb8d5468fef826c845d",
+    "plugins/iris/__init__.py": "a503c52f71219c6cac8e8152b6e9cc85c99c573e39facf8dbc8ec608e8228805",
+    "plugins/iris/iris_changes.py": "2ed8b726a2c49f9942adb43df3c1d81a4b0945d314d2a6053edbd9e5282791cc",
+    "plugins/iris/iris_delivery.py": "0a1fc9ddcbf09a96da8768973c80a1a291d41de06f70139616cefbe41b7bac1e",
+    "plugins/iris/iris_feeds.py": "718518e514b4b0bac3c8b15529c55082b63073fb6c6bce69b38713bf98d79920",
+    "plugins/iris/iris_investigation.py": "c7daa725705d99cab9f00c917c0813da14f53786c5bff45e1f519d9d519dc6b4",
+    "plugins/iris/iris_math.py": "73b8033835cf57987357dc0698967204ca368e75bbe8708d3be240d814c75176",
+    "plugins/iris/iris_research.py": "f262e900b66831f81da243facba36b3db86fdd748b7bd093a4f06c1aff2aa451",
+    "plugins/iris/iris_watchlist.py": "49b3773f64b41e9a4c93913b00dfef89a872ceea83374d455c698dc116d1ba85",
+    "skills/draft-move/SKILL.md": "eca085be083024f33a75a2cda13434cc021c340e373c5beaaeb427cc2a2f2f07",
+    "skills/draft-move/references/voice.md": "730c8e1c4e62c4a27c3ebf48fd6ca17f0ab02d87e3e4b8bb15fb1745ea0dd182",
+    "skills/market-watch/SKILL.md": "69d38f376398fe7168401893c9364ea8fa2c32c6164283d8426b706cbc9c6c4c",
+    "skills/market-watch/references/briefings.md": "560da3380dcc8939dce1b57f002cbbd3e6459b2dc1a8c7a67c2b60fcdd33f0e5",
+    "skills/market-watch/references/categories.md": "438a559f4973ec3b4d3b7eeda031dbe5a75dc5709693bf7e5bb40eed67771eaa",
+    "skills/market-watch/references/motives.md": "8cb797e51d7300999b52e9b47b05aeb08a40a68b8c75f20dbcc5ed00d452b868",
+    "skills/market-watch/references/signals.md": "283c904015a5063cba4cd0974eaa34f0b0a1846c658088187a26fa008f24b86d",
+    "skills/setup/SKILL.md": "0a3fef72d0fb5da1ce616bbe66f9da4ca64dfca7175030f1e757d47d1aa561d1",
+    "skills/setup/references/finding-competitors.md": "f63069c0e9d8075848a6a47dd49963a0bfc25df38ac6831e7b9aa1fcbbb672d7",
+    "skills/weekly-brief/SKILL.md": "c017428e78fc355355f7d478d410a8a49f2a005b3a5e24103beccb708aae0c39"
+  },
+  "cases": [
+    {
+      "id": "sme-natural-overview-and-stock",
+      "evidence_mode": "Private native conversation; saved watch history and explicitly supplied product facts",
+      "turns": [
+        {
+          "prompt": "Hi Iris",
+          "expected": [
+            "A warm greeting using the saved owner name; no product/price report"
+          ],
+          "reply": "Hi, I’m Iris. What should I call you? I can help you keep an eye on your market.",
+          "exit_code": 0,
+          "elapsed_seconds": 13.47,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        },
+        {
+          "prompt": "What's happening today?",
+          "expected": [
+            "Brief overview by business, with accurate coverage/date; no product-price dump",
+            "No claim of no change at businesses not read"
+          ],
+          "reply": "Nothing new is recorded today for the listings checked. I can see five listings from [Infinity Clinic Pharma](https://infinityclinicpharma.com/), but no checks for Likemoon, Source Beauty or Deoora today—so I can’t call the wider market quiet. These were checked once today, which isn’t enough to tell whether anything changed since yesterday.",
+          "exit_code": 0,
+          "elapsed_seconds": 40.59,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 8,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 3,
+            "market_changes": 1,
+            "mcp__composio__COMPOSIO_SEARCH_TOOLS": 1,
+            "mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS": 1,
+            "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL": 1,
+            "watchlist": 1
+          },
+          "call_order": [
+            "skill_view",
+            "skill_view",
+            "skill_view",
+            "market_changes",
+            "mcp__composio__COMPOSIO_SEARCH_TOOLS",
+            "mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS",
+            "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+            "watchlist"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17766
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 3785
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.01,
+              "characters": 8265
+            },
+            {
+              "tool": "market_changes",
+              "seconds": 0.01,
+              "characters": 3424
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_SEARCH_TOOLS",
+              "seconds": 2.14,
+              "characters": 16818
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS",
+              "seconds": 0.4,
+              "characters": 3169
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+              "seconds": 1.51,
+              "characters": 707
+            },
+            {
+              "tool": "watchlist",
+              "seconds": 0.01,
+              "characters": 1610
+            }
+          ]
+        },
+        {
+          "prompt": "Now give me a detailed briefing with product names and price numbers across the competitors you follow. Use only the readings already saved; don't research new pages. Explain what those readings cover and what's missing.",
+          "expected": [
+            "Explicit detail request overrides casual overview default despite no named business/product",
+            "Uses saved history, preserves its dates and scope; no new web research"
+          ],
+          "reply": "Today’s saved competitor readings cover five listings, all from Infinity Clinic Pharma. They show these prices:\n\nSunscreens\n- [Infinity Naturals SPF 50 Gel (oily skin)](https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin): EGP 360\n- [Infinity Ultra Fluid SPF50+ 1+1](https://infinityclinicpharma.com/products/infinity-care-sunscreen-ultra-fluid-spf50-1-1): EGP 900\n- [Infinity sunscreen lotion SPF50+ BOGO](https://infinityclinicpharma.com/products/infinity-care-sunscreen-lotion-spf50-promopack): EGP 570\n\nOther products\n- [Infinity After Sun Milk](https://infinityclinicpharma.com/products/infinity-naturals-after-sun-milk?variant=52626564645148): EGP 290\n- [Infinity Jojoba Oil & Shea Butter Hair Conditioner, 300 ml](https://infinityclinicpharma.com/ar/collections/all/products/jojoba-oil-shea-butter-hair-conditioner): EGP 350\n\nThe readings were taken once each today, around 8:00 a.m. Cairo time. They record structured prices and availability; none has an out-of-stock flag. No price or stock changes were recorded, but one reading can’t show whether anything moved. The “1+1” and “BOGO” labels are in the listing names; the saved readings don’t include offer terms or confirm checkout totals.\n\nNo readings are saved today for Likemoon, Source Beauty or Deoora, so this isn’t a full competitor-market picture.",
+          "exit_code": 0,
+          "elapsed_seconds": 16.84,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 3,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 1,
+            "market_changes": 1
+          },
+          "call_order": [
+            "skill_view",
+            "market_changes"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17766
+            },
+            {
+              "tool": "market_changes",
+              "seconds": 0.01,
+              "characters": 3424
+            }
+          ]
+        },
+        {
+          "prompt": "Use only these confirmed facts for this rehearsal; don't reread apps or research. My SPF50 sunscreen is 50ml, EGP320, inventory20, purchasable. My daily face moisturizer is 50ml, EGP250, inventory0, but also marked purchasable. I want more useful enquiries this week and have ten minutes for a post. Which product should I focus on, and why?",
+          "expected": [
+            "Sunscreen inventory20; moisturizer availability unresolved rather than simply sold out",
+            "Practical priority fits effort and goal; no invented product benefits or copy before asked"
+          ],
+          "reply": "Focus the 10-minute post on your SPF50 sunscreen.\n\n- You have 20 in inventory and it’s marked purchasable, so you can respond to enquiries with a product you can currently offer.\n- The moisturizer shows zero inventory despite being marked purchasable. That availability mismatch makes it a riskier post focus.\n\nTrack how many relevant product enquiries the post brings in this week; this is a test, not a guarantee of more enquiries.",
+          "exit_code": 0,
+          "elapsed_seconds": 21.56,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 2,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 1
+          },
+          "call_order": [
+            "skill_view"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17766
+            }
+          ]
+        },
+        {
+          "prompt": "Remind me: how many sunscreen bottles do I have?",
+          "expected": [
+            "20, not0; direct short answer without extra reads or warnings"
+          ],
+          "reply": "You have 20 bottles of SPF50 sunscreen.",
+          "exit_code": 0,
+          "elapsed_seconds": 7.6,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        },
+        {
+          "prompt": "So the moisturizer is definitely sold out?",
+          "expected": [
+            "Not confirmed: inventory0 conflicts with purchasable flag; asks for availability confirmation if needed",
+            "Doesn't invent how the store manages inventory; no fresh research"
+          ],
+          "reply": "Not definitely. You reported 0 in inventory, but it’s also marked purchasable, so availability is unclear.",
+          "exit_code": 0,
+          "elapsed_seconds": 8.32,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        }
+      ]
+    },
+    {
+      "id": "sme-market-brief-journey",
+      "evidence_mode": "Live connected catalog and public research; controlled owner goal/choice; memory only in private profile",
+      "turns": [
+        {
+          "prompt": "Iris, I'm planning this week for my Mira Nile skincare store. Give me a market briefing for sunscreen and daily face moisturizers. Look at Infinity Clinic Pharma, Nut Botanicals and Cairo Drop. Read our connected catalog and current public sources. What should I pay attention to, and where do we stand? My goal is more useful enquiries this week, and I have ten minutes for an existing-channel post. This is a rehearsal: research and drafts only; don't change apps, watches or publish anything.",
+          "expected": [
+            "Own facts are read through native Composio and retain their field meanings",
+            "Covers both product families and three businesses, or states exactly what was verified and inaccessible",
+            "One consolidated market picture with sources/dates, meaningful product distinctions and store relevance",
+            "Current listing facts stay separate from changes supported by actual dated observations",
+            "No unsupported competitor performance, demand, strategy, price equivalence or variant association",
+            "Research follows relevant leads and stops at sufficient evidence or precise coverage gaps; no app/watch writes"
+          ],
+          "reply": "Main finding: competitors are selling sunscreen as part of a routine—matching texture or skin concern, then pairing it with daily hydration. For useful enquiries this week, use your 10-minute post to invite people to say what they need help choosing, not to compete on a discount.\n\nYour catalog lists SPF 50, 50 ml at EGP 320, with 20 in stock. Your daily moisturizer is listed at EGP 250 for 50 ml, but stock is 0 while it’s still marked available, so confirm availability before featuring it as ready to buy. Your sunscreen’s format and both products’ formula details aren’t specified in the catalog.\n\nSunscreen\n- Infinity has SPF 50+ cream and an oily-skin gel, both advertised at 40% off. The page’s price presentation is inconsistent, so I can’t confirm the payable price. [Cream](https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types) · [Gel](https://infinityclinicpharma.com/products/naturals-sun-screen-gel-spf-50-oily-skin)\n- NUT emphasizes sensitive/acne-prone skin and invisible finish. Its product page says EGP 430, while its homepage shows a different price; size and price aren’t clearly joined. [Product page](https://nutbotanicals.com/products/b5-skinprotect-invisible-sunscreen-lotion-spf-50-pa-broad-spectrum)\n- Cairo Drop lists SPF 50 gels and creams. One 50 ml gel is EGP 329—EGP 9 above yours, but it’s a listed alternative, not a confirmed exact match. [Argento gel](https://cairodrop.com/products/argento-profeit-sunscreen-gel-spf50-50ml)\n\nDaily moisturizer\n- Infinity positions a day/night cream around all-day hydration; its page lists EGP 400, but no size, so there’s no fair price comparison. [24H moisturizer](https://infinityclinicpharma.com/products/infinity-naturals-24h-moisturizer-face-cream-day-night-vitamin-e)\n- Cairo Drop’s 50 ml cream is EGP 439, EGP 189 above your listed price; the catalog doesn’t specify your moisturizer’s format, so treat this as a price reference, not a like-for-like verdict. [Femme Naturelle](https://cairodrop.com/products/femme-naturelle-moisturizing-cream-50ml)\n- NUT’s page has a multi-size cream listing with an unclear price-to-size link. [Eternity Spring](https://nutbotanicals.com/products/eternity-spring-niacinamide-and-hyaluronic-face-cream-50ml)\n\nPriority: hold prices; use the post to invite replies about what shoppers are looking for in sunscreen, and their skin type or moisturizer needs. Track useful enquiries this week. Confirm moisturizer stock before making it a buy-now feature.\n\nSources checked today, Oct 10, 2026 (Cairo time). I checked the three named stores’ public product pages and your connected catalog; Infinity’s sunscreen payable prices and NUT’s variant pricing remain unclear.",
+          "exit_code": 0,
+          "elapsed_seconds": 133.43,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 16,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 5,
+            "mcp__composio__COMPOSIO_SEARCH_TOOLS": 1,
+            "mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS": 1,
+            "web_search": 15,
+            "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL": 2,
+            "web_extract": 4,
+            "market_math": 3,
+            "read_store": 2
+          },
+          "call_order": [
+            "skill_view",
+            "skill_view",
+            "skill_view",
+            "mcp__composio__COMPOSIO_SEARCH_TOOLS",
+            "mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS",
+            "web_search",
+            "web_search",
+            "web_search",
+            "web_search",
+            "web_search",
+            "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+            "web_search",
+            "web_search",
+            "web_search",
+            "web_search",
+            "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+            "web_extract",
+            "web_extract",
+            "market_math",
+            "market_math",
+            "web_extract",
+            "web_search",
+            "web_search",
+            "web_search",
+            "web_search",
+            "web_search",
+            "skill_view",
+            "web_extract",
+            "read_store",
+            "read_store",
+            "web_search",
+            "market_math",
+            "skill_view"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [
+            {
+              "url": "https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types",
+              "characters": 2175,
+              "sha256": "138e618cf17c82bc214337f66480d19a725b003484caffa64dd0b2228d4d9845",
+              "returned_at": 1791634144.543279
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/naturals-sun-screen-gel-spf-50-oily-skin",
+              "characters": 2142,
+              "sha256": "0db65e9454f9e43dc1a36acd84a73f3bbae5a6923ab9246e0802f87badf5b7b2",
+              "returned_at": 1791634144.543279
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/infinity-naturals-24h-moisturizer-face-cream-day-night-vitamin-e",
+              "characters": 2927,
+              "sha256": "e3d4d7ed4ba6a4464ae13e0377ef41f235654efd47b10c2ba58776f9c59e3fe7",
+              "returned_at": 1791634144.543279
+            },
+            {
+              "url": "https://nutbotanicals.com/products/b5-skinprotect-invisible-sunscreen-spf-50-pa-broad-spectrum",
+              "characters": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "returned_at": 1791634144.543279
+            },
+            {
+              "url": "https://nutbotanicals.com/products/eternity-spring-4-niacinamide-and-2-types-of-hyaluronic-acid-face-cream",
+              "characters": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "returned_at": 1791634144.543279
+            },
+            {
+              "url": "https://cairodrop.com/products/telofill-sunscreen-gel-cream-spf-50-fast-absorbing-60ml",
+              "characters": 3215,
+              "sha256": "6f96564d9ae4265e21ab3963cd9532ef047c77f0de40389e486ae1eca98c9ada",
+              "returned_at": 1791634144.5536857
+            },
+            {
+              "url": "https://cairodrop.com/products/avuva-sunscreen-cream-for-daily-protection-120ml",
+              "characters": 3309,
+              "sha256": "1133ff7a45afbf2ead9ee19762e9faff3960f6089d3148d7f103d971e8a6a158",
+              "returned_at": 1791634144.5536857
+            },
+            {
+              "url": "https://cairodrop.com/products/femme-naturelle-moisturizing-cream-50ml",
+              "characters": 3281,
+              "sha256": "f1f22f61a193bb958163b81a4a0b3e1552171a0a1d26ad2abb30734e16a3c684",
+              "returned_at": 1791634144.5536857
+            },
+            {
+              "url": "https://cairodrop.com/products/raw-african-hyaluronic-intensive-hydrating-cream-50g",
+              "characters": 3070,
+              "sha256": "f8a0f89438925ea8db928d83a641a82eba612043fbfde20787b640fdf549d997",
+              "returned_at": 1791634144.5536857
+            },
+            {
+              "url": "https://nutbotanicals.com/",
+              "characters": 2668,
+              "sha256": "e45277ddc80c8675f7cac1274f59f4044e0f0caf2b58ab5d84339f41756acbac",
+              "returned_at": 1791634157.133627
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/infinity-naturals-24h-moisturizer-face-cream-day-night-vitamin-e",
+              "characters": 2927,
+              "sha256": "e3d4d7ed4ba6a4464ae13e0377ef41f235654efd47b10c2ba58776f9c59e3fe7",
+              "returned_at": 1791634157.133627
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types",
+              "characters": 2175,
+              "sha256": "138e618cf17c82bc214337f66480d19a725b003484caffa64dd0b2228d4d9845",
+              "returned_at": 1791634157.133627
+            },
+            {
+              "url": "https://nutbotanicals.com/products/b5-skinprotect-invisible-sunscreen-lotion-spf-50-pa-broad-spectrum",
+              "characters": 8047,
+              "sha256": "7bb60bfbb8c1d297aa75c5d35a1462e06662f79a53fd260c7dd3e8e917105f48",
+              "returned_at": 1791634192.7675228
+            },
+            {
+              "url": "https://nutbotanicals.com/products/eternity-spring-niacinamide-and-hyaluronic-face-cream-50ml",
+              "characters": 5275,
+              "sha256": "063bc7485c7c2c5e74071822d507de8ed0c08ff0504111cac2401e0660ccf1cb",
+              "returned_at": 1791634192.7675228
+            }
+          ],
+          "provider_reports": [
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634128.9409857
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634128.9554446
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634128.9716203
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634134.7022176
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634134.7156131
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634134.721835
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634134.7314563
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634168.539139
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634174.3493736
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634174.3615158
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634174.3751395
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634174.3917818
+            },
+            {
+              "tool": "web_search",
+              "reported_provider": "keenable",
+              "returned_at": 1791634199.8845034
+            }
+          ],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17766
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 3785
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 8265
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_SEARCH_TOOLS",
+              "seconds": 8.14,
+              "characters": 33067
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_GET_TOOL_SCHEMAS",
+              "seconds": 0.35,
+              "characters": 3169
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.49,
+              "characters": 3136
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.73,
+              "characters": 11343
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.75,
+              "characters": 7542
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.75,
+              "characters": 4907
+            },
+            {
+              "tool": "web_search",
+              "seconds": 1.45,
+              "characters": 8806
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+              "seconds": 0.91,
+              "characters": 530
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.61,
+              "characters": 2718
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.64,
+              "characters": 14132
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.68,
+              "characters": 10855
+            },
+            {
+              "tool": "web_search",
+              "seconds": 1.24,
+              "characters": 13140
+            },
+            {
+              "tool": "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+              "seconds": 0.79,
+              "characters": 4292
+            },
+            {
+              "tool": "web_extract",
+              "seconds": 3.11,
+              "characters": 13970
+            },
+            {
+              "tool": "web_extract",
+              "seconds": 4.88,
+              "characters": 8997
+            },
+            {
+              "tool": "market_math",
+              "seconds": 0.0,
+              "characters": 1479
+            },
+            {
+              "tool": "market_math",
+              "seconds": 0.0,
+              "characters": 1428
+            },
+            {
+              "tool": "web_extract",
+              "seconds": 0.67,
+              "characters": 8643
+            },
+            {
+              "tool": "web_search",
+              "seconds": 3.36,
+              "characters": 5979
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.69,
+              "characters": 3496
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.71,
+              "characters": 7127
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.71,
+              "characters": 2719
+            },
+            {
+              "tool": "web_search",
+              "seconds": 2.0,
+              "characters": 1174
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 7180
+            },
+            {
+              "tool": "web_extract",
+              "seconds": 1.49,
+              "characters": 14035
+            },
+            {
+              "tool": "read_store",
+              "seconds": 1.08,
+              "characters": 1269
+            },
+            {
+              "tool": "read_store",
+              "seconds": 0.15,
+              "characters": 1240
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.68,
+              "characters": 6253
+            },
+            {
+              "tool": "market_math",
+              "seconds": 0.0,
+              "characters": 1430
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.04,
+              "characters": 4921
+            }
+          ]
+        },
+        {
+          "prompt": "How is Infinity doing right now across the products you checked? Go deeper: is this an isolated offer or a broader campaign? What do we know, and what might explain it?",
+          "expected": [
+            "Reuses completed evidence and reads only material missing campaign/history/context facts",
+            "Product examples and official campaign evidence support claimed scope",
+            "Verified public activity, stated explanation and hypotheses are distinguished",
+            "No inference of sales growth, clearance, hidden motive or recurring campaign from sparse history"
+          ],
+          "reply": "Infinity looks like it’s promoting sunscreen across at least two specific products—not just one isolated SKU. But I wouldn’t call it a store-wide skincare campaign.\n\n- Its SPF 50+ cream page shows EGP 204, down from EGP 340 (40% off). The oily-skin gel page advertises EGP 216 from EGP 360 (also 40% off). Both pages say “Only 10 items left.” [Cream](https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types) · [Gel](https://infinityclinicpharma.com/products/naturals-sun-screen-gel-spf-50-oily-skin)\n- The moisturizer page lists EGP 400 without a discount, so the offer evidence is concentrated in sunscreen among the products we checked. [24H moisturizer](https://infinityclinicpharma.com/products/infinity-naturals-24h-moisturizer-face-cream-day-night-vitamin-e)\n- The sunscreen collection page didn’t expose a readable campaign or terms. And the price history we have is limited: checks start Oct 1, with no recorded price-change signal in that period. It can’t establish when these page offers began.\n\nOne wrinkle: the saved structured reading for the gel showed EGP 360 with no sale, while its product page advertises EGP 216. So treat that gel discount as advertised, not independently confirmed at checkout.\n\nWhat might explain it? They may be using a shared 40%-off offer on selected sunscreen listings to draw attention to sun protection; “Only 10 left” may add urgency. Those are plausible readings, not a stated reason—and the stock message doesn’t prove clearance. The moisturizer at full listed price argues against assuming the whole skincare range is discounted.\n\nChecked Oct 10, Cairo time.",
+          "exit_code": 0,
+          "elapsed_seconds": 24.88,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 4,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 2,
+            "market_changes": 1,
+            "web_search": 2,
+            "web_extract": 1
+          },
+          "call_order": [
+            "skill_view",
+            "skill_view",
+            "market_changes",
+            "web_search",
+            "web_search",
+            "web_extract"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [
+            {
+              "url": "https://infinityclinicpharma.com/collections/skin-care-1",
+              "characters": 471,
+              "sha256": "1efcdb98576c82f63c932f23738a6ec6f3279ae516999e1e35c1f1c78e1521d5",
+              "returned_at": 1791634250.6941767
+            },
+            {
+              "url": "https://infinityclinicpharma.com/collections/sunscreens",
+              "characters": 321,
+              "sha256": "6fbedbe905cd04a6b96525450d5028089ce0850d5abbc95196e4453d8430de9f",
+              "returned_at": 1791634250.6941767
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types",
+              "characters": 2175,
+              "sha256": "138e618cf17c82bc214337f66480d19a725b003484caffa64dd0b2228d4d9845",
+              "returned_at": 1791634250.6941767
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/naturals-sun-screen-gel-spf-50-oily-skin",
+              "characters": 2142,
+              "sha256": "0db65e9454f9e43dc1a36acd84a73f3bbae5a6923ab9246e0802f87badf5b7b2",
+              "returned_at": 1791634250.6941767
+            },
+            {
+              "url": "https://infinityclinicpharma.com/products/infinity-naturals-24h-moisturizer-face-cream-day-night-vitamin-e",
+              "characters": 2927,
+              "sha256": "e3d4d7ed4ba6a4464ae13e0377ef41f235654efd47b10c2ba58776f9c59e3fe7",
+              "returned_at": 1791634250.6941767
+            }
+          ],
+          "provider_reports": [
+            {
+              "tool": "web_search",
+              "reported_provider": "parallel",
+              "returned_at": 1791634250.6850672
+            }
+          ],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 17766
+            },
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 2333
+            },
+            {
+              "tool": "market_changes",
+              "seconds": 0.01,
+              "characters": 3426
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.27,
+              "characters": 52
+            },
+            {
+              "tool": "web_search",
+              "seconds": 0.73,
+              "characters": 81
+            },
+            {
+              "tool": "web_extract",
+              "seconds": 1.51,
+              "characters": 9438
+            }
+          ]
+        },
+        {
+          "prompt": "Across those findings, what should I focus on for my store this week, and why? Remember my goal and the effort I can spend.",
+          "expected": [
+            "One priority ties the market picture to verified own products, availability and the supplied goal",
+            "No fabricated opportunity, customer transfer, listing gap, margin or necessary discount",
+            "A feasible response and measure, or one decisive missing owner fact",
+            "Reuses relevant evidence without restarting setup or broad discovery"
+          ],
+          "reply": "Focus the 10-minute post on your SPF 50 and invite people to ask what suits their needs. Don’t chase Infinity’s discounts: they’re advertised on selected products, and the gel’s price is still inconsistent across sources. Your catalog lists 20 units of your 50 ml sunscreen at EGP 320.\n\nKeep the post simple: ask what matters most to shoppers—texture, skin type, or everyday use—and count useful enquiries this week. Hold off featuring the moisturizer until you confirm stock; its catalog count is 0 even though it’s marked available.\n\nEvidence: [Infinity sunscreen cream](https://infinityclinicpharma.com/products/infinity-naturals-sunscreen-cream-spf-50-all-skin-types) · [Infinity oily-skin gel](https://infinityclinicpharma.com/products/naturals-sun-screen-gel-spf-50-oily-skin).",
+          "exit_code": 0,
+          "elapsed_seconds": 16.82,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        },
+        {
+          "prompt": "Turn the supported recommendation into a short Egyptian Arabic message for my customers. Use only the facts we confirmed, and don't publish it.",
+          "expected": [
+            "Copyable Egyptian Arabic grounded in the confirmed recommendation and product facts",
+            "No invented benefit, cheapest claim, delivery promise, promotion or rival shortage",
+            "If a required fact is unresolved, asks for it instead of drafting an unsupported claim",
+            "No publishing or premature memory of an unchosen action"
+          ],
+          "reply": "اختاري واقي الشمس المناسب ليكي بيبدأ بإيه؟ بشرتك دهنية، جافة ولا مختلطة؟ قوليلي أكتر حاجة بتدوري عليها في واقي الشمس، وابعتيلنا استفسارك.  \nواقي الشمس SPF 50 من Mira Nile، حجم 50 مل بـ320 جنيه. مسجل عندنا 20 قطعة متاحة.\n\nمسودة فقط—ما اتنشرتش.",
+          "exit_code": 0,
+          "elapsed_seconds": 12.0,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 2,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "skill_view": 1
+          },
+          "call_order": [
+            "skill_view"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "skill_view",
+              "seconds": 0.02,
+              "characters": 7180
+            }
+          ]
+        },
+        {
+          "prompt": "For this rehearsal, I'll use that draft myself this week. Remember the move I chose and how we'll review it. I haven't posted anything yet, and there are no results to record.",
+          "expected": [
+            "Native memory records the actual chosen move and agreed measure in the private profile",
+            "Planned is not published; controlled rehearsal provenance and unknown results preserved",
+            "No app, watch or external messaging action"
+          ],
+          "reply": "Got it, Andrew. I’ve noted it as planned, not posted. We’ll review the useful enquiries it brings this week in the Sunday brief; no results recorded yet.",
+          "exit_code": 0,
+          "elapsed_seconds": 9.97,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 2,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {
+            "memory": 1
+          },
+          "call_order": [
+            "memory"
+          ],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": [
+            {
+              "tool": "memory",
+              "seconds": 0.01,
+              "characters": 198
+            }
+          ]
+        },
+        {
+          "prompt": "What did we decide for this week, and what should I track? Use our saved notes; don't start new research or take an action.",
+          "expected": [
+            "Recalls the chosen move and measure from private memory without the prior transcript",
+            "Keeps planned status, rehearsal provenance and unknown results; no invented campaign success",
+            "No unrelated web/app/calculator discovery or new action"
+          ],
+          "reply": "We decided you’d personally use the Mira Nile SPF 50 (50 ml, EGP 320) post draft this week to invite sunscreen questions. It hasn’t been posted yet.\n\nTrack useful enquiries this week, then review them in Sunday’s weekly brief.",
+          "exit_code": 0,
+          "elapsed_seconds": 10.14,
+          "timing_scope": "Native CLI including startup; not measured Telegram latency",
+          "main_model_calls": 1,
+          "auxiliary_usage": "unknown",
+          "actual_cost": "unknown",
+          "tool_requests": {},
+          "call_order": [],
+          "workflow_blocks": [],
+          "source_reads": [],
+          "provider_reports": [],
+          "tool_durations": []
+        }
+      ]
+    }
+  ]
+}

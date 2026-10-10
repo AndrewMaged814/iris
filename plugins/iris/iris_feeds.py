@@ -203,7 +203,8 @@ def _page_products(page_html: str, page_url: str) -> list[dict]:
     og_currency = og.get("product:price:currency") or og.get("og:price:currency")
     out = []
     for p in _walk((data.get("json-ld") or []) + (data.get("microdata") or [])):
-        offers = _first(p.get("offers") or {})
+        raw_offers = p.get("offers") or {}
+        offers = _first(raw_offers)
         if not isinstance(offers, dict):
             continue
         price = _price(offers.get("price") if offers.get("price") not in (None, "") else offers.get("lowPrice"))
@@ -234,6 +235,22 @@ def _page_products(page_html: str, page_url: str) -> list[dict]:
             variants=1,
             image=image if isinstance(image, str) else None,
         )
+        if isinstance(raw_offers, list) and len(raw_offers) > 1:
+            # A product title is shared by these offers. Keep the joins supplied by
+            # each offer instead of silently assigning the first price to that title.
+            product.update(price=None, compare_at=None, available=None, on_sale=False,
+                           variants=None, price_scope="multiple_offers",
+                           offer_count=len(raw_offers), variant_offers=[{
+                               "name": _clean(offer.get("name")) or None,
+                               "sku": _clean(offer.get("sku")) or None,
+                               "url": urljoin(page_url, _first(offer.get("url"))) if offer.get("url") else None,
+                               "price": _price(offer.get("price")),
+                               "currency": _first(offer.get("priceCurrency")),
+                               "availability": _first(offer.get("availability")),
+                           } for offer in raw_offers[:20] if isinstance(offer, dict)])
+        elif offers.get("price") in (None, "") and offers.get("lowPrice") is not None:
+            product.update(price=None, headline_price=price, compare_at=None, available=None,
+                           on_sale=False, variants=None, price_scope="aggregate_minimum")
         if currency and og_currency and og_currency != currency:  # the page contradicts itself
             product["currency"], product["currency_conflict"] = None, sorted({currency, og_currency})
         out.append(product)
@@ -242,8 +259,9 @@ def _page_products(page_html: str, page_url: str) -> list[dict]:
         title = og.get("og:title") or (re.search(r"<title[^>]*>(.*?)</title>", page_html, re.I | re.S) or [None, ""])[1]
         if price is not None and title:
             out.append(_product(key=f"page:{_base(page_url)}", title=_clean(title), url=page_url, product_type="",
-                                tags=[], vendor=None, price=price, compare_at=None, currency=og_currency,
-                                available=None, created_at=None, variants=1, image=og.get("og:image")))
+                                tags=[], vendor=None, price=None, headline_price=price,
+                                price_scope="page_metadata_without_variant", compare_at=None, currency=og_currency,
+                                available=None, created_at=None, variants=None, image=og.get("og:image")))
     return out
 
 

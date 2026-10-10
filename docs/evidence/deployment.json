@@ -1,0 +1,46 @@
+{
+  "updated_at": "2026-10-10T12:28:21.982751+00:00",
+  "runtime_files": 24,
+  "file_hashes": {
+    "distribution.yaml": "9077c7fe06f8e2360e54aab36c87cfae076b0311ec2ada69858cac7c6e7e604f",
+    "SOUL.md": "77afe111b56943fee4146106880e49a34c0278eb1e0ffda396a77d352fc015f7",
+    "skills/draft-move/SKILL.md": "eca085be083024f33a75a2cda13434cc021c340e373c5beaaeb427cc2a2f2f07",
+    "skills/market-watch/SKILL.md": "3db4176106a17da9be77693d6be772047cf0129b42171690b35826a93cb6a662",
+    "skills/setup/SKILL.md": "0a3fef72d0fb5da1ce616bbe66f9da4ca64dfca7175030f1e757d47d1aa561d1",
+    "skills/weekly-brief/SKILL.md": "c017428e78fc355355f7d478d410a8a49f2a005b3a5e24103beccb708aae0c39",
+    "skills/draft-move/references/voice.md": "730c8e1c4e62c4a27c3ebf48fd6ca17f0ab02d87e3e4b8bb15fb1745ea0dd182",
+    "skills/market-watch/references/briefings.md": "68d0c7ace55bc95ac2718d428c7a50c48c78e9d2ab773eeb897cacbefa02728b",
+    "skills/market-watch/references/categories.md": "438a559f4973ec3b4d3b7eeda031dbe5a75dc5709693bf7e5bb40eed67771eaa",
+    "skills/market-watch/references/motives.md": "8cb797e51d7300999b52e9b47b05aeb08a40a68b8c75f20dbcc5ed00d452b868",
+    "skills/market-watch/references/signals.md": "283c904015a5063cba4cd0974eaa34f0b0a1846c658088187a26fa008f24b86d",
+    "skills/setup/references/finding-competitors.md": "f63069c0e9d8075848a6a47dd49963a0bfc25df38ac6831e7b9aa1fcbbb672d7",
+    "plugins/iris/iris_changes.py": "2ed8b726a2c49f9942adb43df3c1d81a4b0945d314d2a6053edbd9e5282791cc",
+    "plugins/iris/iris_delivery.py": "0a1fc9ddcbf09a96da8768973c80a1a291d41de06f70139616cefbe41b7bac1e",
+    "plugins/iris/iris_feeds.py": "718518e514b4b0bac3c8b15529c55082b63073fb6c6bce69b38713bf98d79920",
+    "plugins/iris/iris_math.py": "73b8033835cf57987357dc0698967204ca368e75bbe8708d3be240d814c75176",
+    "plugins/iris/iris_research.py": "f262e900b66831f81da243facba36b3db86fdd748b7bd093a4f06c1aff2aa451",
+    "plugins/iris/iris_watchlist.py": "49b3773f64b41e9a4c93913b00dfef89a872ceea83374d455c698dc116d1ba85",
+    "plugins/iris/plugin.yaml": "63277fa9aa5da492f8f641e67cbc387a46838257217e7b9fa6379f88575be872",
+    "plugins/iris/__init__.py": "a503c52f71219c6cac8e8152b6e9cc85c99c573e39facf8dbc8ec608e8228805",
+    "scripts/iris_daily_check.py": "aedb6cbbc8c39b9122547501544de3d6cfdddac448235dbf3a9c05a01ed17f04",
+    "scripts/iris_weekly_data.py": "268a2ec3243f4191a6e220b638888c000d4e3c70e18e38d7311b3e48d60524df",
+    "scripts/setup_jobs.sh": "e0447456c564f3f2c9f68f4ccc9e42563ccae4d47d64aa64bc2bfef4489dea81",
+    "scripts/_iris_paths.py": "62fd40b646806e8f2ba6ffc79a4f4ff6385d0fc632caad31eaaf9b588bf391a3"
+  },
+  "protected_files_unchanged": true,
+  "owner_state_counts_before": {
+    "sessions": 86,
+    "messages": 1653
+  },
+  "retired_controller_present": false,
+  "owner_state_counts_after": {
+    "sessions": 86,
+    "messages": 1653
+  },
+  "gateway_active": true,
+  "gateway_pid": 428439,
+  "native_dispatch_contract": "passed",
+  "native_token_user_contract": "passed",
+  "telegram_new_release_journey": "unverified",
+  "broad_briefing_factual_acceptance": "failed; see evidence ledger"
+}

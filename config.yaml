@@ -36,6 +36,10 @@ plugins:
 
 agent:
   max_turns: 20
+  # The optional general execution block mandates terminal/code for all arithmetic,
+  # which conflicts with this profile's disabled execution tools. Iris's SOUL/skills
+  # supply research, source-grounding and app readback rules instead.
+  execution_guidance: false
   disabled_toolsets:
     - terminal
     - file

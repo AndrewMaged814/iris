@@ -1,0 +1,112 @@
+{
+  "evidence_type": "native Langfuse Cloud readback; eight private and two actual owner Telegram turns",
+  "checked_at": "2026-10-09T18:52:47.209249+00:00",
+  "sessions": [
+    {
+      "case": "sme-current-economics",
+      "native_turns": 2,
+      "native_main_calls": 4,
+      "native_tools": 2,
+      "root_turns": 2,
+      "model_calls": 4,
+      "tool_calls": 2,
+      "counts_match": true,
+      "duplicate_observation_ids": false,
+      "canonical_totals_match": true,
+      "capture_modes": [
+        "metadata",
+        "metadata"
+      ],
+      "root_content_omitted": true
+    },
+    {
+      "case": "sme-action-review",
+      "native_turns": 1,
+      "native_main_calls": 3,
+      "native_tools": 2,
+      "root_turns": 1,
+      "model_calls": 3,
+      "tool_calls": 2,
+      "counts_match": true,
+      "duplicate_observation_ids": false,
+      "canonical_totals_match": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "root_content_omitted": true
+    },
+    {
+      "case": "sme-action-review",
+      "native_turns": 2,
+      "native_main_calls": 5,
+      "native_tools": 3,
+      "root_turns": 2,
+      "model_calls": 5,
+      "tool_calls": 3,
+      "counts_match": true,
+      "duplicate_observation_ids": false,
+      "canonical_totals_match": true,
+      "capture_modes": [
+        "metadata",
+        "metadata"
+      ],
+      "root_content_omitted": true
+    },
+    {
+      "case": "sme-action-review",
+      "native_turns": 1,
+      "native_main_calls": 1,
+      "native_tools": 0,
+      "root_turns": 1,
+      "model_calls": 1,
+      "tool_calls": 0,
+      "counts_match": true,
+      "duplicate_observation_ids": false,
+      "canonical_totals_match": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "root_content_omitted": true
+    },
+    {
+      "case": "sme-owner-cost-question",
+      "native_turns": 2,
+      "native_main_calls": 4,
+      "native_tools": 2,
+      "root_turns": 2,
+      "model_calls": 4,
+      "tool_calls": 2,
+      "counts_match": true,
+      "duplicate_observation_ids": false,
+      "canonical_totals_match": true,
+      "capture_modes": [
+        "metadata",
+        "metadata"
+      ],
+      "root_content_omitted": true
+    },
+    {
+      "case": "actual-owner-telegram-economics",
+      "native_turns": 2,
+      "native_main_calls": 7,
+      "native_tools": 5,
+      "root_turns": 2,
+      "model_calls": 7,
+      "tool_calls": 5,
+      "counts_match": true,
+      "duplicate_observation_ids": false,
+      "canonical_totals_match": true,
+      "capture_modes": [
+        "metadata",
+        "metadata"
+      ],
+      "root_content_omitted": true
+    }
+  ],
+  "limits": [
+    "No raw merchant payloads in this export",
+    "Actual provider charges and complete auxiliary usage unknown",
+    "A matched trace is not proof of answer correctness or source freshness",
+    "Private trials are not merchant outcomes"
+  ]
+}

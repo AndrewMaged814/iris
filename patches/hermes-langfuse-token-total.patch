@@ -1,0 +1,12 @@
+diff --git a/plugins/observability/langfuse/__init__.py b/plugins/observability/langfuse/__init__.py
+--- a/plugins/observability/langfuse/__init__.py
++++ b/plugins/observability/langfuse/__init__.py
+@@ -490,6 +490,8 @@ def _canonical_usage_and_cost(canonical: Any, *, provider: str, model: str,
+         key: tokens for key, attr, _ in _USAGE_FIELDS
+         if (tokens := getattr(canonical, attr)) or key in ("input", "output")
+     }
++    # Reasoning is included in output: do not let the SDK sum it a second time.
++    usage_details["total"] = canonical.total_tokens
+     cost_details: Dict[str, float] = {}
+     try:
+         from agent.usage_pricing import estimate_usage_cost, resolve_billing_route

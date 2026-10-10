@@ -1,0 +1,11 @@
+{
+  "purpose": "Matched acquisition sample; relevance and source facts need manual review",
+  "queries": [
+    {"id": "moisturizer-en", "query": "daily face moisturizer 50ml Egypt price"},
+    {"id": "sunscreen-ar", "query": "واقي شمس جل SPF50 مصر سعر"}
+  ],
+  "pages": [
+    {"id": "infinity-gel", "url": "https://infinityclinicpharma.com/ar/products/naturals-sun-screen-gel-spf-50-oily-skin"},
+    {"id": "nutbot-variants", "url": "https://nutbotanicals.com/products/eternity-spring-niacinamide-and-hyaluronic-face-cream-50ml"}
+  ]
+}

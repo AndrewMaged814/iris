@@ -57,6 +57,36 @@ class WooAndPages(unittest.TestCase):
 
 
 class AnyPlatformPages(unittest.TestCase):
+    def test_metadata_price_is_not_bound_to_size_in_title_or_url(self):
+        url = "https://shop.example/products/cream-50ml"
+        page = '''<meta property="og:title" content="Cream 50ml">
+          <meta property="product:price:amount" content="185.00">
+          <meta property="product:price:currency" content="EGP">'''
+        (product,) = feeds.read_store(url, get=FakeWeb({url: (200, page)}))["products"]
+        self.assertIsNone(product["price"])
+        self.assertIsNone(product["variants"])
+        self.assertEqual(product["headline_price"], 185)
+        self.assertEqual(product["price_scope"], "page_metadata_without_variant")
+
+    def test_multiple_offers_keep_variant_price_and_stock_associations(self):
+        url = "https://shop.example/products/cream-50ml"
+        offers = [{"@type": "Offer", "name": "15ml", "price": "185", "priceCurrency": "EGP", "availability": "https://schema.org/InStock"},
+                  {"@type": "Offer", "name": "50ml", "price": "345", "priceCurrency": "EGP", "availability": "https://schema.org/OutOfStock"}]
+        page = '<script type="application/ld+json">' + json.dumps({"@type": "Product", "name": "Cream 50ml", "offers": offers}) + '</script>'
+        (product,) = feeds.read_store(url, get=FakeWeb({url: (200, page)}))["products"]
+        self.assertIsNone(product["price"])
+        self.assertIsNone(product["available"])
+        self.assertEqual([(offer["name"], offer["price"]) for offer in product["variant_offers"]], [("15ml", 185), ("50ml", 345)])
+        self.assertEqual(product["variant_offers"][1]["availability"], "https://schema.org/OutOfStock")
+
+    def test_aggregate_minimum_is_not_an_exact_product_price(self):
+        url = "https://shop.example/products/cream"
+        page = '<script type="application/ld+json">' + json.dumps({"@type": "Product", "name": "Cream", "offers": {"@type": "AggregateOffer", "lowPrice": "185", "highPrice": "610", "priceCurrency": "EGP"}}) + '</script>'
+        (product,) = feeds.read_store(url, get=FakeWeb({url: (200, page)}))["products"]
+        self.assertIsNone(product["price"])
+        self.assertEqual(product["headline_price"], 185)
+        self.assertEqual(product["price_scope"], "aggregate_minimum")
+
     def test_microdata_product_page_like_magento(self):
         url = "https://shop.example/en/chargers/gan-100w.html"
         page = '''<html><body><div itemscope itemtype="https://schema.org/Product">

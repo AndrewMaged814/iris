@@ -1,0 +1,99 @@
+{
+  "checked_at": "2026-10-10T12:25:24.185198+00:00",
+  "scope": "Native main-call/tool trace readback; not actual charges",
+  "checks": [
+    {
+      "variant": "baseline",
+      "case": "sme-natural-overview-and-stock",
+      "session_id": "20261010_121256_05702e",
+      "turn_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "native_calls": 12,
+      "native_tools": 6,
+      "expected_roots": 6,
+      "cloud_roots": 6,
+      "cloud_calls": 12,
+      "cloud_successful_calls": 12,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 6,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 236452,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "fd1a1eac2b11422f13367455539aaccd"
+      ]
+    },
+    {
+      "variant": "candidate",
+      "case": "sme-market-brief-journey",
+      "session_id": "20261010_121958_fe8450",
+      "turn_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "native_calls": 26,
+      "native_tools": 47,
+      "expected_roots": 5,
+      "cloud_roots": 5,
+      "cloud_calls": 26,
+      "cloud_successful_calls": 26,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 47,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 1667983,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "60fe3e94921dc88c4784351c6fc3f179"
+      ]
+    },
+    {
+      "variant": "candidate",
+      "case": "sme-market-brief-journey",
+      "session_id": "20261010_122336_535630",
+      "turn_indices": [
+        5
+      ],
+      "native_calls": 1,
+      "native_tools": 0,
+      "expected_roots": 1,
+      "cloud_roots": 1,
+      "cloud_calls": 1,
+      "cloud_successful_calls": 1,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 0,
+      "counts_match": true,
+      "canonical_totals_match": true,
+      "cloud_known_total_tokens": 11595,
+      "actual_charge": "unknown",
+      "all_evaluation_labels": true,
+      "capture_modes": [
+        "metadata"
+      ],
+      "trace_ids": [
+        "195a21d864420c4b702b57ec2dfac4c4"
+      ]
+    }
+  ]
+}

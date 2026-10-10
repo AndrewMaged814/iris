@@ -1,7 +1,7 @@
 ---
 name: setup
 description: Use when a new owner starts Iris, asks to connect an app, the catalog is not readable, or chooses competitor stores to watch.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Setup
@@ -13,6 +13,19 @@ version: 1.0.0
   or obtain a citation. Retrieve missing product descriptions, attributes or canonical links through
   discovered app reads. A missing public link can be stated briefly and need not block advice.
   Constructing a URL from a handle is not a returned canonical product link.
+- Discover a focused read for the needed product and fields together when the app supports it.
+  Use a small page or server-side product filter; do not fetch hundreds of full records for one
+  product. Include a canonical link in that read if supported; its absence alone does not justify
+  another call. Use returned product/variant IDs for follow-up fields, not a guessed exact title.
+  For an unknown ID, start with a distinctive catalog keyword from the owner's product name,
+  rather than assuming spacing in an attribute such as SPF50 matches a title. Bound both products
+  and variants (for example, five of each); broaden only after inspecting a miss.
+  Fetch store/location lists only when a missing currency or location-specific question needs them.
+- Inspect each operation's result in a batch: one failed operation does not invalidate a successful
+  product read. If a response is truncated, request a smaller focused read for the missing facts,
+  not the same large catalog again. Empty filtered results permit a broader distinctive keyword
+  or a small catalog page. Do not invent a product ID, field schema or zero stock from a miss.
+  Correct one reported schema error using its diagnostic, then stop that failed route if unresolved.
 - The current profile has no local browser while its navigation failures are investigated. For
   rendered-page questions, use an owner-supplied screenshot and vision; saved catalog facts alone
   do not verify layout. A public password page does not mean failed Composio access. App

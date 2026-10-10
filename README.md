@@ -1,68 +1,135 @@
 <p align="center">
-  <img src="assets/iris-logo.png" alt="Iris mascot" width="160">
+  <img src="assets/iris-logo.png" alt="Iris mascot" width="144">
 </p>
 
 <h1 align="center">Iris</h1>
-<p align="center"><strong>Your AI market analyst</strong></p>
-<p align="center">Iris watches the competitor products you choose. She investigates new prices, offers, and stock changes,<br>checks them against your own products and costs, and recommends your next move. Then she can help you make it.</p>
+<p align="center"><strong>Your AI market watcher.</strong></p>
+<p align="center">Know what’s changing. See what matters. Make your next move.</p>
+<p align="center">Iris brings competitor activity, market research and your store’s context together<br>so you can see the bigger picture and decide what to do—right in Telegram.</p>
 
 <p align="center">
-  <a href="https://t.me/IrisMarketWatcherBot"><strong>Owner bot on Telegram</strong></a> ·
-  <a href="docs/DEMO.md">See Iris in action</a> ·
-  <a href="docs/impact-slides.pdf">Impact slides</a> ·
-  <a href="docs/SETUP.md">Set up Iris</a> ·
-  <a href="#architecture">See the architecture</a>
+  <a href="docs/DEMO.md">Demo plan</a> ·
+  <a href="#what-iris-can-help-you-do">Capabilities</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#observability">Observability</a> ·
+  <a href="#whats-next">What’s next</a> ·
+  <a href="docs/SETUP.md">Setup</a>
 </p>
 
-https://github.com/user-attachments/assets/340f8976-7280-4cd8-b8e8-2c61eb3eb937
+## Close the gap between your business and your market
 
+You know your store. Keeping up with everything around it takes another kind of work:
+checking competitors, comparing offers, following availability and figuring out which
+signals deserve your attention.
 
-https://github.com/user-attachments/assets/5589bbcf-d863-47f4-bb4f-4ad275969891
+Iris is your market analyst in the conversation you already use. Ask for a market briefing,
+drill into a competitor, or explore an opportunity. She connects what she finds to your
+products, stock and goals, then helps you turn it into a practical next move.
 
+**Observe → Connect → Understand → Recommend → Review**
 
+## What Iris can help you do
 
-## Why a store owner would use Iris
-
-- **Know what a discount would cost you.** Using the costs you provide, Iris shows how much is left from each sale after a price cut and how many extra sales it would take to break even. If the numbers do not support the cut, Iris recommends keeping your price.
-- **Stop checking competitor pages yourself.** Pick the products you care about. Iris checks their prices and stock each day, investigates relevant offers, alerts you to meaningful changes and summarizes the week.
-- **See how a decision comes together.** The [sunscreen example](docs/DEMO.md) shows Iris checking a rival's offer against watch history, your product data and the cost of matching its price.
-
-## From market signal to next move
-
-| When you ask… | Iris helps you… |
+| Your question | Iris’s role |
 | --- | --- |
-| **“What changed?”** | Watch selected rival product pages for price, offer, and availability changes. Quiet checks stay quiet; useful changes reach you in Telegram. |
-| **“Does it matter to my store?”** | Compare the rival's product with yours, account for offers, stock, costs, and missing facts, then weigh acting against holding course. |
-| **“What should I do?”** | Get one clear recommendation, a supported product or campaign draft in English or Egyptian Arabic, or a weekly review of the action you chose. |
-| **“Can you make that change?”** | Ask Iris to use a connected app through Composio. She discovers the available operation, resolves the exact terms with you, and checks the result by reading it back. |
+| **“What’s happening in my market?”** | Bring selected watch history and on-demand research into a focused briefing, with sources and priorities. |
+| **“How is Infinity doing right now?”** | Investigate its public product pages, offers and availability; explain what the evidence says and what remains uncertain. |
+| **“How do we compare?”** | Bring relevant products from several competitors into one comparison, accounting for format, quantity and offer conditions. |
+| **“Why might they be making that move?”** | Look for official explanations and relevant external context. Keep supported facts and possible explanations distinct. |
+| **“Where should I focus this week?”** | Connect market signals to your catalog, stock, costs and goal; recommend a practical priority. |
+| **“Help me respond.”** | Draft grounded product or campaign copy in English or Egyptian Arabic, remember your chosen move and help review reported results. |
 
-You choose what to watch and what to do. Iris does not treat a competitor's move as an automatic reason to discount. If a page blocks access or a material fact is missing, she says so.
+Scheduled checks cover the product pages you choose. On-demand investigations can explore
+additional competitors and public sources. Coverage and dates stay visible; competitor
+sales, motives and market demand are not inferred from a product listing.
+Supported connected-app changes require your request and readback; live writes remain unverified.
 
-## How it works
+## A morning with Iris
 
-- **[Hermes](https://github.com/NousResearch/hermes-agent)** runs the agent: Telegram conversations, model, memory, web research, vision, scheduled checks, and delivery.
-- **[Composio](https://composio.dev/)** connects the apps where your product facts live. Iris uses Hermes's native Composio tools for owner-requested reads and writes, with no custom app client or credential store.
-- **Iris** supplies the business judgment. Her skills turn evidence into owner-facing advice; her three tools read selected rival product pages, manage the watchlist, and retrieve saved changes. Three small scripts prepare daily and weekly check data and set up the schedules.
+An Egyptian skincare owner wants to plan the week:
 
-The catalog source can be any supported connected app. Iris confirms the source and field meanings with you. She keeps snapshots only for selected competitor products in local SQLite, so a current listing does not become a made-up trend. Scheduled market checks read connected apps; they do not make app changes.
+> **“Give me a market briefing for sunscreen and moisturizers. Look at Infinity and two
+> other relevant stores. What should I pay attention to?”**
+
+Iris reads the store’s catalog, researches relevant competitor pages and brings the findings
+together. The owner follows up:
+
+> **“Go deeper on Infinity. Is this a broader campaign? What can we actually tell?”**
+
+Then:
+
+> **“What’s the best move for my store this week? Turn it into a short Arabic message.”**
+
+The owner chooses a response. Iris remembers it, ready for the next conversation and a later
+review. This is the broader [demo scenario](docs/DEMO.md); the new recording remains to be made.
+[Evidence and actual trial results](docs/EVALUATION.md) distinguish live reads from controlled examples.
+The latest broad rehearsals still contain unsupported claims; repeatable briefing accuracy
+remains an open evaluation item.
+
+## Built around the owner
+
+- **A view across competitors.** Group relevant findings around your products and priorities.
+- **Context for your business.** Connect outside evidence with your catalog and owner-confirmed goals.
+- **Useful follow-through.** Move from a briefing to a supported draft, chosen action and review.
+- **A conversation with memory.** Ask follow-ups and revisit decisions without rebuilding the context.
+- **Evidence you can inspect.** Sources, observation history and operator traces support checking an answer.
+
+Existing competitive-intelligence products demonstrate the value of connecting research to
+decisions. Iris brings that ambition to a small store owner in Telegram.
+[Product promise and boundaries](docs/PRODUCT.md).
 
 ## Architecture
 
-<p align="center">
-  <img src="assets/architecture.png" alt="Iris architecture: an SME owner talks through Telegram to a Hermes agent running the Iris profile. Iris investigates competitor pages with Hermes web research, reads the owner's catalog and requested app actions through Composio, and compares selected product changes in local watch history. The owner chooses a move and reviews the outcome." width="100%">
-</p>
+![Iris architecture: an owner in Telegram, Hermes and the Iris profile, competitor research, native Composio, selected-product history, calculations and native Langfuse tracing.](assets/architecture.png)
 
-The diagram is available as an [editable SVG](assets/architecture.svg). The PNG is exported at **2400 × 1380** for a readable full-width view.
+[Editable SVG](assets/architecture.svg) · [Product](docs/PRODUCT.md)
 
-## Hackathon impact slides
+| Layer | Responsibility |
+| --- | --- |
+| [Hermes](https://github.com/NousResearch/hermes-agent) | Telegram, Luna in the tested deployment, sessions, memory, native web research, vision, schedules and delivery. |
+| Iris skills | Market investigations, evidence interpretation, recommendations, drafts and reviews. Iris writes the owner-facing advice. |
+| Four Iris tools | `read_store`, `watchlist`, `market_changes`, `market_math`: public product facts, selected history and sourced calculations. |
+| Native [Composio](https://composio.dev/) | Authorized reads and owner-requested operations in connected apps. |
+| Native Langfuse plugin | Model/tool timelines, timing and usage for operator review. |
 
-Read the [impact slides in PDF](docs/impact-slides.pdf) on GitHub, or download the [editable PowerPoint](docs/impact-slides.pptx).
+Scheduled checks read connected apps. Requested writes and readback are instruction boundaries,
+not an enforced transaction policy. See [current status](docs/STATUS.md) for verification.
+
+## Observability
+
+Langfuse distinguishes the owner profile from private test runs using user labels.
+[User attribution and recorded Cloud checks](docs/OBSERVABILITY.md#user-attribution).
+
+A real owner Telegram session and eight private turns were reconciled with Langfuse:
+**10 turns, 24 main model calls, 14 tool requests**, matching canonical token totals and
+no duplicate observation IDs in that sample.
+
+The latest private check also reconciles **12 turns, 39 main model completions and 53 tool
+requests**, with failed attempts counted separately.
+[Readback](docs/evidence/cloud-release-final.json).
+
+Private native reports retain source URLs, content hashes, arguments and replies.
+Cloud metadata mode shows the call timeline without raw owner/app payloads.
+Complete auxiliary usage and actual provider charges remain unreconciled.
+[Tracing, costs and reliability](docs/OBSERVABILITY.md) ·
+[Sanitized run summary](docs/evidence/run-summary.json)
+
+## What’s next
+
+- **A clearer market picture:** stronger product matching and persistent grouping across competitors.
+- **Richer strategic context:** broaden recorded signals to relevant campaigns, catalog and policy changes.
+- **Better investigations:** improve source freshness, resolve conflicts and reduce repeated discovery.
+- **Learning from use:** measure owner time saved and review which recommendations actually helped.
+
+These are development priorities, not claims of already delivered features.
+[Evidence priorities](docs/EVALUATION.md#highest-value-remaining-proof)
 
 ## Run Iris
 
-The [hosted Telegram bot](https://t.me/IrisMarketWatcherBot) is currently restricted to its configured owner. To run Iris for your own store, install a separate profile.
+The [hosted owner bot](https://t.me/IrisMarketWatcherBot) is restricted to its configured owner.
+A separate judge access route is still required.
 
-You need Hermes, a model provider, a Telegram bot, and a Composio connection to the app that holds your product information. This repository is public.
+With Hermes installed, a model provider and your own Telegram/Composio authorization:
 
 ```sh
 git clone https://github.com/AndrewMaged814/iris.git
@@ -71,14 +138,27 @@ hermes profile install . --name iris
 hermes -p iris setup
 ```
 
-Then connect your catalog, confirm its fields, and enable the three scheduled checks. [Follow the setup guide](docs/SETUP.md).
+Follow [setup](docs/SETUP.md) to install reader dependencies, connect the catalog and verify
+a reply. Fresh-machine setup with OAuth has not been demonstrated in under five minutes.
 
-## What is verified
+Local contracts need no credentials or network:
 
-The current repository passes **61 offline tests**. The live Hermes profile has authenticated to Composio and read a connected Shopify product; connected-app writes and real merchant outcomes still need live verification. [Current status](docs/STATUS.md) · [Testing guide](docs/TESTING.md).
+```sh
+python -m unittest discover -s tests
+python tools/validate_repo.py
+```
 
-<sub>Iris is a hackathon project and an active demo, not a measured claim of sales growth.</sub>
+The offline contracts pass; the [current verification record](docs/STATUS.md) gives the test count. Connected reads, private investigations, chosen-action memory
+and real Telegram calculation have evidence. Merchant impact, live app writes and the complete
+new demo journey need further verification.
+[Evaluation](docs/EVALUATION.md) · [Testing](docs/TESTING.md) · [Status](docs/STATUS.md)
+
+## Hackathon
+
+The new [2–3 minute demo](docs/DEMO.md), judge access and measured-impact deck are submission
+priorities. The obsolete animation and slide drafts have been archived; working footage and measured impact are still required.
+[Official requirements](docs/HACKATHON_RULES.md) · [Evidence ledger](docs/EVALUATION.md)
 
 ## License
 
-Iris is [MIT licensed](LICENSE). See the [third-party notices](NOTICE) and [mascot credit](assets/README.md).
+[MIT](LICENSE) · [Third-party notices](NOTICE) · [Asset credits](assets/README.md)

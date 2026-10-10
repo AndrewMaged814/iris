@@ -45,6 +45,41 @@ class Signals(unittest.TestCase):
         items = [p("a"), p("b")]
         self.assertEqual(diff(items, copy.deepcopy(items)), [])
 
+    def test_missing_price_does_not_end_a_sale(self):
+        missing = p("a")
+        missing.update(price=None, compare_at=None, on_sale=False)
+        self.assertEqual(diff([p("a", 80, 100)], [missing]), [])
+        self.assertEqual(diff([missing], [p("a", 80, 100)]), [])
+
+    def test_currency_changes_and_unknown_currency_do_not_make_price_signals(self):
+        for currency in ("USD", None, ""):
+            with self.subTest(currency=currency):
+                changed = p("a", 10)
+                changed["currency"] = currency
+                self.assertEqual(diff([p("a", 100)], [changed]), [])
+                changed.update(compare_at=20, on_sale=True)
+                self.assertEqual(diff([p("a", 100)], [changed]), [])
+                self.assertEqual(diff([changed], [p("a", 100)]), [])
+
+    def test_stock_change_survives_unknown_price_or_changed_currency(self):
+        changed = p("a", available=False)
+        changed.update(price=None, currency="USD")
+        self.assertEqual(self.kinds([p("a", 80, 100)], [changed]),
+                         {("out_of_stock", True)})
+
+    def test_invalid_prices_do_not_create_signals(self):
+        for price in (float("nan"), float("inf"), -1, "80", True):
+            with self.subTest(price=price):
+                changed = p("a")
+                changed["price"] = price
+                self.assertEqual(diff([p("a", 80, 100)], [changed]), [])
+
+    def test_zero_price_and_normalized_currency_can_be_compared(self):
+        changed = p("a", 0)
+        changed["currency"] = " egp "
+        got = diff([p("a", 100)], [changed])
+        self.assertEqual((got[0]["kind"], got[0]["change_pct"]), ("price_change", -100.0))
+
 
 class Summary(unittest.TestCase):
     def test_price_picture_by_type(self):

@@ -1,51 +1,104 @@
-# Testing
+# Testing Iris
 
-Run the offline contracts with `python -m unittest discover -s tests` and repository checks
-with `python tools/validate_repo.py`. Tests cover structured product reads, watch persistence,
-change detection, native delivery reconciliation, profile-scoped storage and the three-tool
-plugin. They do not contact connected apps.
-
-For live proof, use Hermes's native `mcp test composio`, verify the actual registered tool
-inventory, discover a connected source and read a small range. Repeat in a fresh process after
-a gateway restart to check persistent authentication. Then verify in the owner's Telegram chat.
-Connecting an account alone does not select a catalog or prove its write operations.
-
-`tools/evaluate_iris.py` runs native Hermes evaluation prompts, optionally in a private profile
-copy. It has no custom Shopify transport or synthetic GraphQL injection. Evaluation cases are
-behavioral checks, not automatic assertions. Keep output private; it can contain owner data.
-Never use an evaluation prompt to execute a write in a real connected account.
-
-## Recommendation checks
-
-Four hypothetical cases exercise the recommendation process using supplied business facts:
-`recommendation-hold`, `recommendation-opportunity`, `recommendation-missing-fact`, and
-`recommendation-cron-hold`. Run with the installed Hermes Python and a new private directory:
+## Local contracts
 
 ```sh
-python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris \
-  --output ~/iris-evaluations/recommendations --isolate \
-  --cases recommendation-hold recommendation-opportunity recommendation-missing-fact recommendation-cron-hold
+python -m unittest discover -s tests
+python tools/validate_repo.py
+git diff --check
 ```
 
-Review answers AND tool traces: correct contribution math, a choice grounded in stock and goal,
-a measurable bounded test when warranted, one direct question for a missing stock count, and
-no app research/writes for these supplied-fact exercises. Exit zero means execution completed,
-not that these behavioral criteria passed. These cases do not verify real connected-data joins,
-proactive Telegram delivery, app execution or merchant value. Test the live conversation separately.
+The suite needs no network, model or credentials. It checks product reads, variant-price
+ambiguity, currency-safe changes, persistence, delivery reconciliation, source snapshots,
+search-result reuse, calculations and native plugin registration. It also checks the
+recorded failed-model/retry trace. These contracts do not establish answer quality.
+Install the reader dependencies listed in [setup](SETUP.md#product-reader-dependencies),
+plus `PyYAML` and `python-dotenv` for doctor checks, on a bare Python installation.
+GitHub Actions runs these same checks on pushes and pull requests.
 
-`recommendation-connected` exercises native connected catalog reads and current watched-product
-evidence; check that own-product verification/citations trigger no storefront browser visit and
-that the answer has a verdict, short evidence bullets and next step. It can read the connected
-account, so keep all evidence private and review tool calls for writes. Copy watch history into
-any candidate profile before using `--isolate`; an empty watch database changes the research task.
-`recommendation-conflicting-offer` is a supplied-fact case for conflicting single-price/multi-buy
-readings and uncertain eligibility. Neither case automatically asserts a behavioral pass.
+## Native behavior evaluations
 
-## Campaign evidence checks
+`tools/evaluate_iris.py` uses Hermes's native chat entry point and the profile's configured
+model/tools. `--isolate` copies the installed profile, removes its Telegram delivery token,
+uses a separate database/memory directory and labels traces `iris-evaluation`.
+A follow-up shares its case conversation; a `fresh_session` turn tests memory without the
+previous transcript. Independent cases reset memory to the copied owner's starting notes.
 
-Run `campaign-promotion`, `campaign-clearance`, and `campaign-conflict-followup` with `--isolate`
-using the same evaluator. These supplied-fact cases check ordinary discounts versus explicitly
-named clearance, campaign scope, and unresolved price evidence across a resumed native session.
-Review each turn and tool trace: no unsupported clearance claim, no certainty from a repeated
-conflicting extraction, and no external reads or writes. They do not verify live page selection
-or extraction accuracy; exercise those separately in the owner's chat.
+Use the Python environment running Hermes, with access to its CLI:
+
+```sh
+HERMES_LANGFUSE_CAPTURE=metadata python tools/evaluate_iris.py \
+  --profile-home ~/.hermes/profiles/iris --isolate \
+  --candidate-from PATH_TO_IRIS --output PRIVATE_UNUSED_DIRECTORY \
+  --cases sme-natural-overview-and-stock sme-market-brief-journey
+```
+
+The first case checks greeting → casual overview → explicit detailed briefing → product
+availability → recall → correction of a mistaken sold-out assumption. It uses saved watch
+history and supplied product facts. The second uses the staged connected catalog and current
+public pages for three businesses/two product families, then investigates Infinity,
+prioritizes, drafts on request, saves a chosen move and recalls it in a fresh session.
+The roster in [market_brief.json](../tools/fixtures/market_brief.json) supplies research targets,
+not predetermined conclusions. Both cases are private rehearsals, not merchant outcomes.
+
+Other useful cases include `sme-position-then-advice`, `sme-basket-quantity`,
+`comparison-format-unknown` and `sme-owner-decision-loop`. Use `--cases` to select only the
+behavior affected by a change. Review final replies and their source/tool arguments manually.
+An exit code of zero is completion, not a factual pass. Do not run write cases on real apps.
+
+## Reproduce composition separately from retrieval
+
+A private snapshot keeps actual extracted pages, hashes, timestamps and bounded connected
+catalog fields with their original JSON paths. Credentials and failed reads are excluded.
+Missing fields remain unknown. Never publish the raw snapshot.
+
+```sh
+python tools/report_iris_cases.py --root PRIVATE_EVALUATIONS --pattern RUN_NAME \
+  --snapshot-output PRIVATE_PACKET.json
+python tools/evaluate_iris.py --profile-home ~/.hermes/profiles/iris --isolate \
+  --output PRIVATE_UNUSED_DIRECTORY --snapshot-input PRIVATE_PACKET.json \
+  --cases sme-market-brief-snapshot-1 sme-market-brief-snapshot-2 sme-market-brief-snapshot-3
+```
+
+The evaluator validates content/field hashes and records the whole packet hash. Frozen
+cases forbid fresh retrieval and isolate interpretation; pair them with current-source
+runs before accepting a runtime change. Three samples are not a general accuracy rate.
+
+## Native dispatch and Cloud readback
+
+On the Hermes host, with its repository on `PYTHONPATH`:
+
+```sh
+python tools/check_research_hooks.py --profile-home PRIVATE_PROFILE
+python tools/check_langfuse_usage.py --hermes-root PATH_TO_HERMES
+python tools/check_workflow_cloud.py --profile-home ~/.hermes/profiles/iris \
+  --baseline PRIVATE_BASELINE/results.json --candidate PRIVATE_CANDIDATE/results.json \
+  --output PRIVATE_UNUSED_CLOUD_REPORT.json
+```
+
+The hook check mocks only network-provider execution. Real native discovery, hooks,
+dispatch and calculation handlers run. It verifies distinct queries, completed-result reuse,
+new-turn scope and failed-search retry. It does not test retrieval quality.
+
+The Cloud checker groups resumed turns by session and compares successful generations with
+native `api_calls`. Failed attempts are listed separately; empty failure usage is unknown.
+Known failure usage is retained. It reconciles roots/tools, canonical totals and attribution,
+not provider charges. Its bounded readback covers the last six hours and refuses truncated
+responses. `check_workflow_cloud.py` retains its existing operator filename; the retired
+workflow engine is no longer shipped.
+
+## Publishable evidence and live verification
+
+```sh
+python tools/report_iris_cases.py --root PRIVATE_EVALUATIONS --pattern RUN_NAME \
+  --json-output REVIEW.json
+```
+
+This export omits app payloads, arguments, memory and raw transport output. Questions and
+replies still require a privacy review before publication. Keep source evidence private.
+See [the evidence ledger](EVALUATION.md) for completed runs and failures.
+
+Before updating live Iris, back up affected files and SQLite state; preserve configuration,
+OAuth, owner identity, memories and job IDs. Verify copied hashes, native tool inventory,
+owner-only Telegram controls and gateway health. Private CLI runs exercise the agent; only
+actual Telegram replies establish the owner's received experience. See [setup](SETUP.md).

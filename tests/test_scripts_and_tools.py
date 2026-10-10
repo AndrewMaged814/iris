@@ -15,10 +15,10 @@ from helpers import FakeWeb, fixture
 import iris_feeds as feeds
 
 
-def shop(products):
+def shop(products, currency="EGP"):
     return '<script type="application/ld+json">' + json.dumps([
         {"@type": "Product", "name": p["title"], "sku": str(p["id"]), "category": p["product_type"],
-         "offers": {"price": p["variants"][0]["price"], "priceCurrency": "EGP",
+         "offers": {"price": p["variants"][0]["price"], "priceCurrency": currency,
                     "priceSpecification": {"price": p["variants"][0].get("compare_at_price"), "priceType": "ListPrice"},
                     "availability": "https://schema.org/" + ("InStock" if p["variants"][0]["available"] else "OutOfStock")}}
         for p in products]) + '</script>'
@@ -111,6 +111,30 @@ class DailyCheck(unittest.TestCase):
         self.native_execution("completed", "delivered")
         again = daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
         self.assertEqual(again["urgent"], [])        # already reported, nothing new
+
+    def test_missing_price_is_saved_without_a_false_sale_ended_signal(self):
+        import iris_daily_check as daily
+        from iris_watchlist import Watchlist
+        store = self.add_store()
+        daily.run(get=self.web([item(1, price="80.00", compare="100.00")]))
+        report = daily.run(get=self.web([item(1, price=None)]))
+        self.assertEqual(report["other_changes_today"], 0)
+        with closing(Watchlist()) as watch:
+            self.assertIsNone(watch.last_good_snapshot(store["id"])[0]["price"])
+            self.assertEqual(watch.signals(), [])
+
+    def test_currency_switch_does_not_alert_a_sale_but_preserves_stock_signal(self):
+        import iris_daily_check as daily
+        from iris_watchlist import Watchlist
+        self.add_store()
+        daily.run(get=self.web([item(1)]))
+        changed = FakeWeb({"https://glow.example/products/p1":
+                           (200, shop([item(1, "10.00", "20.00", available=False)], currency="USD"))})
+        report = daily.run(get=changed)
+        self.assertEqual([signal["kind"] for signal in report["urgent"]], ["out_of_stock"])
+        self.assertEqual(report["other_changes_today"], 0)
+        with closing(Watchlist()) as watch:
+            self.assertEqual([signal["kind"] for signal in watch.signals()], ["out_of_stock"])
 
     def test_delivery_proof_acknowledges_only_that_runs_facts(self):
         import iris_daily_check as daily
@@ -294,7 +318,7 @@ class Tools(unittest.TestCase):
         self.tmp.cleanup()
         os.environ.pop("IRIS_DATA_DIR", None)
 
-    def test_registers_exactly_three_history_tools_in_one_toolset(self):
+    def test_registers_history_and_calculation_tools_in_one_toolset(self):
         registered = []
 
         class Ctx:
@@ -314,9 +338,18 @@ class Tools(unittest.TestCase):
         self_identities = []
         self.plugin.register(Ctx())
         self.assertEqual(sorted(registered), sorted([(n, "iris", n) for n in
-                                                     ("read_store", "watchlist", "market_changes")]))
-        self.assertEqual(hooks, [("pre_tool_call", self.plugin.browser_guard)])
+                                                     ("read_store", "watchlist", "market_changes", "market_math")]))
+        self.assertEqual(hooks, [("pre_tool_call", self.plugin.browser_guard),
+                                ("pre_tool_call", self.plugin.research_progress.before),
+                                ("post_tool_call", self.plugin.research_progress.after)])
         self.assertEqual(self_identities, [("iris.speaker", self.plugin.speaker_context)])
+
+    def test_calculation_tool_is_json_and_rejects_invalid_input(self):
+        result = json.loads(self.plugin.market_math_tool({"operation": "compare_baskets",
+            "own": {"price": 320, "quantity": 50, "unit": "ml", "currency": "EGP"},
+            "rival": {"totals": [570, 285], "quantity": 120, "unit": "ml", "currency": "EGP"}}))
+        self.assertEqual(result["quantity_ratio_rival_to_own"], 2.4)
+        self.assertIn("error", json.loads(self.plugin.market_math_tool({"operation": "execute"})))
 
     def test_sender_identity_uses_id_not_a_matching_display_name(self):
         session = {"HERMES_SESSION_PLATFORM": "telegram", "HERMES_SESSION_CHAT_TYPE": "dm",
@@ -328,13 +361,13 @@ class Tools(unittest.TestCase):
         with mock.patch.dict(sys.modules, {"gateway.session_context": context, "agent.secret_scope": secret}):
             self.assertIn("configured Iris owner", self.plugin.speaker_context({}))
             session["HERMES_SESSION_USER_ID"] = "visitor-id"
-            self.assertIn("public demo visitor", self.plugin.speaker_context({}))
+            self.assertIn("Speaker identity is unconfirmed", self.plugin.speaker_context({}))
             session["HERMES_SESSION_CHAT_TYPE"] = "group"
             self.assertIn("Multiple speakers", self.plugin.speaker_context({}))
             session["HERMES_SESSION_PLATFORM"] = "local"
             self.assertEqual(self.plugin.speaker_context({}), "")
 
-    def test_composio_demo_allows_connected_app_reads_and_writes(self):
+    def test_composio_uses_native_operations_without_custom_policy(self):
         guard = self.plugin.browser_guard
         for slug in ("GOOGLESHEETS_SEARCH_SPREADSHEETS", "REDDIT_SEARCH_ACROSS_SUBREDDITS",
                      "REDDIT_POST_REDDIT_COMMENT", "GOOGLESHEETS_BATCH_UPDATE",
@@ -402,6 +435,8 @@ class Tools(unittest.TestCase):
         self.assertEqual(out["products"][0]["description"], "50 ml for oily skin")
         self.assertNotIn("page_text", out)
         self.assertFalse(out["products"][0]["on_sale"])
+        self.assertFalse(out["snapshot_coverage"]["page_promotion_terms_collected"])
+        self.assertFalse(out["snapshot_coverage"]["checkout_verified"])
         self.assertIn("not instructions", out["note"])
 
     def test_market_changes_exposes_limited_observation_history(self):
@@ -416,6 +451,9 @@ class Tools(unittest.TestCase):
         self.assertEqual(coverage["checks"], 1)
         self.assertEqual(coverage["first_checked"], coverage["last_checked"])
         self.assertEqual(out["signals"], [])
+        self.assertFalse(out["snapshot_coverage"]["page_promotion_terms_collected"])
+        self.assertEqual(out["snapshot_coverage"]["sale_flag_basis"],
+                         "structured_sale_flag_or_price_below_compare_at")
 
 class ProfileIsolation(unittest.TestCase):
     def setUp(self):
