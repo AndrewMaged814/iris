@@ -20,7 +20,7 @@ GitHub Actions runs these same checks on pushes and pull requests.
 
 `tools/evaluate_iris.py` uses Hermes's native chat entry point and the profile's configured
 model/tools. `--isolate` copies the installed profile, removes its Telegram delivery token,
-uses a separate database/memory directory and labels traces `iris-evaluation`.
+uses a separate database/memory directory and the documented `evaluation` tracing environment.
 A follow-up shares its case conversation; a `fresh_session` turn tests memory without the
 previous transcript. Independent cases reset memory to the copied owner's starting notes.
 
@@ -70,7 +70,6 @@ On the Hermes host, with its repository on `PYTHONPATH`:
 
 ```sh
 python tools/check_research_hooks.py --profile-home PRIVATE_PROFILE
-python tools/check_langfuse_usage.py --hermes-root PATH_TO_HERMES
 python tools/check_workflow_cloud.py --profile-home ~/.hermes/profiles/iris \
   --baseline PRIVATE_BASELINE/results.json --candidate PRIVATE_CANDIDATE/results.json \
   --output PRIVATE_UNUSED_CLOUD_REPORT.json
@@ -82,8 +81,9 @@ new-turn scope and failed-search retry. It does not test retrieval quality.
 
 The Cloud checker groups resumed turns by session and compares successful generations with
 native `api_calls`. Failed attempts are listed separately; empty failure usage is unknown.
-Known failure usage is retained. It reconciles roots/tools, canonical totals and attribution,
-not provider charges. Its bounded readback covers the last six hours and refuses truncated
+Known failure usage is retained. It compares roots/tools and reported totals with canonical
+token buckets; a mismatch remains visible. It records environments, not provider charges.
+Its bounded readback covers the last six hours and refuses truncated
 responses. `check_workflow_cloud.py` retains its existing operator filename; the retired
 workflow engine is no longer shipped.
 

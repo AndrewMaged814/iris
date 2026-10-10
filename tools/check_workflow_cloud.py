@@ -38,6 +38,9 @@ def reconcile_observations(request, roots, rows):
     tools = [row for row in rows if row.get("type") == "TOOL"]
     known = [row.get("usageDetails") for row in generations if row.get("usageDetails")]
     usage_complete = bool(successes) and all(row.get("usageDetails") for row in successes)
+    canonical_known = sum(sum(usage.get(key, 0) for key in
+        ("input", "output", "cache_read_input_tokens", "cache_creation_input_tokens")) for usage in known)
+    cloud_known = sum(usage.get("total", 0) for usage in known)
     return {**request, "cloud_roots": len(roots), "cloud_calls": len(generations),
         "cloud_successful_calls": len(successes), "cloud_failed_attempts": len(failures),
         "failed_attempts_with_unknown_usage": sum(not row.get("usageDetails") for row in failures),
@@ -46,9 +49,11 @@ def reconcile_observations(request, roots, rows):
         "canonical_totals_match": bool(usage_complete) and all(usage.get("total") == sum(
             usage.get(key, 0) for key in ("input", "output", "cache_read_input_tokens", "cache_creation_input_tokens"))
             for usage in known),
-        "cloud_known_total_tokens": sum(usage.get("total", 0) for usage in known),
+        "cloud_known_total_tokens": cloud_known,
+        "canonical_known_total_tokens": canonical_known,
+        "reported_total_difference": cloud_known - canonical_known,
         "actual_charge": "unknown",
-        "all_evaluation_labels": bool(rows) and all(row.get("userId") == "iris-evaluation" for row in rows),
+        "environments": sorted({row.get("environment") or "unknown" for row in rows}),
         "capture_modes": sorted({(row.get("metadata") or {}).get("capture_mode", "") for row in rows
                                   if row.get("name") == "Hermes turn"}),
         "trace_ids": sorted({root.trace_id for root in roots})}

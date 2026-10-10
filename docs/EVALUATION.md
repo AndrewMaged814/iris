@@ -109,6 +109,9 @@ logs show final sends; these timings are backend measurements, not a measured us
 
 ## Observability evidence
 
+These records used the earlier custom tracing patches, now removed. They are historical
+evidence; [the native check](evidence/langfuse-native.json) verifies the unmodified plugin.
+
 [The earlier reconciled sample](evidence/run-summary.json) contains ten turns, 24 main calls
 and 14 tools. [User labels](evidence/langfuse-users.json) establish operator/evaluation
 attribution on two CLI probes. Subsequent Telegram replies exist; their Cloud attribution

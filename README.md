@@ -81,7 +81,7 @@ with. Connecting an app is separate from choosing which catalog or sheet she sho
 | Iris skills | Market investigations, interpretation, recommendations, requested drafts and reviews. Iris writes the business advice. |
 | Four Iris tools | `read_store`, `watchlist`, `market_changes`, `market_math`: structured public product facts, selected history and calculations. |
 | Native [Composio](https://composio.dev/) | App discovery, authorization links and connected-app operations. Scheduled checks only read apps. |
-| Observability layer | Hermes’s Langfuse plugin records response time, model/tool calls and token usage, grouped by user and session. |
+| Observability layer | Hermes’s native Langfuse plugin records response time, model/tool calls and token usage, grouped by conversation. |
 
 For requested app changes, Iris confirms the terms and checks the saved result by readback.
 [Technical setup and boundaries](docs/SETUP.md).
@@ -97,15 +97,15 @@ It records model and tool activity so we can inspect an investigation and improv
 | --- | --- |
 | **Response time** | How long an agent turn takes and which model or tool calls account for the wait. |
 | **Tokens and model usage** | Input, output and reported cache usage for model calls. |
-| **Usage by user and session** | Activity grouped by the profile’s owner label and conversation, with evaluations labeled separately. |
+| **Session activity** | Follow each conversation across turns; private tests use a separate evaluation environment. |
 | **Tool calls, failures and retries** | The path Iris took, the sources she accessed and where execution needs attention. |
 
 Cloud traces use metadata capture; private session reports retain the source evidence for
 answer review. Evaluation exports also flag cited URLs without a captured source read.
 
-[Inspect a recorded trace check](docs/evidence/cloud-release-final.json) ·
+[Inspect a native trace check](docs/evidence/langfuse-native.json) ·
 [Tracing setup and reporting](docs/OBSERVABILITY.md) ·
-[Langfuse user tracking](https://langfuse.com/docs/observability/features/users).
+[Hermes tracing documentation](https://hermes-agent.nousresearch.com/docs/user-guide/features/built-in-plugins#observabilitylangfuse).
 
 ## Run Iris
 

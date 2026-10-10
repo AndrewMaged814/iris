@@ -1,0 +1,54 @@
+{
+  "evidence_type": "Unmodified Hermes Langfuse plugin: private native CLI turns and Cloud observations readback",
+  "checked_at": "2026-10-10T14:15:16.922184+00:00",
+  "hermes_revision": "c1488ac947c9bc33fd65ec464548dc9d8edd6122",
+  "sdk_version": "4.17.0",
+  "native_plugin_sha256": "cf329ed39d77fd3d989212a46839b57f32ef63dc566979d18f9f1aab0b761418",
+  "hermes_worktree_clean": true,
+  "unsupported_user_setting_removed": true,
+  "gateway_active": true,
+  "config_auth_memory_jobs_preserved": true,
+  "turn_seconds": [
+    12.59,
+    13.32
+  ],
+  "checks": [
+    {
+      "case": "sme-owner-cost-question",
+      "turn_indices": [
+        0,
+        1
+      ],
+      "native_calls": 4,
+      "native_tools": 2,
+      "expected_roots": 2,
+      "cloud_roots": 2,
+      "cloud_calls": 4,
+      "cloud_successful_calls": 4,
+      "cloud_failed_attempts": 0,
+      "failed_attempts_with_unknown_usage": 0,
+      "cloud_tools": 2,
+      "counts_match": true,
+      "canonical_totals_match": false,
+      "cloud_known_total_tokens": 46951,
+      "canonical_known_total_tokens": 46892,
+      "reported_total_difference": 59,
+      "actual_charge": "unknown",
+      "environments": [
+        "evaluation"
+      ],
+      "capture_modes": [
+        "metadata"
+      ],
+      "user_labels_present": false,
+      "content_capture_present": false,
+      "reported_reasoning_tokens": 59
+    }
+  ],
+  "limits": [
+    "Private CLI verifies tracing, not Telegram delivery or market-intelligence quality.",
+    "Canonical total is reconstructed from native exported input/output/cache buckets; reasoning is included in Hermes output.",
+    "No actual provider-charge reconciliation.",
+    "Earlier observations with custom user labels remain historical."
+  ]
+}

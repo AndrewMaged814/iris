@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
   <title id="title">Iris system architecture</title>
-  <desc id="desc">Hermes runs Iris with Luna, sessions, memory and schedules. Iris investigates competitors and connects market findings to the owner's business. Composio connects supported business tools through authorization links and provides app data and requested operations. Selected product history is stored in SQLite. The observability layer uses Hermes's Langfuse plugin to track response time, model and tool calls, tokens and usage by user. The owner chooses a move and can review its results with Iris later.</desc>
+  <desc id="desc">Hermes runs Iris with Luna, sessions, memory and schedules. Iris investigates competitors and connects market findings to the owner's business. Composio connects supported business tools through authorization links and provides app data and requested operations. Selected product history is stored in SQLite. The observability layer uses Hermes's native Langfuse plugin to track response time, model and tool calls, tokens and sessions. The owner chooses a move and can review its results with Iris later.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#64748b"/>
@@ -78,7 +78,7 @@
   <text class="heading" x="66" y="410">Observability layer</text>
   <text class="body" x="66" y="439">Langfuse plugin in Hermes</text>
   <text class="small" x="66" y="467">Response time · tool calls · tokens</text>
-  <text class="small" x="66" y="494">Usage by user · session traces</text>
+  <text class="small" x="66" y="494">Usage by session · evaluation runs</text>
 
   <!-- Iris consults native research, connected apps and its own watch history. -->
   <text class="eyebrow" x="885" y="190">RESEARCH, APPS &amp; HISTORY</text>

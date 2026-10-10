@@ -13,10 +13,11 @@ connected into investigations, priorities, drafts and remembered decisions in Te
   avoids irrelevant own-catalog reads, binds stock to its exact product/variant, and checks
   cited facts against successful reads. Null catalog public URLs stay null in follow-up footers.
 - The Cloud checker separates failed attempts from successful model completions and retains
-  unknown failure usage. Native token/user-label checks pass on the pinned Hermes runtime.
-- **116 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
+  unknown failure usage. Custom Langfuse patches and their patch-dependent checker are removed;
+  native session grouping and evaluation environments replace custom user labels.
+- **117 offline tests pass**, with no skips. Repository validation and whitespace checks pass.
   The existing GitHub Actions workflow runs the suite, validator and shell syntax check.
-- README, architecture, setup, demo plan and evidence/observability guides are consolidated.
+- README, architecture, setup and evidence/observability guides are consolidated.
   Obsolete planning diaries, rejected engines, repeated trial exports and old video/slide
   drafts are archived privately. Earlier material failures remain in public evidence.
 
@@ -44,8 +45,18 @@ The public README now uses generic competitor examples, explains the Composio au
 flow, and presents the Langfuse integration as an **observability layer**. The architecture
 SVG and PNG use the same wording. The production storyboard and measurement worksheet are
 preserved outside the public repository; public links to the internal plan are removed.
-The two pinned-runtime tracing patches remain documented under `patches/`; their token and
-owner/evaluation user-label checks still pass on the tested Hermes installation.
+The tracing implementation was reviewed against official Hermes and Langfuse documentation.
+The unsupported owner-label setting and token-total workaround are removed from the repository
+and live Hermes source. The gateway uses the unmodified bundled plugin; protected profile
+configuration, OAuth, memory and schedules are preserved. Historical patched trace records
+remain labeled as historical evidence. [Native verification](evidence/langfuse-native.json).
+
+Fresh native verification records two private CLI turns, four successful model calls and two
+tools, with matching Cloud counts, `evaluation` environment and metadata-only capture.
+The turns took 12.59s and 13.32s including CLI startup. The native export's Cloud total was
+46,951 versus 46,892 reconstructed canonical tokens: the 59-token difference equals its
+reported reasoning tokens. This accounting mismatch remains visible; no replacement patch
+was introduced. Actual provider charges and Telegram delivery were not tested in this check.
 
 ## What has been observed
 

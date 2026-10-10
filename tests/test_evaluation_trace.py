@@ -144,6 +144,19 @@ class EvaluationTrace(unittest.TestCase):
         self.assertFalse(cloud_reporting.reconcile_observations(request,
             [SimpleNamespace(trace_id="trace")], rows)["canonical_totals_match"])
 
+    def test_native_reasoning_overlap_is_reported_as_a_total_mismatch(self):
+        from types import SimpleNamespace
+        checked = cloud_reporting.reconcile_observations(
+            {"expected_roots": 1, "native_calls": 1, "native_tools": 0},
+            [SimpleNamespace(trace_id="native")], [{"type": "GENERATION", "level": "DEFAULT",
+                "environment": "evaluation", "usageDetails": {
+                    "input": 100, "output": 20, "reasoning_tokens": 10, "total": 130}}])
+        self.assertTrue(checked["counts_match"])
+        self.assertFalse(checked["canonical_totals_match"])
+        self.assertEqual(checked["canonical_known_total_tokens"], 120)
+        self.assertEqual(checked["reported_total_difference"], 10)
+        self.assertEqual(checked["environments"], ["evaluation"])
+
     def test_recorded_rate_limit_retry_reconciles_without_losing_error_attempt(self):
         from types import SimpleNamespace
         fixture = Path(__file__).resolve().parents[1] / "docs/evidence/deployed-cloud-retry.json"

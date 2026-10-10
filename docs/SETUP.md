@@ -71,7 +71,7 @@ inherit the default profile's credentials.
 Hermes includes a native `observability/langfuse` plugin. Enable it with your Langfuse project
 credentials to inspect model/tool timelines. The current Iris host uses metadata capture;
 private case reports retain the detailed evidence. Follow [the observability guide](OBSERVABILITY.md)
-for the SDK, gateway capture setting, pinned-version token correction and verified limits.
+for native setup, the gateway capture setting and verified limits.
 
 ### Product reader dependencies
 

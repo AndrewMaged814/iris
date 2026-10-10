@@ -2,5 +2,3 @@
 *.pptx binary
 # Shell entry points must run after a Windows checkout or transfer to Hermes.
 *.sh text eol=lf
-# A single space is a meaningful blank context line in a unified patch.
-*.patch whitespace=-blank-at-eol

@@ -2,6 +2,7 @@
 
 **Updated 10 October 2026.** Hermes's bundled Langfuse plugin records the model/tool timeline.
 Iris uses Luna and native Composio; tracing adds no research engine or model call.
+The live runtime uses the unmodified bundled plugin. No Iris tracing patches are required.
 
 ## What you can inspect
 
@@ -19,6 +20,15 @@ Parallel tool durations must not be summed into owner waiting time.
 
 ## Recorded proof
 
+Earlier records linked in this section used our two custom tracing patches. They establish
+what those runs recorded, not the behavior of the unmodified plugin. Fresh native verification
+is recorded in [the native trace check](evidence/langfuse-native.json).
+
+The unmodified plugin exported two turns, four successful model calls and two tools with
+matching execution counts and `evaluation` environment. Metadata capture omitted content.
+Its Cloud total exceeded the reconstructed canonical total by 59 tokens, exactly the reported
+reasoning count. Session correlation works; that accounting difference remains unresolved.
+
 [The earlier reconciled sample](evidence/run-summary.json) covers ten turns across six
 sessions: two owner Telegram turns and eight private turns, **24 main calls / 14 tools**.
 Counts and canonical usage matched; no duplicate observation IDs appeared in that sample.
@@ -26,7 +36,9 @@ Counts and canonical usage matched; no duplicate observation IDs appeared in tha
 
 [The user-label probe](evidence/langfuse-users.json) checked two CLI sessions: owner/operator
 label `andrew-maged`, evaluation label `iris-evaluation`. That probe did not establish
-Telegram attribution. The label is attribution; the Telegram allowlist is access control.
+Telegram attribution. These labels required our now-removed customization; they are not a
+native configuration option on the pinned Hermes version. The Telegram allowlist remains
+access control.
 
 [The retained retry](evidence/deployed-cloud-retry.json) contains one rate-limit ERROR
 attempt with no usage and one successful completion with 11,208 canonical tokens. Native
@@ -61,11 +73,13 @@ navigation or the wrong product facts. Check the actual claim against the privat
 
 ## Setup and privacy
 
-The tested runtime is Hermes `c1488ac`, Python Langfuse SDK 4.17.0. Use Hermes's Python:
+The tested runtime is Hermes `c1488ac`, Python Langfuse SDK 4.17.0. Use the native setup
+wizard, which handles credentials and plugin enablement:
 
 ```sh
-python -m pip install 'langfuse==4.17.0'
-hermes -p iris plugins enable observability/langfuse
+hermes -p iris tools
+# Choose Langfuse Observability, then restart the existing gateway.
+hermes -p iris plugins list
 ```
 
 Keep credentials in the private profile; [.env.EXAMPLE](../.env.EXAMPLE) contains variable
@@ -84,26 +98,18 @@ its environment; preserve configured owners, OAuth, sessions and schedules.
 Langfuse links require project access. For judges, publish a reviewed sanitized export or
 screenshot belonging to the demonstrated run, not credentials or raw merchant payloads.
 
-## Two pinned-runtime corrections
+## Native configuration and accounting
 
-The [token-total patch](../patches/hermes-langfuse-token-total.patch) prevents reasoning
-already included in output from being counted again. The
-[user-ID patch](../patches/hermes-langfuse-user-id.patch) propagates the profile's
-`HERMES_LANGFUSE_USER_ID` to root and child observations. Private copies override the label
-with `iris-evaluation`; unconfigured profiles do not invent an identity.
+Use the plugin's documented credentials, capture mode, environment and release settings.
+Private evaluations set `HERMES_LANGFUSE_ENV=evaluation`; conversation grouping uses the
+native Hermes session ID. This pinned plugin has no supported owner user-ID setting.
+Langfuse's user-tracking API is a separate SDK capability, not an automatic Hermes option.
 
-Back up the native plugin and profile environment. Check patches against the actual
-revision before applying; upstream may already include a fix. For each patch:
-
-```sh
-git -C PATH_TO_HERMES apply --check PATH_TO_PATCH
-git -C PATH_TO_HERMES apply PATH_TO_PATCH
-python tools/check_langfuse_usage.py --hermes-root PATH_TO_HERMES
-```
-
-This native check is separate from Iris's offline suite. Earlier Cloud observations are not
-retroactively repaired or relabeled. Disable tracing with
-`hermes -p iris plugins disable observability/langfuse` if rollback is needed.
+Our removed token patch supplied a total but left overlapping output/reasoning buckets.
+Langfuse requires mutually exclusive usage buckets. Verify native observations against
+Hermes usage before interpreting dashboard totals or estimated costs. The readback checker
+reports both totals and their difference; it does not change exported observations.
+Earlier Cloud records are not retroactively repaired or relabeled.
 
 ## Remaining limits
 
@@ -119,5 +125,7 @@ returned HTTP410 for the inspected organization. The checker bounds its time win
 refuses response-limit truncation rather than claiming complete accounting.
 
 Sources: [pinned native plugin](https://github.com/NousResearch/hermes-agent/tree/c1488ac947c9bc33fd65ec464548dc9d8edd6122/plugins/observability/langfuse),
+[Hermes setup](https://hermes-agent.nousresearch.com/docs/user-guide/features/built-in-plugins#observabilitylangfuse),
+[Langfuse usage rules](https://langfuse.com/docs/observability/features/token-and-cost-tracking),
 [SDK](https://langfuse.com/docs/observability/sdk/overview),
 [public API](https://langfuse.com/docs/api-and-data-platform/features/public-api).

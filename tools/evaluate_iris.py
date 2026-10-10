@@ -507,10 +507,10 @@ def main():
             unset_key(home / ".env", "TELEGRAM_BOT_TOKEN")
             set_key(home / ".env", "IRIS_DATA_DIR", str(home / "iris"))
             set_key(home / ".env", "HERMES_HOME", str(home))
-            set_key(home / ".env", "HERMES_LANGFUSE_USER_ID", "iris-evaluation")
+            set_key(home / ".env", "HERMES_LANGFUSE_ENV", "evaluation")
         env.update(HERMES_HOME=str(home), IRIS_DATA_DIR=str(home / "iris"))
         env.pop("TELEGRAM_BOT_TOKEN", None)
-        env["HERMES_LANGFUSE_USER_ID"] = "iris-evaluation"
+        env["HERMES_LANGFUSE_ENV"] = "evaluation"
         profile_args = []  # native HERMES_HOME, without selecting the live named profile
         if args.instructions_from:
             soul = args.instructions_from / "SOUL.md"
